@@ -1,0 +1,22 @@
+MongoDB's collections consists of  similar and related documents together. Therefore, the data modeling concept of \ref{xmark-nosql} is different from MongoDB. Each \textit{doctype} from previous section~\ref{xmark-nosql} represents a collection in Mongodb. For \textit{item} entity,  attribute \textit{regions} contains the name of the region of each item as other nosql databases. As  mentioned in Indexing section of MongoDB, \textit{\_id} is the primary index of a document. 
+The identifier attribute of XMark data \textit{id} is renamed to \textit{\_id} for default indexing.  \texttt{closed\_auctions} and \texttt{catgraph} do not have identifier \textit{id}, therefore, system will automatically generate the \texttt{\_id}. A typical example of MongoDB document for person with identifier \textit{person0} is given in Code~\ref{code:mongodb-person0}.	
+\begin{lstlisting}[language=JSON,caption=Mongodb's document representation of XMARk data, label=code:mongodb-person0]
+	{
+		"_id": "person0",
+		"doctype":"people",
+		"name": "Kasidit Treweek",
+		"emailaddress": "mailto:Treweek@cohera.com",
+		"phone": "+0 (645) 43954155",
+		"homepage": "http://www.cohera.com/~Treweek",
+		"creditcard": "9941 9701 2489 4716",
+		"profile": {
+			"income": 20186.59,
+			"interest": [{
+				"category": "category251"
+			}],
+			"education": "Graduate School",
+			"business": "No"
+		}
+	}
+\end{lstlisting}
+	

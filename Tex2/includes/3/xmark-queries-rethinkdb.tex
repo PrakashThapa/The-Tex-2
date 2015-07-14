@@ -1,0 +1,196 @@
+\label{xmark-queries-rethindb}
+\begin{enumerate}[label=Q\arabic*.]
+	\item %1
+	
+	\begin{lstlisting}[language=JSON]
+		r.table("people").get("person0")("name")
+	\end{lstlisting}
+
+	\item %2
+	\begin{lstlisting}[language=JSON]
+	r.table("open_auctions").map(function(doc) {return {increase:doc("bidder").nth(0)("increase").nth(0).default("")}})
+	
+	\end{lstlisting}
+	
+    \item %3
+	\begin{lstlisting}[language=JSON]
+	  r.table("open_auctions").hasFields("bidder").filter(
+	                r.row("bidder").nth(0)("increase").nth(0).mul(2).le(r.row("bidder").nth(r.row("bidder").count().sub(1))("increase").nth(0))
+	              ).map(function(doc){
+	                var last = doc("bidder").count().sub(1);
+	                return {increase:{first:doc("bidder").nth(0)("increase").nth(0), last:doc("bidder").nth(last)("increase").nth(0)} }
+	              })
+	\end{lstlisting}
+	
+	
+    \item %4
+	\begin{lstlisting}[language=JSON]
+	   
+	\end{lstlisting}
+	
+	
+    \item %5
+	\begin{lstlisting}[language=JSON]
+	   r.table("closed_auctions").count(function(f){
+	                 return f("price").default(0).gt(40)
+	               })
+	\end{lstlisting}
+	
+    \item %6
+	\begin{lstlisting}[language=JSON]
+	   r.table("regions").count()
+	\end{lstlisting}
+	
+	
+    \item %7
+	\begin{lstlisting}[language=JSON]
+	   
+	\end{lstlisting}
+	
+	
+    \item %8
+	\begin{lstlisting}[language=JSON]
+	  r.table("people").map(function(d){
+	                var x = r.table("closed_auctions").getAll(d("id"),{index:"buyer_person"}).count();
+	                return {person:d("name"),value:x}
+	              }).orderBy(r.desc("value")).map({item:r.row})
+	\end{lstlisting}
+	
+	
+    \item %9
+	\begin{lstlisting}[language=JSON]
+	   r.table("regions").getAll("europe",{index:"regions"}).eqJoin("id",r.table("closed_auctions"),{index:"closed_itemref_item"}).map({
+	                 name:r.row("left")("name"), id:r.row("left")("id"),
+	               })
+	\end{lstlisting}
+	
+	
+    \item %10
+    
+	\begin{lstlisting}[language=JSON]
+	   r.table("people")("profile")("interest").concatMap(function(f){return f}).distinct()
+	                 .merge(function(category){
+	                   return {
+	                     d:
+	                    r.table("people").filter(function(d){
+	                 return d("profile")("interest").contains(function(e){
+	                   return e("category").eq(category("category"))})}).map(function(profile){
+	                      return {
+	                        personne:{
+	                          statistiques:{
+	                            sexe:profile("profile")("gender").default(""),
+	                            age:profile("profile")("age").default(""),
+	                            education:profile("profile")("education").default(""),
+	                            revenu:profile("profile")("income").default("")
+	                          },
+	                          coordonnees: {
+	                            nom:profile("name"),
+	                            rue: profile("address")("street").default(""),
+	                            ville:profile("address")("city").default(""),
+	                            pays:profile("address")("country").default(""),
+	                            reseau:{
+	                            courrier:profile("emailaddress").default(""),
+	                            pagePerso:profile("homepage").default("")
+	                          }
+	                          },
+	                        cartePaiement:profile("creditcard").default("")
+	   
+	                        }
+	                      }
+	                    }).coerceTo('array')
+	                   }
+	                 })
+	\end{lstlisting}
+	
+	
+    \item %11
+    
+	\begin{lstlisting}[language=JSON]
+	 r.table("people").pluck("id",{profile:{income:true}})
+	               .map(function(f){
+	                 var i = f("profile")("income").default(0).div(5000);
+	                 return {
+	                   id:f("id"),
+	                   item:r.table("open_auctions").filter(function(m){
+	                  return  m("initial").default(0).lt(i)
+	                     }).count()
+	                  }
+	          })
+	\end{lstlisting}
+	
+	
+    \item %12
+	\begin{lstlisting}[language=JSON]
+	   r.table("people").filter(function(f){return f("profile")("income").default(0).gt(50000)})
+	                 .map(function(f){
+	                 return {
+	                   id:f("id"),
+	                   item:r.table("open_auctions").count(function(x){
+	                     return f("profile")("income").default(0).gt(x("initial").default(0).mul(5000))
+	                   })
+	                 }
+	               })
+	\end{lstlisting}
+	
+	
+    \item %13
+	\begin{lstlisting}[language=JSON]
+	   r.table("regions").getAll("australia",{index:"regions"}).map({item:{name:r.row("name"),description:r.row("description")}})
+	\end{lstlisting}
+	
+    \item %14
+	\begin{lstlisting}[language=JSON]
+	 	r.table("regions").filter(function(doc) {
+	 	    return doc('description').coerceTo("STRING").match("gold")
+	 	    })('name') 
+	\end{lstlisting}	
+
+    \item %15
+	\begin{lstlisting}[language=JSON]
+	 r.table("closed_auctions")("annotation")("description")("parlist").concatMap(function(f){
+	           return f('listitem')('parlist')
+	         }).concatMap(function(f){return f('listitem').hasFields({text:{emph:{keyword:true}}})}).map(function(f){
+	           return {"text":f('text')('emph')('keyword')}
+	         })
+	\end{lstlisting}	
+
+    \item %16
+	\begin{lstlisting}[language=JSON]
+	  r.table("closed_auctions").hasFields({annotation:{description:{parlist:true}}})
+	              ("annotation")("description").concatMap(r.row("parlist")).hasFields({listitem:{parlist:true}})("listitem").concatMap(r.row("parlist")).hasFields({listitem:{text:{emph:{keyword:true}}}})
+	\end{lstlisting}	
+
+    
+    \item %17
+	\begin{lstlisting}[language=JSON]
+	  r.table("people").filter(function(d){return d.hasFields("homepage").not()}).map({person:{name:r.row("name")}})
+	\end{lstlisting}	
+
+    \item %18
+	\begin{lstlisting}[language=JSON]
+	  r.table("open_auctions").hasFields("reserve").map(r.row("reserve").mul(2.20371))
+	\end{lstlisting}	
+
+    \item %19
+	\begin{lstlisting}[language=JSON]
+	  r.table("regions").orderBy({index:"location"}).pluck("location","name").map(function(f){
+	    return {item:{name:f("name"),location:f("location")}}
+	  })
+	\end{lstlisting}
+	
+    \item %20
+	\begin{lstlisting}[language=JSON]
+	  r.table("people").map(function(doc){return {income:doc("profile")("income").default(0)}})
+	            .map({
+	             preferred:r.branch(r.row("income").ge(100000),'preferred',0),
+	            standard:r.branch(r.row("income").le(100000).and(
+	              r.row("income").ge(30000)
+	            ),'standard',0),
+	            challenge:r.branch(r.row("income").le(30000).and(
+	              r.row("income").gt(0)
+	            ),'challenge',0),
+	            na:r.branch(r.row("income").le(0),'na',0)
+	          }).group('preferred','standard','challenge','na').count()
+	\end{lstlisting}
+
+\end{enumerate}

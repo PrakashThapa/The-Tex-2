@@ -1,0 +1,210 @@
+\todo{explain why we need migration}
+There are different stages to convert XML to JSON document.
+\begin{enumerate}[label=Step\arabic*.]
+	\item~\\
+	XML to JSON friendly XML \\
+	Algorithm~\ref{algorithm-JSONXML} provides psudo-code for XML to JSON friendly XML. At the first step of conversion process, all attributes of XML document are represented as ordered child element. There can be more than one attributes that are inserted according to their order. Then, the inserted attributes are deleted.  XML node can contain both text and element node as a child, whereas JSON can have only key-value pair or value only for array. Each text node that also has element node as siblings moved to "childtext"(name of the element) node. At the end of first step, if an element contains another element as a child node, then it is represented as object type of JSON. It is necessary to identify if a siblings of an element node($S$) has same element name or not. If this condition exists, $S$ is represented as the array in JSON. All the child nodes of all siblings are moved inside $S$ node. If $S$ is already  object type  then it is replace with array type  else new array is added. %In this algorithm, the loop of one action affect other, so they are looped independently.
+	
+	\item~\\
+	Data type of XML to JSON data type\\
+	After JSON friendly XML in Step 1, the complex data type of XML are marked as either object or array type of JSON illustrated in Table~\ref{tbl:xmljson}. In this Step,  as in 
+	Algorithm~\ref{algorithm-JSONXML-type}, all the scalar type of xml document are identified and marked them as their type in JSON according to Table ~\ref{tbl:xml-json:types}.
+	\item~\\
+	Map XML to JSON object or array\\
+	After Step 1 and 2, a complete JSON friendly XML is generated. All XML object and array are mapped to $<$$key$, $value$$>$ pair of JSON and their respective data types. Table ~\ref{tbl:xmljson-convert-3} illustrate final conversion from XML to JSON.
+\end{enumerate}
+
+		\begin{algorithm}[h]
+			\DontPrintSemicolon
+        	\begin{algorithmic}
+        	\STATE Initialize $D = "{XML} document"$;
+        	  	\FORALL{descendant-or-self node of  $D$,  $X$ which has attributes $A$  }
+        			\STATE move  all attributes  $A$ to ordered child element of $X$\;
+        		\ENDFOR
+        		
+        		\FORALL{descendant-or-self node of  $D$,$X$ }
+        			\IF{ $X$ contains Text node and element node Both}
+        				\STATE create new element "childtext" \;
+        				\STATE move text node to "childtext" element \;
+        			\ENDIF
+        		\ENDFOR
+        		
+        		\FORALL{descendant node of  $D$,$X$ }
+        			\FORALL{child element $C$ in $X$}
+        				\IF{ $C$ has siblings $S$ with same \textit{name} }
+        					\STATE convert $C$ as Array type\;
+        					\STATE move child of $S$ into $C$ as $<$\_$>$ element\;
+        				\ENDIF
+        				\IF{ $C$ has child element }
+        					\STATE convert $C$ as Object type\;
+        				\ENDIF
+        			\ENDFOR
+        		\ENDFOR
+        	\end{algorithmic}
+        	\caption{Pseudocode to convert normal  XML to JSON friendly XML}\label{algorithm-JSONXML}
+\end{algorithm}
+	
+ \begin{algorithm}[h]
+			\DontPrintSemicolon
+        	\begin{algorithmic}
+        	\STATE Initialize $D = "{XML} document"$;
+        	  	\FORALL{descendant-or-self node of  $D$ as $C$}
+        			\IF{ $C$ has no attribute "type" }
+        				\STATE get content of $C$ \;
+                        \STATE identify content type according to Table ~\ref{tbl:xml-json:types}. and add attribute to $C$ "type" \;
+        			\ENDIF
+        		\ENDFOR
+        	\end{algorithmic}
+        	\caption{ convert data type of XML to JSON data type(Step 2)}\label{algorithm-JSONXML-type}
+        \end{algorithm}
+
+\begin{longtable}{c|c}
+	\caption{XML to JSON friendly XML(STEP 1)}
+	\label{tbl:xmljson}\\
+	\textbf{XML} & \textbf{ Algorithm~\ref{algorithm-JSONXML} }\\
+	\hline
+\begin{minipage}{.4\textwidth}
+\begin{fakeXML}
+<info>
+  <name>
+    <f>a</f>
+  </name>
+  <age>24</age>
+  <ismarried>false</ismarried>
+  <city name="Armonk"/>
+  <state>NY</state>
+  <contact>
+	 home
+    <p>993-330</p>
+    <p>993-331</p>
+  </contact>
+</info>
+\end{fakeXML}	
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f>a</f>
+  </name>
+  <age>24</age>
+  <ismarried>false</ismarried>
+  <city type="object">
+    <name>Armonk</name>
+  </city>
+  <state>NY</state>
+  <contact type="object">
+	<childtext>home</childtext>
+    <p  type="array" >
+	   <_>993330</_>
+	   <_>993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}
+\end{minipage}\\
+\end{longtable}
+
+\begin{longtable}{c|c}
+	\caption{XML to JSON friendly XML(STEP 2)}
+	\label{tbl:xmljson-2}\\
+	\textbf{Algorithm~\ref{algorithm-JSONXML}} & \textbf{ Algorithm~\ref{algorithm-JSONXML-type} }\\
+	\hline
+\begin{minipage}{.4\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f>a</f>
+  </name>
+  <age>24</age>
+  <ismarried>false</ismarried>
+  <city type="object">
+    <name>Armonk</name>
+  </city>
+  <state>NY</state>
+  <contact type="object">
+	 <childtext>home</childtext>
+    <p  type="array" >
+	   <_>993330</_>
+	   <_>993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}	
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f type="string">a</f>
+  </name>
+  <age type="number">24</age>
+  <ismarried type="boolean">false</ismarried>
+  <city type="object">
+    <name type="string">Armonk</name>
+  </city>
+  <state>NY</state>
+  <contact type="object">
+	 <childtext type="string">home</childtext>
+    <p  type="array" >
+	   <_ type="number">993330</_>
+	   <_ type="string">993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}
+\end{minipage}\\
+\end{longtable}
+
+	\begin{longtable}{c|c}
+	\caption{XML to JSON (STEP 3.)}
+	\label{tbl:xmljson-convert-3}\\
+	\textbf{XML(After step 2)} & \textbf{JSON}\\
+	\hline
+\begin{minipage}{.55\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f type="string">a</f>
+  </name>
+  <age type="number">24</age>
+  <ismarried type="boolean">false</ismarried>
+  <city type="object">
+    <name type="string">Armonk</name>
+  </city>
+  <state type="string">NY</state>
+  <contact type="object">
+	<childtext type="string">home</childtext>
+    <p  type="array" >
+	   <_ type="number">993330</_>
+	   <_ type="string">993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}	
+\end{minipage} &
+\begin{minipage}{.5\textwidth}
+\begin{fakeJSON}
+{
+    "info":{
+      "name":{
+        "f":"a"
+      },
+      "age":24,
+      "ismarried":false,
+      "city":{
+        "name":"Armonk"
+      },
+      "state":"NY",
+      "contact":{
+	   "childtext":"home",
+        "p":[
+          993330,
+          "993-331"
+        ]
+      }
+    }
+}
+\end{fakeJSON}
+\end{minipage}\\
+\end{longtable}

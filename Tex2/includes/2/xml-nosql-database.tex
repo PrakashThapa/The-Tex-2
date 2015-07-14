@@ -1,0 +1,59 @@
+\section{XML Database}
+
+  XML is used as interchangeable data format in the web or for creating semi-structured document-centric model documents such as XHTML. There is a necessity to store XML documents in a repository or database that helps for easy data storage and retrieval. An XML document can be stored in two different ways in a database. The first is to convert XML data into the database by mapping the document's data model to a database model. Databases that follow this method are called as \textit{XML-enabled databases}. The second is to find a persistent structure that can store any kind of XML documents and then XML model is mapped into it. Databases that follow this method are called as \textit{Native XML databases}\cite{pavlovic2007native}. Though there is a choice to select any of these methods, it is more appropriate and efficient to store document-centric XML documents using native XML databases and data-centric XML documents using XML-enabled databases.	Native XML Databases (NXDs) are document-oriented databases that store XML data and all components of XML based on a logical model. Logical model differs from individual NXDs where database must include at least an element, attributes, PCDATA and document order. This model includes different levels of complexity and complete support for mixed content and semi-structured data. NXD can manage collection of documents, and also allows to query the documents. Native XML databases are mainly suitable for storing irregular, recursive, and deeply hierarchical data. This database will keeps away all the details of how the XML data is stored and leave the user to build the applications using XML technologies.  BaseX, MarkLogic, eXist-db, Sedna are some of representative example of  NXDs. 
+  \par XQuery 1.0 and XQuery 3.0 are standard query languages recommended by W3C for NXDs. XQuery includes XPath as a sub-language for addressing specific part of an XML document. XPath is not really used as a querying language because it falls short in several ways such as grouping, sorting, support for data types and cross document joins.XSLT can be used to fill in these holes,and also to transfer XML to other documents like HTML, plain text and XSL Formatting Objects, but XQuery is more like a database oriented language.  Inorder to increase the performance of queries, NXD also has support for creation of indices on the stored data.\cite{pavlovic2007native} An extension to the XQuery/XPath specifies the full-text search queries (This sentence is not clear and not related check it once) ~\cite{simanjuntak2015query}.
+	\subsection{BaseX}
+	BaseX is a Native XML database management system and XQuery Processor. BaseX is more specific in storing, querying and visualizing large XML documents. BaseX is a free software that facilitates the complete implementation of XQuery 3.0. It uses tabular representation of XML data tree to store XML document~\citep{www/basex}. To speed up the query evaluation process, BaseX has indexing mechanism. Due to complex tree structure of XML, there are wide range of index structures. Within the scope of this work we mainly focus on the following:
+	\paragraph{Name Index:} It contains all element and attribute names of database, and the ids are stored in the main table. THe index is also provided with statistical information such as ,minimal or maximum values of its elements and attributes. Name indexes and its contents can be directly accessed with XQuery functions \texttt{index:element-names} and \texttt{index:attribute-names}
+	 \paragraph{Path Index:} It stores all the paths of the documents in the database. In case of an database update, the statistics are discarded and it can be created by \texttt{OPTIMIZE} command. With path index descendant steps can be rewritten into child steps, as child steps are evaluated faster.
+	 \paragraph{Text and Attribute Index:} This index increases the speed and range tests on text and attribute values. To keep the index up-to-date \texttt{UPDINDEX} option can be used. \texttt{index:attributes} can be used to access the index contents
+	  	 \paragraph{Full-text Index:} In this indexing, there are two different types of indexes that are provided. One is the default index structure that sorts all keys alphabetically with respect to their character length.The second has a trie structure and takes more memory \texttt{contains-text} can be used to speed up full text indexing queries.
+	The text and attribute indexing are created by default. Attribute indexing speeds up range tests on attribute values. In this thesis, we focus on  BaseX as XML database.
+	
+	\section{NoSQL Database}
+	NoSQL databases "Not Only SQL" are distributed data management system for large and variable data. The NoSQL databases are mainly known for its features like scalability, performance and availability~\citep{hecht2011nosql}.
+	
+	\textit{Scalability} is one of the key feature of NoSQL database system to store unstructured and semi-structured data over a distributed environment where data instances are large and stored separately in different nodes. These databases are designed to store from terabytes to petabytes of data by trading-off its capacity to handle ACID properties to high scalability over a large number of nodes\cite{abramova2013nosql}. 	
+	%\textit{Availability} 
+    Data in NoSQL is stored in commodity hardware in many servers, network failures are common when processing operation.  If one or more nodes unable to deliver the request of a client, the other nodes in the system can complete the operation without any loss. Data is replicated throughout different nodes for fault tolerance and systems allows eventual consistency among the replicas of same the piece of data~\cite{nosql/comparision}.  
+    NoSQL database can be categorized into four subgroups based on the Data model and design:
+	\begin{itemize}
+		\item 
+			\textbf{Key/Value store}\\ The data representation of key-value stores are based on attribute pair, the data model expressed as collection of $<$$key$,$value$$>$ tuples. The key is unique and value can be varied. The query operation on data can be uniquely performed by a key. The data can not be accessed or modified without a key. Some examples of key-value stores are DynamoDB, Riak,and Redis.
+		\item 
+			\textbf{Document oriented databases} are based on semi-structured data model and unique key stores a value that has a tree like structure called \textit{document}. Each document is a record with potentially varied attributes. Attributes are key-value pair in JSON or in JSON like data format where data can be accessed by using key or specific value~\citep{hecht2011nosql}. Mongodb, Couchbase, RethinkDB, and CouchDB are some example of this system.
+		\item 
+			\textbf{Column family databases} are also known as wide-column databases that store data table as a section of a column as shown in Figure~\ref{fig:column-family-2}. Each column has its own index structure.
+			 Column databases are suitable for heavy write and optimized for writing data to a smaller subset of records. Cassandra, BigTable and HBase are categorised as wide column database.
+		\item 
+			\textbf{Graph databases} are based on graph theory, data  is represented as a graph in the form of nodes and edges similar to a social network. They store entities and relationships between these entities \todo{modify this sentence or remove it}. Neo4J and OrientDB are two example of this database.
+	\end{itemize}
+	\begin{figure}[h]
+	\centering
+	 \begin{minipage}{.4\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{img/column-family}
+		\caption{column based database~\cite{wuoverview}}
+		\label{fig:column-family-2}
+	\end{minipage}
+	\centering
+	 \begin{minipage}{.4\textwidth}
+			\centering
+			\includegraphics[width=1\textwidth]{img/document-based-db}
+			\caption{A document in document based database(JSON)}
+			\label{fig:document-based-db}
+		\end{minipage}
+	\end{figure}
+	
+
+	\subsection{MongoDB}\label{nosql-mongodb}
+	%MongoDB is schema-free database system that manage data in the concept of database, collection and documents. A database contains one or more collections(can be compare to tables of RDBMS) which stores documents. Collections may contain any type of documents but generally they have documents with  similar schema. Data has flexible schema where collections do not enforce document to structure rather requirements of the application. Documents are modeled as a data structure following the JSON format which actually store as BSON, a binary variant of JSON, supports additional data types like ObjectId, timestamp, datetime etc.
+	\input{includes/2/mongodb}
+	\subsection{Couchbase Server}\label{intro-couchbase}
+	%Couchbase Server is NoSQL database that can be used both as a key-value store as well as document store system. As key-value store, it is able to store  multiple data type such as strings, numbers, datetime, and booleans as well as arbitrary binary data. The key-value generally treated as opaque Binary Large Object(BLOB) and don't try to parse it. For document store, data need to be store in the valid JSON format. Data in Couhbase Server are stored in logical unit called Buckets. These buckets can be technically compare as \texttt{database} in Mongodb or other RDBMS. All data type other than JSON can be retrieve only by their key. So it is important to check meta type of data stored in a single document before retrieval. Unlike MongoDB, Couchbase server Don't have concept of collections, so category of documents are identified by user defined type or group.
+	\input{includes/2/couchbase}
+	\subsection{RethinkDB}
+	%RethinkDB is distributed database system to store  JSON documents that uses efficient query languages named ReQL which automatically parallelize queries in multiple machines. RethinkDB has similar concept of store database like MongoDB. A database contains schema-less table, where documents are stored in the form of JSON. Unlike MongoDB, RethinkDB query language supports join queries between tables.
+	\input{includes/2/rethinkdb}		
+	%\subsection{Summary}
+	%All document oriented NoSQL database store data in the form of JSON or JSON like format and XML is the basic unit of storage for XML database. for data migration, it is necessary to understand the properties of XML and JSON Data format.	

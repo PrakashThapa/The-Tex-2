@@ -1,0 +1,19 @@
+\todo{its better to define benchmarking-and its important-kiran}For benchmarking purposes, we have used same hardware configuration for all four databases in single mode. All the test in this chapter is done using  Linux 3.13.0-49 (Ubuntu 14.04, 64bit) with Intel Core i3 with 4GB RAM and 256GB SSD machine.
+Table~\ref{benchmark-configuration-table} describes hardware and software information used for benchmarking. 
+\begin{table}[h]	
+	\centering
+	\caption{Reportable Benchmark Information}
+	\begin{tabular}{|c|c|c|c} 
+		\hline
+		Hardware: & \multicolumn{3}{|c|}{CPU: Intel core i3, RAM: 4GB, SSD:256GB  } \\
+		\hline
+		Software: & \multicolumn{3}{|c|}{OS: Linux 3.13.0-49(Ubuntu 14.04), 64 bit} \\
+		\hline
+		DBMS and Version: & \multicolumn{3}{|c|}{ BaseX: 8.1, Mongodb:2.6.9, Rethinkdb:2.0,Couchbase Server:3.0 } \\
+		\hline
+		Other Software: & \multicolumn{3}{|c|}{Nodejs: v0.12.2, Java:1.7.0\_80 } \\
+		\hline
+	\end{tabular}	
+	\label{benchmark-configuration-table}
+\end{table}
+There are certain queries that do not directly support the database query rather through the drivers. Those queries are tested through the client-server architecture for all databases. MongoDB, Couchbase and RethinDB natively support Nodejs and JavaScript, therefore, these queries are examined through Nodejs version  v0.12.2. For BaseX, the client-server architecture is used with Java 1.7.0. Basex 8.1, MongoDB 2.6.9, Couchbase 3.0 and RethinkDB 2.0 are the versions of databases used for the comparison. 

@@ -1,0 +1,105 @@
+\documentclass[a4paper,12pt]{book}
+
+%package Start
+% %custom style
+\RequirePackage{style/mystyle}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+%\begin{titlepage}
+%\begin{center}
+\title{XML and NoSQL DBMS: Migration and Benchmarking}
+\subtitle{
+% TODO->add text from author%
+}
+%\subtitle{Submitted to the Department of Computer and Information Science at the
+%University of Konstanz
+%}
+%{ \huge \bfseries XML and NOSQL DBMS: Migrationet-klein}~\\[1cm]
+\input{includes/first-page/author}
+%\end{center}
+%\end{titlepage}
+\begin{document}
+	%\input{includes/custom/commands}
+	\renewcommand{\lstlistingname}{Code}
+	\maketitle
+	\thispagestyle{empty}
+	\newpage
+	\section*{Abstract}
+		%\input{includes/1/abstract}
+	 The rapid growth of dynamic data has enforced the database vendors to search for an alternative of the classical database management system like RDBMS. XML and NoSQL databases are two emerging non-relational database management systems after the popularity of Big Data. This thesis focused on the comparative study of XML and NoSQL based on used cases and existing solutions as well as on the migration of data from XML to NoSQL database and the performance of both systems based on the standard queries.
+		
+		............
+		...........
+		............
+	
+	%\newpage
+	\section*{Zusammenfassung(German Abstract)}
+	\input{includes/1/abstract-de}
+	%\newpage
+	\section*{Acknowledgments}
+	\input{includes/1/acknowledge}
+	\thispagestyle{empty}
+	\newpage
+	\tableofcontents
+	\thispagestyle{empty}
+	\newpage
+	\chapter{Introduction}
+	\setcounter{page}{1}
+		\input{includes/1/introduction}
+	\chapter{NoSQL and XML Databases}\label{nosql-xml-database}
+		\input{includes/2/xml-nosql-database}
+	\chapter{Semi-structured Data: XML and JSON}\label{semi-structure-data}
+		\input{includes/3/semi-structure}
+		%\input{includes/3/semi-structure}
+	%this section have to move to in conclusion and future work
+	%\section{Related work}
+	\chapter{Benchmarking}\label{ch:benchmarking} %Performance/Experiments
+	\section{Benchmarking configurations}
+	\input{includes/4/configuration}
+    \section{Database Queries}
+        \input{includes/4/queries}
+    \section{Results and Analysis}
+        \input{includes/4/benchmarking}
+   \subsection{Summary}
+	\section{Discussion}
+	\section{Conclusion}\label{conc}
+	\section{Future Work}\label{s.future}
+	\begin{appendices}
+	   	\chapter{XMARK Queries}\label{appendices-queries}
+		\section{MongoDB}\label{mongodb-query-list}
+			\input{includes/3/xmark-queries-mongodb}
+		\section{RethinkDB}\label{rethinkdb-query-list}
+				\input{includes/3/xmark-queries-rethinkdb}
+		\section{Couchbase}\label{couchbase-query-list}
+				\input{includes/3/xmark-queries-couchbase}
+				\input{includes/4/table-value}				
+	\end{appendices}
+
+	\bibliographystyle{plainnat}
+	\bibliography{ref}
+	\newpage
+	\listoffigures
+	\listoftables
+	\lstlistoflistings
+	%%%%%%%%%%%%%%%%%%%%%abbreviate
+	\abbrev{XML}{Extensible Markup Language}
+	\abbrev{JSON}{JavaScript Object Notation}
+	\abbrev{VM}{Virtual Machine}
+	\abbrev{JVM}{Java Virtual Machine}
+	\abbrev{IPC}{Inter-process Communication}
+	\abbrev{SDK}{Software Development Kit}
+	\abbrev{GUI}{Graphical User Interface}
+	\abbrev{XML}{Extensible Markup Language}
+	\abbrev{HTML}{Hypertext Markup Language}
+	\abbrev{DOM}{Document Object Model}
+	\abbrev{IR}{Information Retrieval}
+	\abbrev{CB}{Couchbase Server}	
+	\abbrev{SDK}{Software Development Kit}
+	\abbrev{CAS}{Check-and-Set}
+	\abbrev{W3C}{ World Wide Web consortium}
+	\abbrev{ACID}{(Atomicity, Consistency, Isolation, Durability}
+	
+	
+	
+\end{document}	

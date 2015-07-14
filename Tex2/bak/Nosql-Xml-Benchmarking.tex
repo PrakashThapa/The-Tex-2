@@ -1,0 +1,564 @@
+\documentclass[a4paper,12pt]{article}
+
+%package Start
+\usepackage{graphicx,titling, color,listings,comment}
+\usepackage[round]{natbib} % package for author-year references instead of standard numbered references.
+\usepackage[pdftex,dvipsnames]{xcolor}
+\usepackage{nomencl}
+\usepackage[graphicx]{realboxes}
+\usepackage{rotating}
+\definecolor{light-gray}{gray}{0.80}
+\usepackage{url}
+\usepackage[top=2cm, bottom=2cm, left=4cm, right=2cm]{geometry}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{titlesec}
+%\usepackage{minted} %for js code
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,positioning,shadows,trees,calc,backgrounds}
+\usepackage{amsmath,amssymb,enumitem,epstopdf,float,subfig,caption}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{}
+\usepackage{xspace} %autocomplete help
+\usepackage{longtable}
+\usepackage[toc,page]{appendix}
+% %custom style
+\usepackage{style/mystyle}
+
+
+
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
+% end of subsubsubsection environment % %
+
+
+
+%\begin{titlepage}
+%\begin{center}
+\title{XML and NoSQL DBMS: Migration and Benchmarking}
+\subtitle{
+% TODO->add text from author%
+}
+%\subtitle{Submitted to the Department of Computer and Information Science at the
+%University of Konstanz
+%}
+%{ \huge \bfseries XML and NOSQL DBMS: Migration and Benchmarking \\[0.4cm] }
+%\includegraphics[width=0.15\textwidth]{./unisignet-klein}~\\[1cm]
+\input{includes/first-page/author}
+%\end{center}
+%\end{titlepage}
+\begin{document}
+	%\input{includes/custom/commands}
+	\renewcommand{\lstlistingname}{Code}
+	\maketitle
+	\thispagestyle{empty}
+	\newpage
+	\section*{Abstract}
+		%\input{includes/1/abstract}
+		As dynamic data is growing rapidly, database vendors search for the alternative of classical database management system such as RDBMS. XML and NoSQL databases are two non-relational database management system growing since the popularity of Big Data. This thesis focus on the comparative analysis of these two new database system based on use cases and existing solutions. On the first part, our focus will be data migration from one system to another. We will also discuss  the performance of both systems based on standard queries.
+		
+		............
+		...........
+		............
+	
+	%\newpage
+	\section*{Zusammenfassung(German Abstract)}
+	\input{includes/1/abstract-de}
+	%\newpage
+	\section*{Acknowledgments}
+	\input{includes/1/acknowledge}
+	\thispagestyle{empty}
+	\newpage
+	\tableofcontents
+	\thispagestyle{empty}
+	\newpage
+	\section{Introduction}
+	\setcounter{page}{1}
+	\subsection{Motivation}
+		\label{motivation}
+			As the digital world growing very fast, the massive amount of data collected today in the field varying from business to scientific research, is becoming complex for storage, querying and providing mechanism for failover.  As the data collection grows so largely, the traditional data management tools e.g. relational database management systems(RDBMS) are struggling to handle such data effectively. The pre-design rigid schema structure of RDBMS made more complex for variety of data.  High data velocity where massive read and write operations possible from different geographic locations, storage of structured, semi-structured and unstructured data in gigantic volume, together is refer as  \textit{Big Data}. This has become a global phenomena which added more complexities on RDMS.
+			
+			New database technologies  NoSQL and  XML Databases came into existence to overcome above mentioned problems of RDBMS. These systems are not just able to solve the issues of existing systems, but also rise as alternative in their way. Both these new technologies focus on varieties of data in large volume, dynamic schema and scalability.
+			%introduction to problem
+			
+			There are some research analysis between NoSQL and RDBMS. \cite{nance2013nosql} examine the pro and cons of both NoSQL and RDBMS, \cite{cattell2011scalable} analyze similarities between scalable SQL and NoSQL databases, \cite{hadjigeorgiou2013rdbms}  compare the performance between MySQL cluster as RDBMS and Mongodb as NoSQL Database.  There are also some research related to RDBMS with XML or XML Database(~\citet{jiang2002xparent}, \citet{shanmugasundaram1999relational}). But there are not much more research in the field of NoSQL and XML database together. So this thesis focus on these two new database systems. Migration of Data from XML database to NoSQL as well as performance of both system based on standard query will be examined.
+			......
+			....
+	
+	\subsection{Contribution}
+		%\input{includes/1/contribution}
+		The main contribution of this thesis is that it provides the necessary techniques and algorithms for migrating data from an XML database to NoSQL databases.  More specifically, it will focus on databases like MongoDB, Couchbase and Rethinkdb as NoSQL databases and BaseX as XML Database. To approach this challenge, it is first necessary to understand the general architecture and data model of each of these databases as well as the way how they are queried.The performance comparison of these two systems will be based XMARK dataset and its 20 standard queries~\citep{xmark/original}. These 20 queries of XMARK project will be translated to each of NoSQL databases.
+		
+	\subsection{Scope of Thesis}
+	%The translation process use in this thesis from One format to another is based on XMark Dataset.
+	.....
+	....
+	\subsection{Overview}
+		This thesis is divided into three main sections. Section~\ref{nosql-xml-database}, we will discuss the two new databases system and the scope of thesis. Section~\ref{semi-structure-data} defines the techniques and necessary algorithms to convert XML  to JSON. In Section~\ref{sec:four}, focuses on the performance tests and comparative analysis of each of the NoSQL databases with BaseX, based on the XMark benchmarking project.		
+			
+	\label{nosql-xml-database}
+	\section{NoSQL and XML Databases}
+	\subsection{XML Database}
+	XML Database or sometime written also Native XML Databases(NXDs) are document oriented databases that store XML data and all component of XML data based on a specified model called XDM. XML document is the fundamental unit of storage, so each document should be in a valid XML format.
+	XQuery 1.0 and XQuery 3.0 are standards query languages recommended by W3C for NXDs. XQuery also includes XPath as sub-language. In addition to XQuery and XPath, XML databases also support XSLT, a method of transferring XML to other documents like HTML, plain text and XSL Formatting Objects.
+	\subsubsection{BaseX}
+	BaseX is a Native XML database management system and XQuery Processor. It uses tabular representation of XML data tree to store XML document~\citep{www/basex}. In this dissertation, BaseX is represented as XML database.
+	....
+	\subsection{NoSQL Database}
+	NoSQL database "Not Only SQL" is distributed data management system for large and variable data. The main focus of any NoSQL database are scalability, performance and availability~\citep{hecht2011nosql}.
+	Based on the Data model and design architecture, NoSQL databases are categorized into 4 groups:
+	\begin{itemize}
+		\item \textbf{Key/Value store}
+		The Data representation of key-value stores are based on attribute pair, the data model is expressed as collection of $<$$key$,$value$$>$ tuples. The key is unique and value can be variable. The query operation on data can be uniquely performed by a key. There are no alternative ways to access or modify data without key.  DynamoDB, Riak, Redis are some examples of key-value stores.
+		\item \textbf{Document oriented databases} are based on semi-structured data model, where unique key store a value that contains a tree like structure called \textit{document}. It is enclosed with key-value pair in JSON or in JSON like data format~\citep{hecht2011nosql}. In document store database, data can be access by using key or specific value. Some of the examples of document store databases are Mongodb, Couchbase, RethinkDB, CouchDB etc.
+		\item \textbf{Column family} is also known as wide-column database stores data tables as section of a column. Cassandra, BigTable, HBase are categories as wide column database.
+		\item \textbf{Graph databases} are based on graph theory. In these databases, data is represented as graph that is in the form of nodes and edges similar to social network. They store entities and relationship between these entities. Neo4J and OrientDB are two example of these databases.
+	\end{itemize}
+	As there are many categories and varieties of database system, our focus in this thesis is limited to document oriented databases of NoSQL databases.
+	\subsubsection{MongoDB}
+	%MongoDB is schema-free database system that manage data in the concept of database, collection and documents. A database contains one or more collections(can be compare to tables of RDBMS) which stores documents. Collections may contain any type of documents but generally they have documents with  similar schema. Data has flexible schema where collections do not enforce document to structure rather requirements of the application. Documents are modeled as a data structure following the JSON format which actually store as BSON, a binary variant of JSON, supports additional data types like ObjectId, timestamp, datetime etc.
+		\input{includes/2/mongodb}
+	\subsubsection{Couchbase Server}
+	%Couchbase Server is NoSQL database that can be used both as a key-value store as well as document store system. As key-value store, it is able to store  multiple data type such as strings, numbers, datetime, and booleans as well as arbitrary binary data. The key-value generally treated as opaque Binary Large Object(BLOB) and don't try to parse it. For document store, data need to be store in the valid JSON format. Data in Couhbase Server are stored in logical unit called Buckets. These buckets can be technically compare as \texttt{database} in Mongodb or other RDBMS. All data type other than JSON can be retrieve only by their key. So it is important to check meta type of data stored in a single document before retrieval. Unlike MongoDB, Couchbase server Don't have concept of collections, so category of documents are identified by user defined type or group.
+		\input{includes/2/couchbase}
+	\subsubsection{RethinkDB}
+	%RethinkDB is distributed database system to store  JSON documents that uses efficient query languages named ReQL which automatically parallelize queries in multiple machines. RethinkDB has similar concept of store database like MongoDB. A database contains schema-less table, where documents are stored in the form of JSON. Unlike MongoDB, RethinkDB query language supports join queries between tables.
+		\input{includes/2/rethinkdb}		
+	%\subsection{Summary}
+	\paragraph{}
+	%All document oriented NoSQL database store data in the form of JSON or JSON like format and XML is the basic unit of storage for XML database. for data migration, it is necessary to understand the properties of XML and JSON Data format.	
+	
+\label{semi-structure-data}
+\section{Semi-structured Data: XML and JSON}
+		XML, by definition a textual markup language where data elements are ordered by nature: \textit{string} is core data type from which richer data types e.g. integers, floats and user-defined abstract data types are derived~\citep{xmark/original}.
+		A JSON or JavaScript Object Notation is programming language model. It is minimal textual and a subset of JavaScript. JSON document consists of two data structures:
+		\begin{itemize}
+			\item Objects, an unordered collection of name-value pair that are encapsulated by curly braces \{ and \}. The key is a string encapsulated in double quotes and must followed by a column(:) to it's value. The key must be unique for each object.
+			%TODO:   which are numbers of key value pairs
+			\item Arrays, which are an ordered list of values
+		\end{itemize}
+		A JSON value can be Object, Array, number, string, \texttt{true}, \texttt{false} and \texttt{null}.
+		%JSON documents consists of a number of key-value pair (also called attribute-value pair)
+		\subsection{Problem to translate from XML to JSON}
+		JSON and XML look conceptually similar as they both text based markup language, which are designed to represent data in human-readable form, exchangeable across multiple platforms and parseable by common programming language. When we look at them first, they appear to be quite similar, with difference only in their syntax. But it turns out that they are fundamentally incompatible, as we will see in the following~\citep{lee2011jxon}.
+		
+		\paragraph{Root node}
+		Each XML document have a document node. In contrast, the JSON does not have one. In practice, XML node is implicitly created in the model and does not have a textual representation.
+		\paragraph{Anonymous values}
+		JSON support the anonymous values(also refer as string value). They only acquire names by being referenced in an object. for example \ref{tbl:Anonymous-xmljson} is valid JSON. An XML valid document should have a root element followed by  non-mandatory child text or attributes.
+		
+\begin{longtable}{c|c}
+	\caption{Anonymous values of JSON in XML}
+	\label{tbl:Anonymous-xmljson}\\
+	\textbf{JSON} & \textbf{XML}\\
+	\hline
+\begin{minipage}{.4\textwidth}
+\begin{fakeJSON}[label=json-anonymous]
+	["Hello World"]
+\end{fakeJSON}	
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{fakeXML}[label=xml-anonymous]
+	<root>Hello World</root>
+\end{fakeXML}
+or
+\begin{fakeXML}
+	<root value="Hello World">
+\end{fakeXML}
+\end{minipage}\\
+\end{longtable}
+	
+		\paragraph{Arrays}
+		Arrays are native data types of JSON which does not exists in XML. There is no direct markup for array of Object from JSON to XML.
+		\paragraph{Identifiers}
+		XML is much more restrictive for identifiers as compare to JSON which allows any string to be an identifier. Translating from XML to JSON do not cause problem but in reverse case might lead to invalid XML. For example "Hello World" is a valid identifier in JSON but not valid attribute or element in XML as there exists a whitespace between two words.
+		\paragraph{Attributes}
+		JSON does not have the concept or representation for XML's attributes. When mapping from XML to JSON, attributes are translated to name object member along with other child elements. This information will be loss when mapping from JSON to XML.
+		\paragraph{Namespaces}
+		XML supports the concept of namespaces to provide uniqueness in element and attributes in XML document. Namespaces do not exists in JSON. Mapping QNames in XML with namespaces to JSON can lead ambiguous and duplicate names.
+		\paragraph{Others}
+		%TODO: {Processing Instructions, Character Set, Comments, Encodings}
+		There are also some problem like processing instructions and  comments which XML supports but not JSON. Other issues for example character set and encoding are not easily exchangeable.
+		
+	\subsection{Mapping}
+	XML and JSON have different data types. Compare to JSON, XML has more flexible data types. In Table~\ref{tbl:xml-json:types} is given types of data for simple XML and relevant JSON type.
+	\lstset{
+  frame=none,
+  numbers=none
+}
+\begin{longtable}{c|c}
+\caption{Translation of simple XML data types into JSON}
+\label{tbl:xml-json:types}\\
+
+\textbf{XML type definition} & \textbf{JSON type definition}\\
+\hline
+
+\begin{minipage}{.4\textwidth}
+  \begin{lstlisting}
+xs:string
+  \end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{lstlisting}
+{
+  "type": "string"
+}
+\end{lstlisting}
+\end{minipage}\\
+
+\hline
+\begin{minipage}{.4\textwidth}
+  \begin{lstlisting}
+xs:boolean
+  \end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{lstlisting}
+{
+  "type": "boolean"
+}
+\end{lstlisting}
+\end{minipage}\\
+
+\hline
+\begin{minipage}{.4\textwidth}
+  \begin{lstlisting}
+xs:float
+xs:double
+xs:decimal
+xs:integer
+(All Other Numbers)
+  \end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{lstlisting}
+{
+  "type": "number"
+}
+\end{lstlisting}
+\end{minipage}\\
+\hline
+
+\begin{minipage}{.4\textwidth}
+	\begin{lstlisting}
+	(Remaining all others)
+	\end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{lstlisting}
+{
+	"type": "string"
+}
+\end{lstlisting}
+\end{minipage}\\
+\end{longtable}
+For complex XML data type, there are two options in JSON, either object or array based on XML object.
+
+\subsection{Migration from XML to JSON}
+It takes different stages to convert XML data to JSON.
+		\begin{enumerate}[label=Step\arabic*.]
+			\item
+			XML to JSON friendly XML: Convert standard XML data to JSON friendly XML.
+			\item
+			Data type of XML to JSON type: Define the data type of XML element whether it is array type or Object type or other scaler type.
+			\item
+			Final steps: Map XML to JSON object.
+		\end{enumerate}
+		\paragraph{Step 1}
+		At first, all attributes of XML document are represented as ordered(first) child element of parent then attributes are deleted. There can more than one attributes which are inserted in order. XML node can contain both text node and element node as child, but JSON can have only key value pair. so each of text node which also  has element node as siblings moved to "childtext"(name of the element) node. At the end of first step, if an element has another element as child node, then it is represented as Object type of JSON. It is necessary to identify if a siblings of an element node(S) has same element name or not. If this condition exists, S is represented as the array in JSON. All the child nodes of all siblings are moved inside S node. If S is already  object type  then it is replace with array type  else new array is added. %In this algorithm, the loop of one action affect other, so they are looped independently.
+		
+		
+		\begin{algorithm}[h]
+			\DontPrintSemicolon
+        	\begin{algorithmic}
+        	\STATE Initialize $D = "{XML} document"$;
+        	  	\FORALL{descendant-or-self node of  $D$,  $X$ which has attributes $A$  }
+        			\STATE move  all attributes  $A$ to ordered child element of $X$\;
+        		\ENDFOR
+        		
+        		\FORALL{descendant-or-self node of  $D$,$X$ }
+        			\IF{ $X$ contains Text node and element node Both}
+        				\STATE create new element "childtext" \;
+        				\STATE move text node to "childtext" element \;
+        			\ENDIF
+        		\ENDFOR
+        		
+        		\FORALL{descendant node of  $D$,$X$ }
+        			\FORALL{child element $C$ in $X$}
+        				\IF{ $C$ has siblings $S$ with same \textit{name} }
+        					\STATE convert $C$ as Array type\;
+        					\STATE move child of $S$ into $C$ as $<$\_$>$ element\;
+        				\ENDIF
+        				\IF{ $C$ has child element }
+        					\STATE convert $C$ as Object type\;
+        				\ENDIF
+        			\ENDFOR
+        		\ENDFOR
+        	\end{algorithmic}
+        	\caption{Pseudocode to convert normal  XML to JSON friendly XML}\label{algorithm-JSONXML}
+        \end{algorithm}
+	
+ \begin{algorithm}[h]
+			\DontPrintSemicolon
+        	\begin{algorithmic}
+        	\STATE Initialize $D = "{XML} document"$;
+        	  	\FORALL{descendant-or-self node of  $D$ as $C$}
+        			\IF{ $C$ has no attribute "type" }
+        				\STATE get content of $C$ \;
+                        \STATE identify content type according to Table ~\ref{tbl:xml-json:types}. and add attribute to $C$ "type" \;
+        			\ENDIF
+        		\ENDFOR
+        	\end{algorithmic}
+        	\caption{ convert data type of XML to JSON data type(Step 2)}\label{algorithm-JSONXML-type}
+        \end{algorithm}
+
+\begin{longtable}{c|c}
+	\caption{XML to JSON friendly XML(STEP 1)}
+	\label{tbl:xmljson}\\
+	\textbf{XML} & \textbf{ Algorithm~\ref{algorithm-JSONXML} }\\
+	\hline
+\begin{minipage}{.4\textwidth}
+\begin{fakeXML}
+<info>
+  <name>
+    <f>a</f>
+  </name>
+  <age>24</age>
+  <ismarried>false</ismarried>
+  <city name="Armonk"/>
+  <state>NY</state>
+  <contact>
+	 home
+    <p>993-330</p>
+    <p>993-331</p>
+  </contact>
+</info>
+\end{fakeXML}	
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f>a</f>
+  </name>
+  <age>24</age>
+  <ismarried>false</ismarried>
+  <city type="object">
+    <name>Armonk</name>
+  </city>
+  <state>NY</state>
+  <contact type="object">
+	<childtext>home</childtext>
+    <p  type="array" >
+	   <_>993330</_>
+	   <_>993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}
+\end{minipage}\\
+\end{longtable}
+
+\begin{longtable}{c|c}
+	\caption{XML to JSON friendly XML(STEP 2)}
+	\label{tbl:xmljson-2}\\
+	\textbf{Algorithm~\ref{algorithm-JSONXML}} & \textbf{ Algorithm~\ref{algorithm-JSONXML-type} }\\
+	\hline
+\begin{minipage}{.4\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f>a</f>
+  </name>
+  <age>24</age>
+  <ismarried>false</ismarried>
+  <city type="object">
+    <name>Armonk</name>
+  </city>
+  <state>NY</state>
+  <contact type="object">
+	 <childtext>home</childtext>
+    <p  type="array" >
+	   <_>993330</_>
+	   <_>993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}	
+\end{minipage} &
+\begin{minipage}{.55\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f type="string">a</f>
+  </name>
+  <age type="number">24</age>
+  <ismarried type="boolean">false</ismarried>
+  <city type="object">
+    <name type="string">Armonk</name>
+  </city>
+  <state>NY</state>
+  <contact type="object">
+	 <childtext type="string">home</childtext>
+    <p  type="array" >
+	   <_ type="number">993330</_>
+	   <_ type="string">993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}
+\end{minipage}\\
+\end{longtable}
+
+\paragraph{Step 3}
+	After Step 1. and 2., a complete JSON friendly XML is generated. All XML object and array are mapped to $<$$key$, $value$$>$ pair of JSON and their respective data types.
+	\begin{longtable}{c|c}
+	\caption{XML to JSON (STEP 3.)}
+	\label{tbl:xmljson-convert-3}\\
+	\textbf{XML(After step 2)} & \textbf{JSON}\\
+	\hline
+\begin{minipage}{.55\textwidth}
+\begin{fakeXML}
+<info type="object">
+  <name type="object">
+    <f type="string">a</f>
+  </name>
+  <age type="number">24</age>
+  <ismarried type="boolean">false</ismarried>
+  <city type="object">
+    <name type="string">Armonk</name>
+  </city>
+  <state type="string">NY</state>
+  <contact type="object">
+	<childtext type="string">home</childtext>
+    <p  type="array" >
+	   <_ type="number">993330</_>
+	   <_ type="string">993-331</_>
+    </p>
+  </contact>
+</info>
+\end{fakeXML}	
+\end{minipage} &
+\begin{minipage}{.5\textwidth}
+\begin{fakeJSON}
+{
+    "info":{
+      "name":{
+        "f":"a"
+      },
+      "age":24,
+      "ismarried":false,
+      "city":{
+        "name":"Armonk"
+      },
+      "state":"NY",
+      "contact":{
+	   "childtext":"home",
+        "p":[
+          993330,
+          "993-331"
+        ]
+      }
+    }
+}
+\end{fakeJSON}
+\end{minipage}\\
+\end{longtable}
+
+%new section
+\newpage
+	
+	%this section have to move to in conclusion and future work
+	%\section{Related work}
+	\newpage
+	\section{Performance/Experiments}
+	\label{sec:four}
+		\subsection{XMark}
+		\label{xmark}
+			\input{includes/3/xmark}
+		\newpage
+		\subsection{Evaluation of Test devices}
+		\subsection{XMark data into NoSQL Database}
+			\label{xmark-nosql}
+			\input{includes/3/xmark-nosql}
+			\newpage			
+			\subsubsection{XMARK in MongoDB}
+			\label{xmark-mongodb}
+			\input{includes/3/xmark-mongodb}
+			\subsubsection{Couchbase Server}
+			\label{xmark-couchbase}
+			\input{includes/3/xmark-couchbase}
+			\subsubsection{Rethinkdb}
+			\label{xmark-rethinkdb}
+			\input{includes/3/xmark-rethinkdb}
+        \newpage		
+		\subsection{Benchmarking}
+        \begin{figure}
+		\centering
+		\subfloat[XMark Queries No. 1 to 7]{
+			\includegraphics[width=0.44\textwidth]{img/result/1-6}
+			%\caption{R-tree structure}
+			\label{fig:queries-1-7}
+		}
+		\centering
+		\subfloat[Join Queries (No. 8 to 12)]{
+			\includegraphics[width=0.44\textwidth]{img/result/8-12}
+			%\caption{R-tree}
+			\label{fig:queries-8-13}
+		}
+		
+		\centering
+		\subfloat[Queries 13 to 20]{
+			\includegraphics[width=0.44\textwidth]{img/result/13-20}
+			%\caption{R-tree}
+			\label{fig:queries-13-20}
+		}
+		\caption{XMark Queries time in XML and NoSQL databases(Mongo1: Mongodb shell, mongo2:through application)}
+		\label{fig:query-result}
+		
+	\end{figure}
+		\subsection{Summary}
+	\section{Discussion}
+	
+	\section{Conclusion}\label{conc}
+	
+
+	
+	\section{Future Work}\label{s.future}
+	\begin{appendices}
+		\chapter{XMARK Queries}
+		\section{MongoDB}
+			\input{includes/3/xmark-queries-mongodb}
+				%\input{includes/3/xmark-queries}
+	\end{appendices}
+
+	\bibliographystyle{plainnat}
+	\bibliography{ref}
+	\newpage
+	\listoffigures
+	\newpage
+	\listoftables
+	\newpage
+	\lstlistoflistings
+	%%%%%%%%%%%%%%%%%%%%%abbreviate
+	\abbrev{XML}{Extensible Markup Language}
+	\abbrev{JSON}{JavaScript Object Notation}
+	\abbrev{VM}{Virtual Machine}
+	\abbrev{JVM}{Java Virtual Machine}
+	\abbrev{IPC}{Inter-process Communication}
+	\abbrev{SDK}{Software Development Kit}
+	\abbrev{GUI}{Graphical User Interface}
+	\abbrev{XML}{Extensible Markup Language}
+	\abbrev{HTML}{Hypertext Markup Language}
+	\abbrev{DOM}{Document Object Model}
+	\abbrev{IR}{Information Retrieval}
+	\abbrev{CB}{Couchbase Server}	
+	\abbrev{SDK}{Software Development Kit}
+	\abbrev{CAS}{Check-and-Set}
+	\abbrev{SDK}{ Software Development Kit}
+	
+	
+\end{document}	

@@ -1,0 +1,83 @@
+\definecolor{darkgray}{gray}{0.35}
+\lstnewenvironment{fakeXML}[1][]{
+\lstset{basicstyle=\footnotesize\sffamily,
+linewidth=\linewidth,
+breaklines=true, 
+%numbers=left,
+%stepnumber=1,
+%numbersep=10pt,
+frame=single,
+framerule=1.0pt,
+%backgroundcolor=\color{darkgray},
+language=HTML,
+identifierstyle=\color[rgb]{1,0,0},
+emph={intersects}, emphstyle=\color{red},
+keywordstyle=\color[rgb]{0,0,1},
+commentstyle=\color[rgb]{0.133,0.545,0.133},
+stringstyle=\color[rgb]{0.627,0.126,0.941},
+morekeywords={xml, ref, xs, version, targetNamespace, minOccurs, maxOccurs}
+}\lstset{#1}}{}
+
+\lstnewenvironment{fakeJSON}[1][]{
+	\lstset{
+		basicstyle=\footnotesize\sffamily,
+		keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+		ndkeywords={class, export, boolean, throw, implements, import, this},
+		sensitive=false,
+		comment=[l]{//},
+		morecomment=[s]{/*}{*/},
+		morestring=[b]',
+		morestring=[b]"
+		linewidth=\linewidth,
+		breaklines=true,
+		escapeinside={\%*}{*)}
+		numbers=left,
+		stepnumber=1,
+		numbersep=10pt,
+		frame=single,
+		framerule=1.0pt,
+		language=JSON,
+		emph={}
+	}\lstset{#1}}{}
+
+\colorlet{punct}{red!60!black}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+	basicstyle=\normalfont\ttfamily,
+	linewidth=\linewidth,
+	numbers=left,
+	numberstyle=\scriptsize,
+	stepnumber=1,
+	numbersep=8pt,
+	showstringspaces=false,
+	breaklines=true,
+	frame=lines,
+	literate=
+	*{0}{{{\color{numb}0}}}{1}
+	{1}{{{\color{numb}1}}}{1}
+	{2}{{{\color{numb}2}}}{1}
+	{3}{{{\color{numb}3}}}{1}
+	{4}{{{\color{numb}4}}}{1}
+	{5}{{{\color{numb}5}}}{1}
+	{6}{{{\color{numb}6}}}{1}
+	{7}{{{\color{numb}7}}}{1}
+	{8}{{{\color{numb}8}}}{1}
+	{9}{{{\color{numb}9}}}{1}
+	{:}{{{\color{punct}{:}}}}{1}
+	{,}{{{\color{punct}{,}}}}{1}
+	{\{}{{{\color{delim}{\{}}}}{1}
+	{\}}{{{\color{delim}{\}}}}}{1}
+	{[}{{{\color{delim}{[}}}}{1}
+	{]}{{{\color{delim}{]}}}}{1},
+}
+\lstdefinelanguage{sJSON}{
+	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+	ndkeywords={class, export, boolean, throw, implements, import, this},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morestring=[b]',
+	morestring=[b]"
+}

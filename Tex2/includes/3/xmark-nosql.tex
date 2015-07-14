@@ -1,0 +1,101 @@
+A synthetic XMARK dataset consists of a huge record in tree structure~\citep{xmark/VIST}. However, as mentioned in Section~\ref{xmark-dataset}, each subtree, \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains large numbers of instances that are indexed during database creation. At first, in most of NoSQL system, the dataset cannot be a huge block but can be in fragmented form of document where each instance has it's own index structure. Beside this, NoSQL databases limit the size of a single document. for example, MongoDB has a limitation of 16MB of document, the maximum size of document allowed in RethinkDB is 64MB and Couchbase Server can have value of a key upto 20MB.
+The data model of NoSQL do not match the single single instance model of XML database. \todo{not clear edit it}. To model data in NoSQL, the tree structure of XMark is breakdown into set of sub-structure without losing the overall data.  \todo{need to work on these sentences, its haphazardly inserted} Each NoSQL database has their own data model, it is required to define own model for each of those databases separately.
+\\
+\\
+The generalized concept of XMark data into NoSQL databases is presented here  but might differs from one another. All sub-structures or collections \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} are the basic unit for the document fragmentation. Each of these collection stores entities \textit{item}, \textit{person}, \textit{open\_auction}, \textit{closed\_auction} and \textit{category} respectively as mentioned in ~\ref{xmark-dataset}. The entities represent the documents in NoSQL database. In each documents, one special field \textbf{doctype} is added to represent the collection. For example, in case of people sub-structure, \textit{doctype} will be \textit{people}. This key-value set will be the part of a document as  given in Table~\ref{tbl:xmark-xml-json}(b).Therefore, \textit{doctype} has all-together six distinct values : categories, catgraph, people, open\_auctions and closed\_auctions. There is a exceptional case for \textit{item} entity  that has \textbf{regions} as grandparent and name of different regions like \textit{asia}, \textit{europe}, \textit{australia}, \textit{namerica}, \textit{samerica} etc. as parent.  The \textit{doctype} for \textit{item} document will be \textit{regions} as others and one extra field with key \textit{regions} and values like asia, europe etc. need to be added to represent name of the region in each document. Table~\ref{tbl:xmark-item-type} illustrate the extra attribute added in each of document.
+
+\begin{longtable}{c|c}
+	\caption{ Extra attribute of a document in NoSQL}
+	\label{tbl:xmark-item-type}\\
+    {for \textit{person} and all other except \textit{item} } & {for \textit{item} which has region name \textit{asia}}\\
+	\hline
+\begin{minipage}{.4\textwidth}
+\begin{lstlisting}[language=JSON]
+{
+	"doctype":"people"
+}
+\end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.4\textwidth}
+\begin{lstlisting}[language=JSON]
+{
+	"doctype":"regions",
+	"regions":"asia"
+}
+\end{lstlisting}
+\end{minipage}
+\end{longtable}
+
+The mapping of XML document in JSON document for NoSQL database is shown in Table~\ref{tbl:xmark-xml-json}. The conversion from XML to JSON is carried out using  algorithms from ~\ref{xml-to-json-migration} with one extra attributes "doctype" to represent the parent of an document.
+\begin{longtable}{c|c}
+	\caption{Example: XMARK data with id \textit{person0} in XML and JSON format }
+	\label{tbl:xmark-xml-json}\\
+	{\textit{person0}} in XML(a) & {\textit{person0}} in JSON for a NoSQL database(b)\\
+	\hline
+	\begin{minipage}{.4\textwidth}
+\centering		
+\begin{lstlisting}[language=XML,basicstyle = \tiny,label=code:xml-nosql-person0]
+<people>
+    <person id="person0">
+       <name>Kasidit Treweek</name>
+       <emailaddress>mailto:Treweek@cohera.com</emailaddress>
+       <phone>+0 (645) 43954155</phone>
+       <homepage>http://www.cohera.com/~Treweek</homepage>
+       <creditcard>9941 9701 2489 4716</creditcard>
+       <profile income="20186.59">
+          <interest category="category251" />
+          <education>Graduate School</education>
+          <business>No</business>
+       </profile>
+    </person>
+</people>
+\end{lstlisting}	
+	\end{minipage} &
+	\begin{minipage}{.55\textwidth}
+		\centering
+		\begin{lstlisting}[language=JSON, basicstyle =\tiny, label=code:json-nosql-person0]
+{
+	"id": "person0",
+	"doctype": "people",
+	"name": "Kasidit Treweek",
+	"emailaddress": "mailto:Treweek@cohera.com",
+	"phone": "+0 (645) 43954155",
+	"homepage": "http://www.cohera.com/~Treweek",
+	"creditcard": "9941 9701 2489 4716",
+	"profile": {
+		"income": 20186.59,
+		"interest": [{
+			"category": "category251"
+		}],
+		"education": "Graduate School",
+		"business": "No"
+	}
+}
+		\end{lstlisting}
+	\end{minipage}\\
+\end{longtable}
+
+%\subsubsection{XMark data in JSON for NoSQL}
+
+
+\begin{comment}
+\iffalse\fi
+\begin{minipage}{.5\textwidth}
+	\begin{tikzpicture}[%
+	grow via three points={one child at (0.5,-0.7) and
+		two children at (0.5,-0.7) and (0.5,-1.4)},
+	edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+	\node {\{asfdasfd\}}
+	child { node [defi] {\textit{Schema\_ID}}}
+	child { node [json] {xs:attribute}
+		child { node [defi] {\textit{Attribute\_ID}}}
+		child { node [attribute] {@name}}
+		child { node [attribute] {@type}}
+		child { node [attribute] {@fixed}}
+		child { node [attribute] {@default}}
+	};
+	\end{tikzpicture}
+\end{minipage}
+
+\end{comment}
+

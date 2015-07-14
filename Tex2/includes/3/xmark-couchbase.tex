@@ -1,0 +1,23 @@
+
+Couchbase Server do not have concept of grouping of documents like \textit{collections} in MongoDB  or \textit{tables} of RethinkDB. Therefore, the data model of Section ~\ref{xmark-nosql} is applied without modification. All the documents are stored in a single bucket independent of each other with \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
+ An example of Couchbase Server's document is illustrated in Code~\ref{code:couchbase-item0}
+%\subsubsubsection{Queries}
+%write full code
+\begin{lstlisting}[language=JSON,caption=Couchbase psudo-document of XMARk data for item with id item1000, label=code:couchbase-item0]
+{
+	"id":  "item1000",
+	"doctype":  "regions",
+	"regions":  "africa",
+	"name":  "duteous nine eighteen" ,
+	"payment":  "Creditcard" ,
+	"quantity": 1 ,
+	"shipping":  "Will ship internationally, See description for charges" ,
+	"incategory": [
+		{
+		"category":  "category0"
+		}
+	] ,
+	"mailbox":[],
+	"description":{ }
+}
+\end{lstlisting} 
