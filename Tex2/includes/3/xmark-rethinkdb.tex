@@ -1,5 +1,7 @@
 RethinkDB splits data into tables similar to MongoDB's collection.  Each \textit{doctype} of \ref{xmark-nosql} is represented as an individual table. The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as of \textit{doctype} in \ref{xmark-nosql}. Hence the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added an identifier during the time of insertion. In Code~\ref{code:rethindb-person0}, an illustration of XMark's person with id \textit{person0} is given
-\begin{lstlisting}[language=JSON,caption=Rethinkdb document person0 in people table, label=code:rethindb-person0]
+\begin{figure}
+\centering
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
 
 	{
 		"id": "person0",
@@ -17,7 +19,11 @@ RethinkDB splits data into tables similar to MongoDB's collection.  Each \textit
 			"business": "No"
 		}
 	}
-\end{lstlisting}	
+\end{lstlisting}
+\caption{RethinkDB document \textit{person0} in people table}
+\label{code:rethindb-person0}
+\end{figure}
+	
 \begin{comment}
 
 \begin{tikzpicture}[

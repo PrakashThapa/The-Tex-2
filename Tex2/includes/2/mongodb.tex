@@ -1,5 +1,5 @@
 MongoDB is a schema-less document-oriented database developed by MongoDB Inc. with the support of Open Source community. It is also known as a flexible, fast and Multi-datacenter scalable system.
-\paragraph{Data design} 
+\subsubsection{Data design} 
 MongoDB stores data as a document with a unique key. It allows to query data by the key and every other attribute(or field) of a document which also can be indexed to increase the performance of queries. The documents are grouped together in a collection and a collection is consist inside a database. It is more convenient to group documents with similar structure together in a collection but not mandatory. Mongodb has two principles that allow the users to represent the relationships: \textit{references} and \textit{embedded} documents~\citep{mongodb:org}. 
 
 \paragraph{Embedded}\label{mongo:embedded}
@@ -52,8 +52,7 @@ MongoDB does not support joins queries, therefore related data is stored in a si
 	\label{sample-mongodb-document}
 \end{figure}
 
-\label{mong-xmark-indexing}
-\paragraph{Indexing} 
+\subsubsection{Indexing}\label{mong-xmark-indexing}
 Each document in MongoDB is uniquely identified by a field \textit{\_id} which is also a primary index. Hence, the collection is sorted by \textit{\_id}~\citep{nosql/comparision}.
 Apart from the primary index, MongoDB provides the mechanism to create secondary indexes for all fields of document. It supports various user defined indexes for field values of documents including single field index, multikey index, multidimensional index, geo-spatial index, text index and hash index.
 %Single field, multidimensional and multikey indexes are organized using B-tree, whereas geospatial index is implemented using quad trees.
@@ -64,8 +63,9 @@ Apart from the primary index, MongoDB provides the mechanism to create secondary
 \item \textit{Text index} helps efficient search of a string in documents.
 \end{itemize}
 
-\subsubsection{Query Model}\todo{modify with christian's suggestions}
-Queries in MongoDB are expressed in a JSON-like syntax and send to MongoDB as BSON objects by a database driver\citep{orend2010analysis}. A query can be specified by exact match on the embedded document or by using individual field with a \textit{dot notation} which is used to access an element in document of an array or an object in the form of  $<$$array$.$index$$>$.\\
+\subsubsection{Query Model}%\todo{modify with christian's suggestions}
+Queries in MongoDB are expressed in a JSON-like syntax and send to MongoDB as BSON objects by a database driver\citep{orend2010analysis}. A query can be specified by exact match on the embedded document or by using individual field with a \textit{dot notation} which is used to access an element in document of an array or an object in the form of  $<$$array$.$index$$>$ or  $<$$object$.$childobject$$>$. For general queries, mongo shell can be used. it an user friendly JavaScript shell and allows to implements callback functions to manipulates data return by the simple queries.  
+\par
 The Query model supports the following features:
 \begin{enumerate}
 	\item Queries over documents, embedded subdocuments and arrays
@@ -76,42 +76,32 @@ The Query model supports the following features:
 	\item Grouping
 	\item Aggregation per query
 \end{enumerate}
-In addition to this, MongoDB has features for complex aggregation with the use of MapReduce. The result of MapReduce can be stored as a collection or returns value to the client\citep{orend2010analysis}.
-%start from here 
-MongoDB has its own query language relatively advanced compare to other NoSQL databases. A simple  query  is represented in the form JSON and returns result as a document.  Mongo shell, an user friendly JavaScript shell,  allows to implements callback functions to manipulates data return by the simple queries.  The \textit{find()} method is the most common way to retrieve data from a collection. It returns  the subset of documents from specified collection with given criteria that are passed as parameters. If no any parameters is given, it returns everything from a collection.  The General syntax of find operation is given in Code~\ref{mongodb-find-sample}.
+
+
+The \textit{find()} method is the most common way to retrieve data from a collection. It returns the subset of documents from specified collection with given criteria that are passed as parameters. If no any parameters is given, it returns everything from a collection.  The General syntax of find operation is given in Code~\ref{mongodb-find-sample}.
 \begin{lstlisting}[language=JSON,caption=\textit{find} in MongoDB, label=mongodb-find-sample][H]
     db.collection.find(query, projection) 
 \end{lstlisting}
  The \textit{query} specifies the criteria of document similar to SQL's WHERE clause in document format of a collection name \textit{collection}. The \textit{projection} selects of attributes of an documents to be return. For example, Code~\ref{mongodb-find-real} return the \textit{name} and \textit{age} from a collection  \textit{people} of country \textit{France} and \textit{age} is less than 5. 
-
 \begin{lstlisting}[language=JSON,caption=\textit{find()} with query and project, label=mongodb-find-real][H]
     db.people.find({country:"France", age:{$lt:5}}, {_id:0, age:1, name:1}) 
 \end{lstlisting}
-	
 
-\subsubsection{Aggregation Frameworks}
+\par
+\paragraph{Aggregation Frameworks:}
+
  The \textit{find} method is not sufficient for the complex database queries like aggregation, grouping  and advanced data manipulation. MongoDB provides two frameworks for  advanced query as well as parallel processing for the large documents collection:
  \begin{itemize}
-		\item{ Aggregation pipeline} allows to execute series of operations using different operators like filtration, projection to produce desire result or perform aggregation.  It can be used for a single collection and uses  data operators like match, group, project, etc. in different stages. Every stage convert the documents as they pass through the pipeline. Data operators can be used  in any numbers of times.  The \textit{aggregate} function is responsible for this framework where it operates on a collection passing  entire documents into pipeline. By using proper filtration operators like  skip, match and limit at the beginning  stage of the pipeline,  the frameworks can take advantages of existing indexes with processing scope limited to subset of documents  hence produces better performance in following stages~\cite{mongodbaggregation}.  The aggregation operators includes:
-		 \begin{itemize}
-    		    \item \textit{\$project}  redesign the document by removing or adding new attributes
-                \item \textit{\$match}  filters the documents with conditions.
-                \item \textit{\$skip}  is responsible for skipping first n number of documents to pass next stage
-                \item \textit{\$limit} limits the number of n outputs.
-                \item \textit{\$unwind} converts an array field of a document into multiple documents for each elements
-                \item \textit{\$group} groups the input documents with specified conditions and generates the aggregate
-                \item Others operators like  \textit{\$sort} for sorthing, \textit{\$geoNear} for geo-data, \textit{\$redact} etc.
-		   \end{itemize}
-		   
-		   \begin{lstlisting}[language=JSON,caption=Example Aggregation pipeline of XMark Query 12, label=mongodb-aggregation-pipeline][H]
+		\item{ \textbf{Aggregation pipeline}} allows to execute series of operations using different operators like filtration, projection to produce desire result or perform aggregation.  It can be used for a single collection and uses  data operators like match, group, project, etc. in different stages. Every stage convert the documents as they pass through the pipeline. Data operators can be used  in any numbers of times.  The \textit{aggregate} function is responsible for this framework where it operates on a collection passing  entire documents into pipeline. By using proper filtration operators like  skip, match and limit at the beginning  stage of the pipeline,  the frameworks can take advantages of existing indexes with processing scope limited to subset of documents  hence produces better performance in following stages~\cite{mongodbaggregation}. MongoDB's pipeline aggregation consists of many limitations including data types, memory restriction to operators and output size~\cite{nosql/comparision}. 
+		
+				   \begin{lstlisting}[language=JSON,caption=An example Aggregation pipeline in MongoDB, label=mongodb-aggregation-pipeline, basicstyle = \scriptsize][h]
             db.open_auctions.aggregate([
                 {$match:{reserve:{$exists:true}}},
 		       {$project:{_id:0,reserve:{$multiply:["$reserve",2.20371]}}}
 		       ]);
 		  \end{lstlisting}
-MongoDB's pipeline aggregation consists of many limitations including data types, memory restriction to operators and output size~\cite{nosql/comparision}. 
 		  
-		  \item MapReduce is a data processing framework for design to support large volumes of data that goes beyond the limitations and restriction of aggregation pipeline.  In MongoDB's Mapreduce operation,  \textit{map} applies to each input document and emits the key-value pair as output. Any arbitrary sorting and limiting  of single collection is performed before map stage. The reduce applies to the map's output  where a key is associated with multiple values to return the aggregated data.  The output of reduce may pass optionally through finalize function for further process the result of aggregation. Map-reduce functions are written in JavaScript and executed in MongoDB's demon process \~cite{mongodbaggregation}.  Unlike pipeline framework, Map-reduce support options for choosing to store result  data in a node as collection or  produce just output. 
+		  \item{\textbf{MapReduce}} is a data processing framework for design to support large volumes of data that goes beyond the limitations and restriction of aggregation pipeline.  In MongoDB's Mapreduce operation,  \textit{map} applies to each input document and emits the key-value pair as output. Any arbitrary sorting and limiting  of single collection is performed before map stage. The reduce applies to the map's output where a key is associated with multiple values to return the aggregated data. The output of reduce may pass optionally through finalize function for further process the result of aggregation. Map-reduce functions are written in JavaScript and executed in MongoDB's demon process \~cite{mongodbaggregation}.  Unlike pipeline framework, Map-reduce support options for choosing to store result  data in a node as collection or  produce just output. 
 		  
 \end{itemize}		
 
@@ -120,7 +110,7 @@ MongoDB's pipeline aggregation consists of many limitations including data types
 	\hline
 	\begin{minipage}{.4\textwidth}
 		\centering		
-		\begin{lstlisting}[language=XML,basicstyle = \tiny,label=couchbase-map-sample]
+		\begin{lstlisting}[language=XML,basicstyle = \scriptsize,label=couchbase-map-sample]
 map = function() {
 	for (var i in this.tags) {
 		var recency = 1 / (new Date() - this.date);
@@ -151,7 +141,7 @@ reduce = function(key, emits) {
 	\hline
 	\begin{minipage}{.55\textwidth}
 	\begin{lstlisting}[language=JSON, basicstyle =\tiny,]
-        db.runCommand({"mapreduce" : "foo", "map" : map, "reduce" : reduce})
+        db.runCommand({"mapreduce" : "collection-name", "map" : map, "reduce" : reduce})
     \end{lstlisting}
 	\end{minipage}\\
 	\caption{Mapreduce in MongoDB}
@@ -159,6 +149,9 @@ reduce = function(key, emits) {
 \end{longtable}
 
 %end here
+
+\begin{comment}
+
 
 \paragraph{System Architecture}
 MongoDB can be run in two modes. In stand-alone mode, a single \textit{mongod} demon runs in a single node without any distribution and in shared mode various services are distributed to several nodes. 
@@ -169,3 +162,8 @@ MongoDB can be run in two modes. In stand-alone mode, a single \textit{mongod} d
 	\label{fig:mongodb-clusters}
 \caption{MongoDB Clusters}
 \end{figure} %reference
+
+
+
+
+\end{comment}

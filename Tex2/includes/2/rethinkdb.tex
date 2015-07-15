@@ -1,32 +1,29 @@
-RethinkDB~\citep{rethinkdb} is a distributed database system to store  JSON documents and
- parallelize queries in multiple machines. Query language in RethinkDB is ReQL  that is based on three main principle:
+RethinkDB~\citep{rethinkdb} is a distributed database system to store  JSON documents and parallelize queries in multiple machines. Its query language is called ReQL and it is based on three main principles:
  \begin{itemize}
- \item  It is completely embedded with programming language.
- \item ReQL queries can be passed as pipeline from one to another stage. Complex operation can be performed using series of simple queries together. 
+ \item  It is  embedded  as programming language. Queries are constructed by making function call in the programming language. 
+ \item ReQL queries are chainable that can be passed as pipeline from one stage to another. Complex operation can be performed using series of simple queries together by using dot operators \. . 
  \item All the queries are executed in server without any intermediate network round trip between the server and clients.
  \end{itemize}
   
-\paragraph{Data Model}
-Rethinkdb stores JSON documents with binary on disk serialization. The data types supported by RethinkDB is same as JSON. 
-There are two ways to model relationship between the documents in RethinkDB. 
-\begin{enumerate}
-	\item 
-		In \textit{Embedded arrays}, the related sub-documents are inserted with a specific key inside a document as in MongoDB ~\ref{mongo:embedded}. The advantages of using embedded arrays are:
+\subsubsection{Data Model}
+RethinkDB stores JSON documents as binary in disk. The data type supported by RethinkDB JSON. 
+There are two ways to model relationships between the documents in RethinkDB: 
+\begin{itemize}
+	\item \textbf{Embedded arrays:} In this method, the related sub-documents are inserted with a specific key inside a document as in MongoDB ~\ref{mongo:embedded}. The advantages of using embedded arrays are:
 		\begin{itemize}
-			\item The Queries are tend to be simpler. 
-			\item If a dataset is large and don't fit in RAM, data is loaded faster from disk as compare to tables. 
+			\item The Queries tend to be simpler. 
+			\item If a dataset is large and do not fit into RAM, data is loaded faster from disk as compared to tables. 
 		\end{itemize}
 		Disadvantages of embedded arrays are: 
 		\begin{itemize}
-			\item Everything should be loaded in memory for any operation. 
+			\item Everything should be loaded in memory for any operation. Any update to the document requires rewriting the full array to disk.
 		\end{itemize}
 		
 	\item 
-	In \textit{multiple tables} approach, document with similar schema are stored in multiple tables that are connected by reference key. Unlike embedded arrays, operation of a table do not required to load data from reference table in memory.
-\end{enumerate}
-
-\paragraph{Query Model}
-	RethinkDB's query language ReQL is embedded to programming language. The JavaScript expression can be used everywhere as a part of the query. The anonymous function also known as lamda funciton is a part of query language that gives more flexibility for retrieving data. All the ReQL queries are chainable therefore, the dot \{.\} operator at any point of query can be extended to multiple level as in Code~\ref{reql-chainable}.
+	\textbf{Multiple Table Approach:} In this approach, documents with similar structures are stored in multiple tables which are connected by reference key similar to collection in MongoDB. Unlike embedded arrays, operation of a table do not required to load data from reference table in memory.
+\end{itemize}
+\subsubsection{Query Model}
+RethinkDB's query language ReQL is embedded as programming language and JavaScript expressions can be used anywhere as a part of the query. The anonymous function, also known as lamda function, is a part of the query language that gives more flexibility for retrieving data. All the ReQL queries are chainable therefore, the dot \{.\} operator at any point of query can be extended to multiple levels as shown in Code~\ref{reql-chainable}.
 	\begin{lstlisting}[language=JSON,caption=Chainable Query in ReQL, label=reql-chainable, xleftmargin=-40pt][h]
 		r.table("users").run(conn)
 		r.table("users").pluck("last_name").run(conn)
@@ -34,25 +31,14 @@ There are two ways to model relationship between the documents in RethinkDB.
 		r.table("users").pluck("last_name").distinct().count().run(conn)
 	\end{lstlisting} 
 
-Unlike other NoSQL databases, it supports join queries between the tables in one to many or many to many relationship based on requirement of application in distributed manner. 
+Unlike other NoSQL databases, RethinkDB supports join queries between the tables in one-to-many or many-to-many relationships based on the requirement of the application in distributed manner. 
 %start here from bechmarking section
-RethinkDB's data-driven query language  ReQL is relatively flexible to query database compare to Couchbase and MongDB~\cite{rethinkdbcompare}.
-\subsubsection{XMark Queries}
-Except Q4 and Q7, all XMark queries are easily convertable to ReQL. Code ~\ref{reql-13} is an example of RethinkDB query for XMark query 14. The regions table contains all the \textit{item} of the XMark data mentioned in ~\ref{xmark-rethinkdb}.At first,  an index with name \textit{regions} is created on  attribute regions  of regions table that index the world region asia, africa ect. for all documents. The getAll() method can filter “australia” from the index. Following piplelation operations map to output result as in our XMark Query. 
-\begin{lstlisting}[language=JSON, caption=ReQL query of XMark query 13,label=reql-13]
-	   r.table("regions").getAll("australia",{index:"regions"}).map({item:{name:r.row("name"),description:r.row("description")}})
-	\end{lstlisting}
-Full list of Rethinkdb Queries is given in ~\ref{rethinkdb-query-list}. 
 
-% end here 
-
-\paragraph{Indexing}
-	RethinkDB uses B-Tree to store indexes. It provides an option to specify the attribute as a primary key at the time of table creation. \textit{id} behaves as a primary key if attribute is not specified. In the existence of the primary key attributes, document is indexed with its value. Otherwise, a random unique string is automatically generated to index the document. 
-	Beside primary index, RethinkDB support compound, secondary, geospatial  and arbitrarily computed indexes. Every query including update operations uses one and only one index\citep{rethinkdb}.
+\subsubsection{Indexing}
+	RethinkDB uses B-Trees to store indexes. It provides an option to specify the attribute as a primary key at the time of table creation. \textit{id} behaves as a primary key if the attribute is not specified. In the existence of the primary key attributes, a document is indexed with its value. Otherwise, a random unique string is automatically generated to index the document.  Beside the primary index, RethinkDB supports simple, compound, secondary, geospatial  and arbitrarily computed indexes. Every query including update operations uses one and only one index. 
 	\begin{itemize}
 		\item \textit{Simple indexes} are created to retrieve or sort efficiently by a value of an attribute.
 		\item \textit{Compound indexes} are used to retrieve document by multiple fields. 
 		\item Multi indexes are the indexes for array value of a field. 
 		\item Any arbitrary expression can be used to create index on any type of user defined expressions like lamda functions.
 	\end{itemize}
-	

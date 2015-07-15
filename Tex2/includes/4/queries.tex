@@ -1,24 +1,26 @@
-All the XMark queries are converted into NoSQL database queries focusing  on output result rather than the processing of the query. If a database supports secondary indexes, they have been utilized for efficient result. There are some problems for following queries:
+All the XMark queries are converted into NoSQL database queries focusing  on output result. If a database supports secondary indexes, they have been utilized for efficient result. There are some problems for following queries:
 \begin{itemize}
 \item Q4 and Q7 cannot be applied to NoSQL databases. These queries will be skipped during the measurement and analysis. 
-\item In Q14, full text search is measured in XQuery. In MongoDB, Couchbase and RethinkDB do not implement full text search. Therefore, the result is not real full text search it is rather substring search in these databases. 
+\item In Q14, full text search is measured in XQuery. The MongoDB, Couchbase and RethinkDB do not implement full text search but it a substring search in these databases. 
 \end{itemize}
 
 \subsection{XMark Queries in MongoDB}
+
 In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For an example, the \textit{find()} function can be used for Q1 to get result. As we can see Code~\ref{xmark-q1}, the collection is filtered with \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  
-\begin{lstlisting}[language=JSON, caption=XMark Query 1 in MongoDB, label=xmark-q1, basicstyle=\scriptsize][H]
+\begin{lstlisting}[language=JSON, caption=XMark Query Q1 in MongoDB, label=xmark-q1, basicstyle=\scriptsize][H]
 		db.people.find({_id:"person0"},{_id:0,"name":1});
+		
 \end{lstlisting}
-As mentioned in ~\ref{nosql-mongodb}, MongoDB does not support join queries. All the queries that need more than one collections  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell} and are used callback functions to get required output. If any queries can be optimized through a secondary index, it has been created. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}.
-For Q1, the query directly implements the default \textit{\_id} index due to the data model we have defined in ~\ref{xmark-mongodb}. For queries Q2 and Q3 two indexes are defined on fields \textit{initial}, \textit{bidder}.  A secondary index in Q5 is created on field \textit{price} so that the comparative operator \textit{\$gte} can  utilized the index to limit the number of document it has to inspect. For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. Thereafter, the aggregation pipeline process further to produce the result.
-Full  list of MongoDB queries and indexes is  given in ~\ref{mongodb-query-list}.
+As mentioned in ~\ref{nosql-mongodb}, MongoDB does not support join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell} and  callback functions are used  to get required output. Queries that supports secondary indexes have been optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}.
+For Q1, the query directly implements the default \textit{\_id} index due to the data model we have defined in ~\ref{xmark-mongodb}. For queries Q2 and Q3 two indexes are defined on fields \textit{initial} and \textit{bidder}.  A secondary index in Q5 is created on field \textit{price} so that the comparative operator \textit{\$gte} can utilized the index to limit the number of document it has to inspect. For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. Thereafter, the next is to process with aggregation pipeline. Full  list of MongoDB queries and indexes is  given in ~\ref{mongodb-query-list}.
 
 \begin{lstlisting}[language=JSON, caption=MongoDB secondary Index, label=mongodb-create-index, basicstyle=\scriptsize]
    db.closed_auctions.createIndex({price:1})
 \end{lstlisting}
 
 \subsection{XMark Queries in Couchbase}
- All the query operations in Couchbase are done through the secondary index called views. A view contains a map function and an optional reduce function that can be utilized if the query has to implement calculation and aggregation in the result. For each XMark queries except join queries needed one view. The output of the views then queried like key filtration, grouping level etc. through programming interface to get the required results. For join queries, multiple views has been defined and joined manually. All XMark queries have been queried and evaluated through Node.js in Couchbase. 
+ All the query operations in Couchbase are done through the secondary index called views. A view contains a map function and an optional reduce function.
+To implement calculation and aggregation result,  reduce function can be utilized. All XMark queries except join queries need one a view. Then, the output of the views are queried like key filtration, grouping level, etc. through programming interface. For join queries, multiple views have been defined and joined manually. All XMark queries have been queried and evaluated through Node.js in Couchbase. 
  %For Q14, the map function convert the JSON to string and filter for substring. 
 Code~\ref{couchbase-q20} illustrates a sample example of XMark  Q20 with map and reduce functions. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}
 \begin{lstlisting}[language=JSON, caption=XMark query Q20 in Couchbase Server, label=couchbase-q20,  basicstyle=\scriptsize][H]
@@ -45,7 +47,7 @@ Code~\ref{couchbase-q20} illustrates a sample example of XMark  Q20 with map and
 \end{lstlisting}
 
 \subsection{XMark Queries in RethinkDB}
-In RethinDB, the performance of a read query can be improved through the secondary indexes which can be created at any field of the documents. The scope of such indexes are the corresponding table similar to the collection in MongoDB. For XMark queries, the these indexes are utilized if there is possibility of improvement in the performance. The index should be defined in query to use it and can be used only in one of four functions getAll(), between(), eqJoin() and orderBy(). Table~\ref{tbl:rethinkdb-index-query} illustrates an example of creating a secondary index and its usage in a query.
+In RethinkDB, the performance of a read query can be improved through the secondary indexes. In XMark queries,  wherever possible, these indexes are utilized to improve the performance. The index should be defined in the query and can be used only in one of the four functions \textit{getAll()}, \textit{between()}, \textit{eqJoin()} and \textit{orderBy()}. Table~\ref{tbl:rethinkdb-index-query} illustrates an example of creating a secondary index and its usage in a query.
 \begin{longtable}{c|c}
 	\caption{ RethinkDB secondary index and Query for Q13}
 	\label{tbl:rethinkdb-index-query}\\
@@ -71,4 +73,4 @@ r.table("regions")
 \end{minipage}
 \end{longtable}
 
-For query Q1, the document can be retrieved by the primary key \textit{id} using \textit{get()} function due the data model defined in ~\ref{xmark-nosql}. Unlike MongoDB, secondary index cannot be implemented directly in Q5 because \textit{filter()} do not support index. An index \textit{buyer\_person} is created in field "buyer.person" of \textit{closed\_auctions} table for join query Q8. Similarly, the Q9 can be improved by creating indexes in the tables \textit{regions} and \textit{closed\_auctions}. Other queries like Q13 and Q19 is also evaluated using indexes. For substring search in Q14, the value of  field \textit{description} is converted to text and match for sub-string. All the queries and indexes used for RethinkDB is given in ~\ref{rethinkdb-query-list}.
+For query Q1, the document can be retrieved by the primary key \textit{id} using \textit{get()} function due to the data model defined in ~\ref{xmark-nosql}. Unlike MongoDB, secondary index cannot be implemented directly in Q5 as \textit{filter()} do not support secondary index. An index \textit{buyer\_person} is created in field "buyer.person" of \textit{closed\_auctions} table for join query Q8. Similarly, the Q9 can be improved by creating indexes in the tables \textit{regions} and \textit{closed\_auctions}. Other queries like Q13 and Q19 is also evaluated using indexes. For substring search in Q14, the value of  field \textit{description} is converted into text and then it is matched for the sub-string. All the queries and indexes are used for RethinkDB is given in ~\ref{rethinkdb-query-list}.
