@@ -1,7 +1,7 @@
 \label{xmark-queries-couchbase}
 \begin{enumerate}[label=Q\arabic*.]
 	\item %1
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 			function (doc, meta) {
 			   if(doc.doctype && doc.doctype=="people" && doc.id=="person0"){
 				emit(doc.name);	   
@@ -11,7 +11,7 @@
 		\end{lstlisting}
 
 	\item %2
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	function (doc, meta) {
 	   if(doc.doctype && doc.doctype=="open_auctions"){
 	     if(doc.bidder){
@@ -32,7 +32,7 @@
 	\end{lstlisting}
 	
     \item %3
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
 	     if(doc.doctype && doc.doctype=="open_auctions"){
 	       if(doc.bidder){
@@ -71,13 +71,13 @@
 	
 	
     \item %4
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   []
 	\end{lstlisting}
 	
 	
     \item %5
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	map:
 	   function (doc, meta) {
 	      if(doc.doctype && doc.doctype=="closed_auctions"){
@@ -93,7 +93,7 @@
 	\end{lstlisting}
 	
     \item %6
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  map:
 	  function (doc, meta) {
 	     if(doc.doctype && doc.doctype=="regions"){
@@ -109,43 +109,43 @@
 	
 	
     \item %7
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   []
 	\end{lstlisting}
 	
 	
     \item %8
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	[]
 	\end{lstlisting}
 	
 	
     \item %9
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   []
 	\end{lstlisting}
 	
 	
     \item %10
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   []
 	\end{lstlisting}
 	
 	
     \item %11
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 		[]
 	\end{lstlisting}
 	
 	
     \item %12
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   []
 	\end{lstlisting}
 	
 	
     \item %13
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   function (doc, meta) {
 	     if(doc.doctype && doc.doctype == "regions" && doc.regions && doc.regions=="australia"){
 	       if(doc.description){
@@ -157,7 +157,7 @@
 	\end{lstlisting}
 	
     \item %14
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 		//don't supprt full text search
 	 	function (doc, meta) {
 	 	  if(doc.doctype && doc.doctype=="regions"){
@@ -172,7 +172,7 @@
 	\end{lstlisting}	
 
     \item %15
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 function (doc, meta) {
 	   if(doc.doctype=="closed_auctions"){
 	     var p1 = doc.annotation.description.parlist;
@@ -195,7 +195,7 @@
 	\end{lstlisting}	
 
     \item %16
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 function (doc, meta) {
 	   if(doc.doctype=="closed_auctions"){
 	     var p1 = doc.annotation.description.parlist;
@@ -223,7 +223,7 @@
 
     
     \item %17
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
 	    if(doc.doctype=="people"){
 	      if(!doc.homepage && doc.name){
@@ -234,7 +234,7 @@
 	\end{lstlisting}	
 
     \item %18
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
 	    if(doc.doctype=="open_auctions"){
 	      
@@ -248,7 +248,7 @@
 	\end{lstlisting}	
 
     \item %19
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
 	    if(doc.doctype=="regions" && doc.name){
 	      var location = (doc.location)?doc.location:"";
@@ -258,7 +258,7 @@
 	  })
 	\end{lstlisting}	
     \item %20
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  map:
 	  function (doc, meta) {
 	    if(doc.doctype=="people"){

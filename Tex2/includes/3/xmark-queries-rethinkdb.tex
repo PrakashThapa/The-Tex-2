@@ -2,18 +2,18 @@
 \begin{enumerate}[label=Q\arabic*.]
 	\item %1
 	
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 		r.table("people").get("person0")("name")
 	\end{lstlisting}
 
 	\item %2
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	r.table("open_auctions").map(function(doc) {return {increase:doc("bidder").nth(0)("increase").nth(0).default("")}})
 	
 	\end{lstlisting}
 	
     \item %3
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("open_auctions").hasFields("bidder").filter(
 	                r.row("bidder").nth(0)("increase").nth(0).mul(2).le(r.row("bidder").nth(r.row("bidder").count().sub(1))("increase").nth(0))
 	              ).map(function(doc){
@@ -24,32 +24,32 @@
 	
 	
     \item %4
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   
 	\end{lstlisting}
 	
 	
     \item %5
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("closed_auctions").count(function(f){
 	                 return f("price").default(0).gt(40)
 	               })
 	\end{lstlisting}
 	
     \item %6
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("regions").count()
 	\end{lstlisting}
 	
 	
     \item %7
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   
 	\end{lstlisting}
 	
 	
     \item %8
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("people").map(function(d){
 	                var x = r.table("closed_auctions").getAll(d("id"),{index:"buyer_person"}).count();
 	                return {person:d("name"),value:x}
@@ -58,7 +58,7 @@
 	
 	
     \item %9
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("regions").getAll("europe",{index:"regions"}).eqJoin("id",r.table("closed_auctions"),{index:"closed_itemref_item"}).map({
 	                 name:r.row("left")("name"), id:r.row("left")("id"),
 	               })
@@ -67,7 +67,7 @@
 	
     \item %10
     
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("people")("profile")("interest").concatMap(function(f){return f}).distinct()
 	                 .merge(function(category){
 	                   return {
@@ -105,7 +105,7 @@
 	
     \item %11
     
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 r.table("people").pluck("id",{profile:{income:true}})
 	               .map(function(f){
 	                 var i = f("profile")("income").default(0).div(5000);
@@ -120,7 +120,7 @@
 	
 	
     \item %12
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("people").filter(function(f){return f("profile")("income").default(0).gt(50000)})
 	                 .map(function(f){
 	                 return {
@@ -134,19 +134,19 @@
 	
 	
     \item %13
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("regions").getAll("australia",{index:"regions"}).map({item:{name:r.row("name"),description:r.row("description")}})
 	\end{lstlisting}
 	
     \item %14
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 	r.table("regions").filter(function(doc) {
 	 	    return doc('description').coerceTo("STRING").match("gold")
 	 	    })('name') 
 	\end{lstlisting}	
 
     \item %15
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 r.table("closed_auctions")("annotation")("description")("parlist").concatMap(function(f){
 	           return f('listitem')('parlist')
 	         }).concatMap(function(f){return f('listitem').hasFields({text:{emph:{keyword:true}}})}).map(function(f){
@@ -155,31 +155,31 @@
 	\end{lstlisting}	
 
     \item %16
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("closed_auctions").hasFields({annotation:{description:{parlist:true}}})
 	              ("annotation")("description").concatMap(r.row("parlist")).hasFields({listitem:{parlist:true}})("listitem").concatMap(r.row("parlist")).hasFields({listitem:{text:{emph:{keyword:true}}}})
 	\end{lstlisting}	
 
     
     \item %17
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("people").filter(function(d){return d.hasFields("homepage").not()}).map({person:{name:r.row("name")}})
 	\end{lstlisting}	
 
     \item %18
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("open_auctions").hasFields("reserve").map(r.row("reserve").mul(2.20371))
 	\end{lstlisting}	
 
     \item %19
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("regions").orderBy({index:"location"}).pluck("location","name").map(function(f){
 	    return {item:{name:f("name"),location:f("location")}}
 	  })
 	\end{lstlisting}
 	
     \item %20
-	\begin{lstlisting}[language=JSON]
+	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("people").map(function(doc){return {income:doc("profile")("income").default(0)}})
 	            .map({
 	             preferred:r.branch(r.row("income").ge(100000),'preferred',0),
