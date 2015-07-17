@@ -42,32 +42,31 @@ The full ER-Diagram of XMark dataset is illustrated in Fig.~\ref{fig:xmark-schem
 \end{figure}
 
 \subsection{XMark Queries}\label{xmark-queries}
-The XMark project contains XQuery queries that focuses on the various aspect of language such as aggregation, reference, ordering, wildcard expressions, joins, user defined functions, etc.\citep{xmark/mlynkova2008xml}.The textual representation of 20 different XQuery expressions is reprinted in  Table~\ref{tab:xmark-queries}. These queries are divided into different categories  based on the  multiple functionalities of XQuery: 
+The XMark project contains XQuery expressions that focuses on the various aspect of language such as aggregation, reference, ordering, wildcard expressions, joins, user defined functions, etc.\citep{xmark/mlynkova2008xml}.The textual representation of 20  XQuery expressions is reprinted in  Table~\ref{tab:xmark-queries}. These queries are divided into different categories  based on the  multiple functionalities of XQuery: 
 \begin{enumerate}[label=\arabic*.]
 \item  First category tests execution of exact match of string in specified path and consists of only query Q1.
-\item It  helps to analyze order access of an XML document. Query Q2, Q3 and Q4 are grouped here.
-\item  Query Q5 is evaluates the casting of a value.
+\item It helps to analyze order access of an XML document. Query Q2, Q3 and Q4 are grouped here.
+\item Query Q5 evaluates the casting of a value.
 \item Queries Q6 and Q7  evaluate regular path expressions.
 
 \item This category investigates the referencing of a document to another and consists of query Q8 and Q9
 
 \item Query Q10 reconstructs a complex results from the result of a query
 
-\item Two queries, Q11 and Q12 are join query based on values.  The difference between this category's queries and reference queries Q8 and Q9 is that references are specified in DTD and may optimize with object identifiers whereas Q11 and Q12 are have join on the basis of values.
+\item Two queries, Q11 and Q12 are join queries based on values.  The difference between these queries and the reference chasing queries Q8 and Q9 is that references are specified in the DTD and may be optimized with logical IDs.
 
 \item Query Q13  benchmarks the portion reconstruction of original XML document.
+\item In Q14 full text search is implemented using single word.
 
-\item In this category the full text search  using single word is implemented. Q14 is in this category
-
-\item The purpose of queries 15 and 16 is to observe the path traversals without using wildcards.
+\item The purpose of queries Q15 and Q16 is to observe the path traversals without using wildcards.
 
 \item Query Q17 tests the ability to deal with missing values
 
 \item This category deals with user defined functions and contains query Q18
 
-\item The query Q19 is use to evaluate Sorting.
+\item The query Q19 is used to evaluate sorting.
 
-\item The last category observe the aggregation with the help of query 20.
+\item Q20 is in last category which observes the  simple aggregation.
 
 \end{enumerate}
 
