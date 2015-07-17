@@ -22,6 +22,7 @@ There are two ways to model relationships between the documents in RethinkDB:
 	\item 
 	\textbf{Multiple Table Approach:} In this approach, documents with similar structures are stored in multiple tables which are connected by reference key similar to collection in MongoDB. Unlike embedded arrays, operation of a table do not required to load data from reference table in memory.
 \end{itemize}
+
 \subsubsection{Query Model}
 RethinkDB's query language ReQL is embedded as programming language and JavaScript expressions can be used anywhere as a part of the query. The anonymous function, also known as lamda function, is a part of the query language that gives more flexibility for retrieving data. All the ReQL queries are chainable therefore, the dot \{.\} operator at any point of query can be extended to multiple levels as shown in Code~\ref{reql-chainable}.
 	\begin{lstlisting}[language=JSON,caption=Chainable Query in ReQL, label=reql-chainable, xleftmargin=-40pt][h]
@@ -30,10 +31,11 @@ RethinkDB's query language ReQL is embedded as programming language and JavaScri
 		r.table("users").pluck("last_name").distinct().run(conn)
 		r.table("users").pluck("last_name").distinct().count().run(conn)
 	\end{lstlisting} 
-
+The queries are built up on client side and send to the server when the once \textit{run()} is called. Then the server automatically parallelized the queries into different nodes and whenever possible, the query execution is splited into different cluster and datacenters.
+\par
 Unlike other NoSQL databases, RethinkDB supports join queries between the tables in one-to-many or many-to-many relationships based on the requirement of the application in distributed manner. 
 %start here from bechmarking section
-
+%there should be some changes
 \subsubsection{Indexing}
 	RethinkDB uses B-Trees to store indexes. It provides an option to specify the attribute as a primary key at the time of table creation. \textit{id} behaves as a primary key if the attribute is not specified. In the existence of the primary key attributes, a document is indexed with its value. Otherwise, a random unique string is automatically generated to index the document.  Beside the primary index, RethinkDB supports simple, compound, secondary, geospatial  and arbitrarily computed indexes. Every query including update operations uses one and only one index. 
 	\begin{itemize}

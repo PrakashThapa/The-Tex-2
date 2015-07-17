@@ -11,12 +11,13 @@
 	
 	\par		
 	There are some research and analysis between NoSQL and RDBMS. \citet{nance2013nosql} had examined the advantages and disadvantages of NoSQL and RDBMS, \cite{cattell2011scalable} analyze similarities between scalable SQL and NoSQL databases, \cite{hadjigeorgiou2013rdbms}  compare the performance between MySQL cluster as RDBMS and Mongodb as NoSQL database.  There are also some researches related to RDBMS with XML or XML database(~\citet{jiang2002xparent}, \citet{shanmugasundaram1999relational}). But there is not much research in the field of NoSQL and XML database together. So this thesis focuses on: Migration of data from XML database to NoSQL database and  performance of both systems.	
+
+\par 
+More specifically, it will focus on databases like MongoDB, Couchbase and RethinkDB as NoSQL database and BaseX as XML Database. To approach this challenge, it is first necessary to understand the general architecture and data model of each of these databases as well as the way how they are queried.The performance comparison of these two systems will be based on XMARK dataset and its 20 standard queries~\citep{xmark/original}. These 20 queries of XMARK project will be translated to each of NoSQL databases.
 	
 	\section{Contribution}
 		%\input{includes/1/contribution}
-		The main contribution of this thesis is that it provides the necessary techniques and algorithms to migrate data from an XML database to NoSQL databases. 
-	    
-	    ......
+		The main contribution of this thesis is to migrate data from an XML database to three document-oriented  NoSQL databases: MongoDB, Couchbase and RethinkDB. The XQuery expressions of standard XML benchmarking project XMark will be  translated  into these databases and benchmarked their performance according to their data model. XML and JSON are the format of data stored and queried by an XML database and document-oriented NoSQL databases respectively. Thefore, this thesis also provides necessary techniques and algorithms to convert data from XML to JSON format.
 	    
 	    %More specifically, it will focus on databases like MongoDB, Couchbase and RethinkDB as NoSQL database and BaseX as XML Database. To approach this challenge, it is first necessary to understand the general architecture and data model of each of these databases as well as the way how they are queried.The performance comparison of these two systems will be based on XMARK dataset and its 20 standard queries~\citep{xmark/original}. These 20 queries of XMARK project will be translated to each of NoSQL databases.
 		
