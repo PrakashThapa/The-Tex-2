@@ -1,7 +1,8 @@
  Couchbase Server is designed to access real-time operational data. It is a NoSQL database that serves both as key-value and document-oriented database. As a key-value store, it is able to store any type of data including  strings, numbers and binary data and the data is treated as an opaque Binary Large Object(BLOB). When used as document store, data is stored in a valid JSON format. The data is stored in logical unit called buckets. These buckets are isolated to each other and have their own RAM quota and replica settings. Buckets can be compared with \texttt{database} of MongoDB or any other RDBMS. Couchbase recommends few number of buckets in a single cluster. 
  \todo{write about raplica settings and ram quota}
  
- A bucket can contain any type of data, but data other than JSON, can only be retrieved by its key. Therefore, before fetching, it is important to check metadata that is stored in a single document. Each document is stored independently and there is no notion of grouping documents like collections in MongoDB or tables in other RDBMS. An user-defined type attribute can be created to differentiate the various documents stored in the bucket and  create indexes on them.  For example, \textit{user} and \textit{post} are two collections of MongoDB. The documents of these two collections can be represented in Couchbase by adding a new field \textit{documentType}  in each document with value \textit{user} and \textit{post} respectively.  
+ \subsubsection{Data Model}%repeat check once
+The data model of Couchbase is different than other NoSQL databases. The data is stored in the form of key/value inside a bucket. A bucket can contain any type of data, but data other than JSON, can only be retrieved by its key. Therefore, before fetching, it is important to check metadata that is stored in a single document. Each document is stored independently and there is no notion of grouping documents like collections in MongoDB or tables in other RDBMS. An user-defined type attribute can be created to differentiate the various documents stored in the bucket and  create indexes on them.  For example, \textit{user} and \textit{post} are two collections of MongoDB. The documents of these two collections can be represented in Couchbase by adding a new field \textit{documentType}  in each document with value \textit{user} and \textit{post} respectively.  
 
 \paragraph{Metadata}\label{cb-metadata}
 %may be we can remove it.
@@ -45,10 +46,10 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 	\caption{ Couchbase Key, Bucket and   vBucket ~\cite{couchbasedocs}}
 	\label{fig:cb-vbucket}
 \end{figure}
+
 %where is reference of images
 
-\subsubsection{Data Model}%repeat check once
-A document is a basic unit of data manipulation in Couchbase. All the documents are stored in JSON format without a predefined schema.
+
 
 \subsubsection{Querying and Indexing}
 Query in Couchbase has to be done against pre-materialize views. The goal of view is to select the data, extract the attributes and information and to produce the index on selected information. Views are defined in a special kind of document called \textit{design document}~\ref{fig:cb-views-design}. These documents are bounded to a single bucket and cannot be executed from other buckets. The design document holds JavaScript code that implements \textit{Mapreduce} operations to create view's in user defined format. The Mapreduce is achieved by two functions \textit{map} and \textit{reduce}. Table~\ref{tbl:cb-mapreduce} illustrate a sample mapreduce function in Couchbase.
@@ -89,5 +90,55 @@ function (doc, meta) {
 \end{longtable}
 \end{table}
 
+
+%nikhilesh map reduce 
+
+
+ \paragraph{Views:}
+      In Couchbase, views are used to create indexes and query the data. Depending on the format and structure of the data, an index is created by the view. when the expiration pager operates to remove a document from the database, then the documents are removed from indexes. Views are used for various purposes such as indexing, querying, producing lists producing tables, filtering and extracting information from the database etc. Multiple views create multiple indexes for storing the data.
+      
+  \paragraph{The Map Function:}
+       The mapreduce reads the entire dataset, in parallel across the cluster. Similarly, in couchbase views, all the documents are processed with respect to each view. The map function takes the document and its metadata as the required parameters for initial processing. 
+ 
+ 
+ 
+ \paragraph{Filtering in MapReduce}
+        The map function is used to filter the input dataset and output the documents required in the views.
+        
+        
+        \paragraph{The emit Fucntion}
+        The results of the map function are outputted by the emit function. The outputted values are then passed into reduce function, if it is defined. If there is no reduce function, the emit function outputs the key-value pairs.
+ 
+ 
+   \paragraph{Ram quota:}
+       RAM is allocated to couchbase server in two quantities: Server quota and bucket Quota
+       
+       \paragraph{Server quota:}
+          Server quota is allocated when couchbase server is first installed. The amount of RAM allocation depends on per-node basis. The quota is identical to all the nodes. For instance, if there are 8 nodes with AND A 16GB Server quota, there is 144GB RAM available across the cluster. Further addition of 2 nodes to the cluster and the new nodes would need 16GB of free RAM, in total the RAM available in the cluster would be 160GB.   
+         \paragraph{Bucket quota:}
+           Bucket quota is the amount of RAM that is allocated to individual bucket. These allocate Ram on per-node basis. For example, when a new bucket is created with a bucket quota of 1GB, in a 8 node cluster then in total there would be 8GB of bucket quota in the cluster. By adding 2 more nodes to the cluster would extend bucket quota to 10GB.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 	

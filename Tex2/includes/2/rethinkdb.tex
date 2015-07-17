@@ -1,26 +1,27 @@
-RethinkDB~\citep{rethinkdb} is a distributed database system to store  JSON documents and parallelize queries in multiple machines. Its query language is called ReQL and it is based on three main principles:
+RethinkDB~\citep{rethinkdb} is a distributed document-oriented database system to store JSON documents. Instead of client request,  changes in database to the client application is streamed in realtime by RethinkDB. In case of multi-users, any database is automatically  notified.
+\par
+ReQL is the query language  of RethinkDB and it is based on three main principles:
  \begin{itemize}
- \item  It is  embedded  as programming language. Queries are constructed by making function call in the programming language. 
- \item ReQL queries are chainable that can be passed as pipeline from one stage to another. Complex operation can be performed using series of simple queries together by using dot operators \. . 
+ \item  It is  embedded  as programming language. Queries are constructed by making function call. 
+ \item ReQL queries are chainable that can be passed as pipeline from one stage to another. Complex operation can be performed using series of simple queries together by using dot operators ( \.) . 
  \item All the queries are executed in server without any intermediate network round trip between the server and clients.
  \end{itemize}
   
 \subsubsection{Data Model}
-RethinkDB stores JSON documents as binary in disk. The data type supported by RethinkDB JSON. 
-There are two ways to model relationships between the documents in RethinkDB: 
+There are two ways to model relationships between the documents: 
 \begin{itemize}
 	\item \textbf{Embedded arrays:} In this method, the related sub-documents are inserted with a specific key inside a document as in MongoDB ~\ref{mongo:embedded}. The advantages of using embedded arrays are:
 		\begin{itemize}
 			\item The Queries tend to be simpler. 
-			\item If a dataset is large and do not fit into RAM, data is loaded faster from disk as compared to tables. 
+			\item If a dataset  does not fit into RAM, then the data is loaded  from the disk and it is faster compared to tables. 
 		\end{itemize}
 		Disadvantages of embedded arrays are: 
 		\begin{itemize}
-			\item Everything should be loaded in memory for any operation. Any update to the document requires rewriting the full array to disk.
+			\item Before any operation, data should be loaded into memory. In case of any updates, the document will rewrite the full array to the disk.
 		\end{itemize}
 		
 	\item 
-	\textbf{Multiple Table Approach:} In this approach, documents with similar structures are stored in multiple tables which are connected by reference key similar to collection in MongoDB. Unlike embedded arrays, operation of a table do not required to load data from reference table in memory.
+	\textbf{Multiple Table Approach:} In this approach, documents with similar structures are stored in multiple tables similar to collection in MongoDB. These tables are connected by reference key. Unlike embedded arrays, operation of a table does not required to load data from reference table in memory.
 \end{itemize}
 
 \subsubsection{Query Model}
@@ -31,16 +32,17 @@ RethinkDB's query language ReQL is embedded as programming language and JavaScri
 		r.table("users").pluck("last_name").distinct().run(conn)
 		r.table("users").pluck("last_name").distinct().count().run(conn)
 	\end{lstlisting} 
-The queries are built up on client side and send to the server when the once \textit{run()} is called. Then the server automatically parallelized the queries into different nodes and whenever possible, the query execution is splited into different cluster and datacenters.
+The queries are built up on client side and send to the server when the \textit{run()} is called. Then the server automatically parallelized the queries into different nodes. whenever possible, the query execution is splitted into different cluster and data-centers.
 \par
-Unlike other NoSQL databases, RethinkDB supports join queries between the tables in one-to-many or many-to-many relationships based on the requirement of the application in distributed manner. 
+Unlike other NoSQL databases, RethinkDB supports join queries between the tables in one-to-many or many-to-many relationships in distributed manner. 
 %start here from bechmarking section
 %there should be some changes
 \subsubsection{Indexing}
-	RethinkDB uses B-Trees to store indexes. It provides an option to specify the attribute as a primary key at the time of table creation. \textit{id} behaves as a primary key if the attribute is not specified. In the existence of the primary key attributes, a document is indexed with its value. Otherwise, a random unique string is automatically generated to index the document.  Beside the primary index, RethinkDB supports simple, compound, secondary, geospatial  and arbitrarily computed indexes. Every query including update operations uses one and only one index. 
+	RethinkDB uses B-Trees to store indexes. When tables are created, there is an option to specify the attribute as a primary key. \textit{id} behaves as a primary key if the attribute is not specified and it is used to index the document. If there is no  primary key, a random unique string is automatically generated to index the document. Beside the primary index, RethinkDB supports simple, compound, secondary, geospatial  and arbitrarily computed indexes. Every query including update operations uses only one index. 
 	\begin{itemize}
 		\item \textit{Simple indexes} are created to retrieve or sort efficiently by a value of an attribute.
 		\item \textit{Compound indexes} are used to retrieve document by multiple fields. 
-		\item Multi indexes are the indexes for array value of a field. 
-		\item Any arbitrary expression can be used to create index on any type of user defined expressions like lamda functions.
+		\item\textit{ Multi indexes } are used for array value of a field. 
+		\item Any arbitrary expression can be used to create index from any type of user defined expressions like lamda functions.
 	\end{itemize}
+	 Only \textit{getAll()} \textit{between()}, \textit{eqJoin()} and \textit{orderBy} functions can use secondary index.
