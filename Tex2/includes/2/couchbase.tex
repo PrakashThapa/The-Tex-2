@@ -2,8 +2,18 @@
  \todo{write about raplica settings and ram quota}
  
  \subsubsection{Data Model}%repeat check once
-The data model of Couchbase is different than other NoSQL databases. The data is stored in the form of key/value inside a bucket. A bucket can contain any type of data, but data other than JSON, can only be retrieved by its key. Therefore, before fetching, it is important to check metadata that is stored in a single document. Each document is stored independently and there is no notion of grouping documents like collections in MongoDB or tables in other RDBMS. An user-defined type attribute can be created to differentiate the various documents stored in the bucket and  create indexes on them.  For example, \textit{user} and \textit{post} are two collections of MongoDB. The documents of these two collections can be represented in Couchbase by adding a new field \textit{documentType}  in each document with value \textit{user} and \textit{post} respectively.  
+ 
+The data model of Couchbase is different than other NoSQL databases. The data is stored in the form of key/value pair inside a bucket. Individual documents are indentified by its key called Document ID. A bucket can contain any type of data but other than JSON type can be retrieved only by its key. Therefore, before fetching, it is important to check metadata \textit{type} that is stored with a single document. Each document is stored independently and there is no notion of grouping of documents like collections in MongoDB or tables in other RDBMS. An user-defined type attribute can be created to differentiate the various documents stored in the bucket and  create indexes on them.  For example, \textit{user} and \textit{post} are two collections of MongoDB. The documents of these two collections can be represented in Couchbase by adding a new field \textit{documentType}  in each document with value \textit{user} and \textit{post} respectively. 
 
+\paragraph{RAM Quota}
+It is necessary to define the amount of memory for Server and individual bucket in Couchbase before storing data. 
+\begin{itemize}
+\item {Server quota:}
+          Server quota is allocated when Couchbase server is first installed. The amount of RAM allocation depends on per-node basis. The quota is identical to all the nodes. For instance, if there are 8 nodes with AND A 16GB Server quota, there is 144GB RAM available across the cluster. Further addition of 2 nodes to the cluster and the new nodes would need 16GB of free RAM, in total the RAM available in the cluster would be 160GB.   
+\item{Bucket quota:}    
+For data caching, certain amount of RAM should be allocated to an individual bucket. These bucket quotas are on per-node basis. For example, when a new bucket is created with a bucket quota of 1GB, in a 8 node cluster then in total there would be 8GB of bucket quota in the cluster. By adding 2 more nodes to the cluster would extend bucket quota to 10GB. 
+\end{itemize}
+           
 \paragraph{Metadata}\label{cb-metadata}
 %may be we can remove it.
 For every value stored in a bucket, Couchbase generates following meta information that is associated with a document~\cite[p. 26]{cb/ostrovsky2014pro}. 
@@ -52,17 +62,23 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 
 
 \subsubsection{Querying and Indexing}
-Query in Couchbase has to be done against pre-materialize views. The goal of view is to select the data, extract the attributes and information and to produce the index on selected information. Views are defined in a special kind of document called \textit{design document}~\ref{fig:cb-views-design}. These documents are bounded to a single bucket and cannot be executed from other buckets. The design document holds JavaScript code that implements \textit{Mapreduce} operations to create view's in user defined format. The Mapreduce is achieved by two functions \textit{map} and \textit{reduce}. Table~\ref{tbl:cb-mapreduce} illustrate a sample mapreduce function in Couchbase.
 
-The \textit{map} function in design document collect, process, filter the document and output the transformed values. A map function takes document and metadata as the required parameters. After filtration, the \textit{emit} function in map returns the result as set of key/value pairs. The output of map function depends on the filter used in emit function and can result zero or more "rows". Each \textit{emit()} function returns a single row but can be called multiple times inside a single map function. The first parameter in \textit{emit} function is search-able text key and second parameter is the value.
-The \textit{reduce} function is used to aggregate the numeric value generated in map phase. Couchbase has built-in reduce functions like \textit{\_count}, \textit{\_sum} and \textit{\_stats} aggregation. Table ~\ref{tbl:cb-mapreduce} illustrate an example of MapReduce  in Couchbase. The emit function at map phase returns the \textit{id} of document  as key and the price greater than 40 from documents that contains \textit{doctype} value "closed\_auctions". In \textit{reduce} phase, the the keys are grouped and values are counted.
+ In Couchbase, views are used to create indexes and query the data. Depending on the format and structure of the data, an index is created by the view. when the expiration pager operates to remove a document from the database, then the documents are removed from indexes. Views are used for various purposes such as indexing, querying, producing lists producing tables, filtering and extracting information from the database etc. Multiple views create multiple indexes for storing the data. Views are defined in a special kind of document called \textit{design document}~\ref{fig:cb-views-design}. These documents are bounded to a single bucket and cannot be executed from other buckets. 
+ 
+\paragraph{Mapreduce:} 
+The mapreduce reads the entire dataset, in parallel across the cluster. Similarly, in Couchbase views, all the documents are processed with respect to each view. The design document holds JavaScript code that implements mapreduce operations. Couchbase uses incremental mapreduce where the index is incrementally updated as the bucket changes. The Mapreduce is achieved by two functions \textit{map} and \textit{reduce}. 
+\begin{itemize}
+\item {The map function:}
+The map function takes the document and its metadata as the required parameters for initial processing. It provides structure and format of output of a view. The output is depends on the filter used in \textit{emit()} function inside  the map function. Each \textit{emit()} function returns a single row but can be called multiple times inside a single map function. The output of emit function is sent to reduce function if reduce is defined otherwise the output will be key/value pair. 
 
-%start here 
- In contrast to MongoDB,  Couchbase's queries are closely associated with client SDK where each operations has to perform through SDKs. On-demand query language  named "N1QL" is also in  progress of development but still stable version has to be released~\cite{couchbasen1ql}.
+\item {The reduce function:}
+The \textit{reduce} function is used to aggregate the numeric value generated in map phase. Couchbase has built-in reduce functions like \textit{\_count}, \textit{\_sum} and \textit{\_stats} aggregation.
 
+\end{itemize}
+Table ~\ref{tbl:cb-mapreduce} illustrates an example of MapReduce  in Couchbase. At the map phase, all the \textit{id}'s of documents that contains \textit{doctype} value "closed\_auctions" and \textit{price} value greater than 40 is emmited. In \textit{reduce}, total number of ids are counted.
 
 %end here from benchmarking sections.
-\begin{table}[H]
+\begin{table}[h]
 \begin{longtable}{c|c}
 	\caption{Mapreduce in Couchbase}
 	\label{tbl:cb-mapreduce}\\
@@ -74,7 +90,7 @@ function (doc, meta) {
    if(doc.doctype && doc.doctype=="closed_auctions"){
      if(doc.price){
        if(doc.price > 40) {
-	      emit(doc.id,doc.price)
+	      emit(meta.id,null)
      	}
     }
   }
@@ -90,33 +106,14 @@ function (doc, meta) {
 \end{longtable}
 \end{table}
 
-
-%nikhilesh map reduce 
-
-
- \paragraph{Views:}
-      In Couchbase, views are used to create indexes and query the data. Depending on the format and structure of the data, an index is created by the view. when the expiration pager operates to remove a document from the database, then the documents are removed from indexes. Views are used for various purposes such as indexing, querying, producing lists producing tables, filtering and extracting information from the database etc. Multiple views create multiple indexes for storing the data.
-      
-  \paragraph{The Map Function:}
-       The mapreduce reads the entire dataset, in parallel across the cluster. Similarly, in couchbase views, all the documents are processed with respect to each view. The map function takes the document and its metadata as the required parameters for initial processing. 
+\par
+%start here 
+\paragraph{Query:}
+ In contrast to MongoDB,  Couchbase's queries are closely associated with client SDK where each operations has to perform through SDKs. On-demand query language  named "N1QL" is also in  progress of development but still stable version has to be released~\cite{couchbasen1ql}.
+\par
+ Query in Couchbase is done against pre-materialize views through REST API or SDK. Different query options like \textit{limit}, \textit{group\_level}, \textit{key}, \textit{keys}, \textit{skip}, etc can be used in view to get required result. 
  
- 
- 
- \paragraph{Filtering in MapReduce}
-        The map function is used to filter the input dataset and output the documents required in the views.
-        
-        
-        \paragraph{The emit Fucntion}
-        The results of the map function are outputted by the emit function. The outputted values are then passed into reduce function, if it is defined. If there is no reduce function, the emit function outputs the key-value pairs.
- 
- 
-   \paragraph{Ram quota:}
-       RAM is allocated to couchbase server in two quantities: Server quota and bucket Quota
-       
-       \paragraph{Server quota:}
-          Server quota is allocated when couchbase server is first installed. The amount of RAM allocation depends on per-node basis. The quota is identical to all the nodes. For instance, if there are 8 nodes with AND A 16GB Server quota, there is 144GB RAM available across the cluster. Further addition of 2 nodes to the cluster and the new nodes would need 16GB of free RAM, in total the RAM available in the cluster would be 160GB.   
-         \paragraph{Bucket quota:}
-           Bucket quota is the amount of RAM that is allocated to individual bucket. These allocate Ram on per-node basis. For example, when a new bucket is created with a bucket quota of 1GB, in a 8 node cluster then in total there would be 8GB of bucket quota in the cluster. By adding 2 more nodes to the cluster would extend bucket quota to 10GB.
+   
  
  
  
