@@ -28,7 +28,7 @@ As mentioned in ~\ref{nosql-mongodb}, MongoDB does not support join queries. All
 \item for Q19, a secondary index on field \textit{location} of collection \textit{regions} is used for sorting the data. The final query Q20 implements the aggregations, We have used mapreduce for which is simpler as compare to aggregation for this query.
 
 \end{itemize}
-
+Full list of MongoDB queries and index can be found in ~\ref{couchbase-query-list}
 
 \begin{figure}
 \centering
@@ -49,6 +49,7 @@ As mentioned in ~\ref{nosql-mongodb}, MongoDB does not support join queries. All
 
 
 \begin{longtable}{c|c}
+    \hline
 	\caption{ User-defiend function and implementation in MongoDB(Q18)}
 	\label{tbl:mongodb-q18}\\
     {function } & {map-reduce}\\
@@ -83,34 +84,64 @@ db.open_auctions.mapReduce(
 
 
 \subsection{XMark Queries in Couchbase}
- In Couchbase, everythinng queried against the views. The output of the views are queried like through programming interface. We have used Node.js for querying couchbase. 
+ In Couchbase, everythinng queried against the views. The output of the views are queried like through programming interface. For each query, the \textit{doctype} should be checked.  All XMark queries have been queried and evaluated through Node.js in Couchbase. 
  
+ some queries are explained here: 
+ \begin{itemize}
+ \item Q1 is a simple query where the map function emits id and name of document if the condition is matched.
+ \item In Q2 and Q3, arrays are processed and emmited in Map function. 
+ \item The Q5 and Q6 uses the built-in reduce function of views \textit{\_count}.
+ \item For join queries, each \textit{doctype} should have a view, then join operation is implemented through Node.js. The Q8 contains two views, select the \textit{id} and \textit{name} field from \textit{people} documents. other view is used to aggregation of doctype \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both are combined through Node.js. 
  
- For join queries, multiple views have been defined and joined manually. All XMark queries have been queried and evaluated through Node.js in Couchbase. 
+ \item The substring search 
+ 
+ \end{itemize}
+ 
  %For Q14, the map function convert the JSON to string and filter for substring. 
-Code~\ref{couchbase-q20} illustrates a sample example of XMark  Q20 with map and reduce functions. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}
-\begin{lstlisting}[language=JSON, caption=XMark query Q20 in Couchbase Server, label=couchbase-q20,  basicstyle=\scriptsize]
-	map:
-	  function (doc, meta) {
-	    if(doc.doctype=="people"){
-	      var income = (doc.profile && doc.profile.income)? doc.profile.income : 0;
-	      if(income >= 100000 ){
-	    	 emit("preferred",1);
-	      }else if(income < 100000 && 
-	               income >= 30000) {
-	        emit("standard",1);
-	      }else if(income < 30000 &&
-	           income > 0 ){
-	       
-	        emit("challenge",1);
-	      } else {
-	       emit("na",income);
-	      }
-	    }
-	  }
- reduce:
-	  _count
+table~\ref{tbl:couchbase-q20} illustrates a sample example of XMark  Q20 with map and reduce functions. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}
+
+\begin{longtable}{c|c|c}
+	\caption{ XMark query Q20 in Couchbase Server}
+	\label{tbl:couchbase-q20}\\
+    {map() } & {reduce()} & {query}\\
+	\hline
+\begin{minipage}{.5\textwidth}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+function (doc, meta) {
+    if(doc.doctype=="people"){
+      var income = (doc.profile && doc.profile.income) ? 
+                doc.profile.income : 0;
+      if(income >= 100000 ){
+    	 emit("preferred",1);
+      }else if(income < 100000 && 
+               income >= 30000) {
+        emit("standard",1);
+      }else if(income < 30000 &&
+           income > 0 ){
+       
+        emit("challenge",1);
+      } else {
+       emit("na",1);
+      }
+    }
+  }
 \end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.15\textwidth}
+\vspace{0pt}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+     _sum
+\end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.2\textwidth}
+\vspace{0pt}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+     group_level=1
+\end{lstlisting}
+\end{minipage}
+\end{longtable}
+
+
 
 \subsection{XMark Queries in RethinkDB}
 In RethinkDB, the performance of a read query can be improved through the secondary indexes. In XMark queries,  wherever possible, these indexes are utilized to improve the performance. The index should be defined in the query and can be used only in one of the four functions \textit{getAll()}, \textit{between()}, \textit{eqJoin()} and \textit{orderBy()}. Table~\ref{tbl:rethinkdb-index-query} illustrates an example of creating a secondary index and its usage in a query.

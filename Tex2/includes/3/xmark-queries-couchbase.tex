@@ -236,15 +236,14 @@
     \item %18
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
-	    if(doc.doctype=="open_auctions"){
-	      
-	      if(doc.reserve){
-	      	var exchange = parseFloat(doc.reserve) * 2.20371;
-	        
-	        emit(null,exchange)
-	      } 
-	    }
-	  }
+      if(doc.doctype=="open_auctions"){
+        
+        if(doc.reserve){
+          var reserve = function(val){ return parseFloat(val) * 2.20371 }
+          emit(reserve(doc.reserve))
+        } 
+      }
+    }
 	\end{lstlisting}	
 
     \item %19
@@ -261,27 +260,27 @@
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  map:
 	  function (doc, meta) {
-	    if(doc.doctype=="people"){
-	   
-	      var income = (doc.profile && doc.profile.income)? doc.profile.income : 0;
-	  
-	       if(income >= 100000 ){
-	    	 emit("preferred",1);
-	      }else if(income < 100000 && 
-	               income >= 30000) {
-	        emit("standard",1);
-	      }else if(income < 30000 &&
-	           income > 0 ){
-	       
-	        emit("challenge",1);
-	      } else {
-	       emit("na",income);
-	      }
-	    }
-	  }
-	  
+      if(doc.doctype=="people"){ 
+        var income = (doc.profile && doc.profile.income)? doc.profile.income : 0;
+         if(income >= 100000 ){
+      	 emit("preferred",1);
+        }else if(income < 100000 && 
+                 income >= 30000) {
+          emit("standard",1);
+        }else if(income < 30000 &&
+             income > 0 ){
+          emit("challenge",1);
+        } else {
+         emit("na",1);
+        }    
+      }
+    }
+
 	  reduce:
-	  _count
+	    _sum
+	 
+	 query:
+	    group_level=1
 	\end{lstlisting}
 
 \end{enumerate}
