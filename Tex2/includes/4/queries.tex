@@ -1,29 +1,95 @@
-All the XMark queries are converted into NoSQL database queries focusing  on output result. If a database supports secondary indexes, they have been utilized for efficient result. There are some problems for following queries:
+All the XMark queries are translated into NoSQL database queries focusing  on output result. If a database supports secondary indexes, they have been utilized for efficient result. There are some problems for following queries:
 \begin{itemize}
-\item Q4 and Q7 cannot be applied to NoSQL databases. These queries will be skipped during the measurement and analysis. 
+\item Q4 and Q7 cannot be applied to NoSQL databases. These queries will be skipped during the measurement and analysis. Q7 does not match the the concept of the data model. 
 \item In Q14, full text search is measured in XQuery. The MongoDB, Couchbase and RethinkDB do not implement full text search but it a substring search in these databases. 
 \end{itemize}
 
 \subsection{XMark Queries in MongoDB}
 
-In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For an example, the \textit{find()} function can be used for Q1 to get result. As we can see Code~\ref{xmark-q1}, the collection is filtered with \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  
-\begin{lstlisting}[language=JSON, caption=XMark Query Q1 in MongoDB, label=xmark-q1, basicstyle=\scriptsize][H]
-		db.people.find({_id:"person0"},{_id:0,"name":1});
-		
-\end{lstlisting}
-As mentioned in ~\ref{nosql-mongodb}, MongoDB does not support join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell} and  callback functions are used  to get required output. Queries that supports secondary indexes have been optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}.
-For Q1, the query directly implements the default \textit{\_id} index due to the data model we have defined in ~\ref{xmark-mongodb}. For queries Q2 and Q3 two indexes are defined on fields \textit{initial} and \textit{bidder}.  A secondary index in Q5 is created on field \textit{price} so that the comparative operator \textit{\$gte} can utilized the index to limit the number of document it has to inspect. For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. Thereafter, the next is to process with aggregation pipeline. Full  list of MongoDB queries and indexes is  given in ~\ref{mongodb-query-list}.
+In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For an example, the \textit{find()} function can be used for Q1 to get result. As we can see in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  for advanced queries, the aggregation pipeline has been used for the query. 
 
-\begin{lstlisting}[language=JSON, caption=MongoDB secondary Index, label=mongodb-create-index, basicstyle=\scriptsize]
-   db.closed_auctions.createIndex({price:1})
+As mentioned in ~\ref{nosql-mongodb}, MongoDB does not support join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. The callback functions are used  to get for further processing. Queries that supports secondary indexes have been optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here:
+
+\begin{itemize}
+\item Q1 directly implements the default index \textit{\_id} due to the the our data model for MongoDB. First, the collection is filtered and then \textit{name} field is specified to be selected. 
+
+\item for Q2 and Q3, first, two indexes in fields \textit{initial} and \textit{"bidder.increase"} of collection \textit{open\_auctions}  has been created. With various step of aggregation pipeline, result is returned.
+
+\item A comparison operator is implemented in Q5 that can be easily optimized with index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
+\item According to our data model for MongoDB, Q6 is the count of document in the collection \textit{regions}. This query is itself optimized
+\item The Q8 is implements joins between two collections \textit{people} and \textit{closed\_auction}. An index in field \textit{buyer.person} has been implemented, thefore the person search is efficient. The Q9 implements same index of Q8 also added two new secondary indexes on \textit{regions} field of \textit{regions} collection which is also utilized in Q13.
+\item For Q10, another inded is created on \textit{profile.interest} field of \textit{people}. A helper function is used to join and format the data for output.
+\item For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. The XQuery search for full text but in MongoDB is it only the substring search.
+
+\item Q15 and Q16 are the two queries where result do not match in exact. Deep XPath in MongoDB is not possible same way as in XQuery. 
+
+\item The quey Q18 implements user-defined function. In MongoDB, it has to process two steps. A used defined function is created and stored in database system configuration file. Then, through mapreduce it is implemented. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
+
+\item for Q19, a secondary index on field \textit{location} of collection \textit{regions} is used for sorting the data. The final query Q20 implements the aggregations, We have used mapreduce for which is simpler as compare to aggregation for this query.
+
+\end{itemize}
+
+
+\begin{figure}
+\centering
+\begin{lstlisting}[language=JSON, caption=XMark Query Q1 in MongoDB, label=mongo-xmark-q1]
+		db.people.find({_id:"person0"},{_id:0,"name":1});
 \end{lstlisting}
+
+\centering
+\begin{lstlisting}[language=JSON, caption=MongoDB secondary Index, label=mongodb-create-index]
+             db.closed_auctions.createIndex({regions:1})
+\end{lstlisting}
+
+\begin{lstlisting}[language=JSON, caption=user-defined function in MongoDB, label=mongodb-user-defined-function]
+         
+\end{lstlisting}
+\end{figure}
+
+
+
+\begin{longtable}{c|c}
+	\caption{ User-defiend function and implementation in MongoDB(Q18)}
+	\label{tbl:mongodb-q18}\\
+    {function } & {map-reduce}\\
+	\hline
+\begin{minipage}{.4\textwidth}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+    db.system.js.save({ 
+        "_id": "reserve", 
+        "value": 
+            function(a){ 
+                return 2.20371*a; 
+            } 
+    })
+\end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.4\textwidth}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+db.open_auctions.mapReduce(
+    function() {
+       if(this.reserve){
+        emit(this._id, reserve(this.reserve));
+       }    
+    },
+    function(key,values) {
+        return Array.sum(values);
+    },
+    { "out": { "inline": 1 } }
+ );
+\end{lstlisting}
+\end{minipage}
+\end{longtable}
+
 
 \subsection{XMark Queries in Couchbase}
- All the query operations in Couchbase are done through the secondary index called views. A view contains a map function and an optional reduce function.
-To implement calculation and aggregation result,  reduce function can be utilized. All XMark queries except join queries need one a view. Then, the output of the views are queried like key filtration, grouping level, etc. through programming interface. For join queries, multiple views have been defined and joined manually. All XMark queries have been queried and evaluated through Node.js in Couchbase. 
+ In Couchbase, everythinng queried against the views. The output of the views are queried like through programming interface. We have used Node.js for querying couchbase. 
+ 
+ 
+ For join queries, multiple views have been defined and joined manually. All XMark queries have been queried and evaluated through Node.js in Couchbase. 
  %For Q14, the map function convert the JSON to string and filter for substring. 
 Code~\ref{couchbase-q20} illustrates a sample example of XMark  Q20 with map and reduce functions. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}
-\begin{lstlisting}[language=JSON, caption=XMark query Q20 in Couchbase Server, label=couchbase-q20,  basicstyle=\scriptsize][H]
+\begin{lstlisting}[language=JSON, caption=XMark query Q20 in Couchbase Server, label=couchbase-q20,  basicstyle=\scriptsize]
 	map:
 	  function (doc, meta) {
 	    if(doc.doctype=="people"){

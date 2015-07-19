@@ -14,7 +14,9 @@ But in case of Q10, complex result generations with joins could not be completed
 
 \item The structures of the queries Q15 and Q16 are complex in all NoSQL databases including MongoDB because of deep path in XQuery and has to process many array and object elements. The results produced in these queries were not exactly same as of XQuery but the performance was in the same level and the size of database did not have greater effect. The result of Q17 was similar to that of other systems but performance of Q18 has been decreased when database get bigger. 
 Q19 returned result in new field \textit{item} that reduces the performance because  MongoDB has to use aggregation pipeline for new field.  The Query would be much more faster if the result is returned without new field by using \textit{find()} function.
-\item Finally, the query Q20 groups, categories them and returns cardinalities. As the database get bigger query became slower. 
+\item Finally, the query Q20 groups and returns cardinalities. The mapreduce is implemented for this query and it is single-threaded query. which is bit slower.
+
+As the database get bigger query became slower. 
 \end{itemize}
 \begin{figure}
 	\centering
