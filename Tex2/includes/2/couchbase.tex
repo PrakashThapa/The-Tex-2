@@ -63,19 +63,19 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 
 \subsubsection{Querying and Indexing}
 
- In Couchbase, views are used to create indexes and query the data. Depending on the format and structure of the data, an index is created by the view. when the expiration pager operates to remove a document from the database, then the documents are removed from indexes. Views are used for various purposes such as indexing, querying, producing lists producing tables, filtering and extracting information from the database etc. Multiple views create multiple indexes for storing the data. Views are defined in a special kind of document called \textit{design document}~\ref{fig:cb-views-design}. These documents are bounded to a single bucket and cannot be executed from other buckets. A query completes in two stages in couchbase: mapreduce to create the views and query on the views.
+ In Couchbase, views are used to create indexes and query the data. Depending on the format and structure of the data, an index is created by the view. When the expiration pager operates to remove a document from the database, then the documents are removed from indexes. Views are used for various purposes such as indexing, querying, producing lists and tables, filtering and extracting information from the database etc. Multiple views create multiple indexes for storing the data. Views are defined in a special kind of document called \textit{design document}~\ref{fig:cb-views-design}. These documents are bounded to a single bucket and cannot be executed from other buckets. A query completes in two stages: mapreduce to create the views and to perform query on the views.
  
 \paragraph{Mapreduce:} 
-The mapreduce reads the entire dataset, in parallel across the cluster. Similarly, in Couchbase views, all the documents are processed with respect to each view. The design document holds JavaScript code that implements mapreduce operations. Couchbase uses incremental mapreduce where the index is incrementally updated as the bucket changes. The Mapreduce is achieved by two functions \textit{map} and \textit{reduce}. 
+The mapreduce reads the entire dataset in parallel across the cluster. Similarly, in Couchbase views, all the documents are processed with respect to each view. The design document holds JavaScript code that implements mapreduce operations. Couchbase uses incremental mapreduce, where the index is updated as the bucket changes. The Mapreduce is achieved by two functions \textit{map} and \textit{reduce}. 
 \begin{itemize}
 \item {The map function:}
-The map function takes the document and its metadata as the required parameters for initial processing. It provides structure and format of output of a view. The output is depends on the filter used in \textit{emit()} function inside  the map function. Each \textit{emit()} function returns a single row but can be called multiple times inside a single map function. The output of emit function is sent to reduce function if reduce is defined otherwise the output will be key/value pair. 
+The map function takes the document and its metadata as the required parameters for initial processing. It provides structure and format of a view. The output depends on the filter used in \textit{emit()} inside  the map function. Each \textit{emit()}  returns a single row but can be called multiple times. The output of emit function is sent to reduce function if reduce is defined, otherwise the output will be in key/value pair. 
 
 \item {The reduce function:}
-The \textit{reduce} function is used to aggregate the numeric value generated in map phase. Couchbase has built-in reduce functions like \textit{\_count}, \textit{\_sum} and \textit{\_stats} aggregation.
+The \textit{reduce} function is used to aggregate the numeric values generated in map phase. Couchbase has built-in reduce functions like \textit{\_count}, \textit{\_sum} and \textit{\_stats} aggregation.
 
 \end{itemize}
-Table ~\ref{tbl:cb-mapreduce} illustrates an example of MapReduce  in Couchbase. At the map phase, all the \textit{id}'s of documents that contains \textit{doctype} value "closed\_auctions" and \textit{price} value greater than 40 is emmited. In \textit{reduce}, total number of ids are counted.
+Table ~\ref{tbl:cb-mapreduce} illustrates an example of MapReduce  in Couchbase. At the map phase, if the value of \textit{ doctype} is "closed\_auctions" and  price is greater than 40, then  id  is emitted. In \textit{reduce}, total number of ids are counted.
 
 %end here from benchmarking sections.
 \begin{table}[h]
@@ -90,7 +90,7 @@ function (doc, meta) {
    if(doc.doctype && doc.doctype=="closed_auctions"){
      if(doc.price){
        if(doc.price > 40) {
-	      emit(meta.id,null)
+	      emit(meta.id)
      	}
     }
   }
@@ -109,7 +109,7 @@ function (doc, meta) {
 \par
 %start here 
 \paragraph{Query:}
- In contrast to MongoDB,  Couchbase's queries are closely associated with client SDK where each operations has to perform through SDKs. On-demand query language  named "N1QL" is also in  progress of development but still stable version has to be released~\cite{couchbasen1ql}.
+ In contrast to MongoDB,  Couchbase's queries are closely associated with client,  where each operations has to be performed through SDKs.
 \par
  Query in Couchbase is done against pre-materialize views through REST API or SDK. Different query options like \textit{limit}, \textit{group\_level}, \textit{key}, \textit{keys}, \textit{skip}, etc can be used in view to get required result. 
  

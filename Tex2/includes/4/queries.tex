@@ -1,34 +1,38 @@
-All the XMark queries are translated into NoSQL database queries focusing  on output result. If a database supports secondary indexes, they have been utilized for efficient result. There are some problems for following queries:
+All the XQuery expressions are translated into NoSQL database queries based on the output result. In case of availability of secondary indexes, they have been created and utilized for efficient result. There are some problems for following queries:
+\todo{why not Q4?}
 \begin{itemize}
-\item Q4 and Q7 cannot be applied to NoSQL databases. These queries will be skipped during the measurement and analysis. Q7 does not match the the concept of the data model. 
-\item In Q14, full text search is measured in XQuery. The MongoDB, Couchbase and RethinkDB do not implement full text search but it a substring search in these databases. 
+\item Q4 and Q7 cannot be applied to NoSQL databases. These queries will be skipped during the measurement and analysis. In Q7, XPath  wild cards cannot be used in NoSQL databases, which makes it impossible to perform the query. 
+
+\item In Q14, full text search is measured in XQuery. MongoDB, Couchbase and RethinkDB do not support full text search, therefore  sub-string search is performed in these databases. 
 \end{itemize}
 
 \subsection{XMark Queries in MongoDB}
 
-In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For an example, the \textit{find()} function can be used for Q1 to get result. As we can see in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  for advanced queries, the aggregation pipeline has been used for the query. 
+In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For an example, the \textit{find()} function can be used for Q1 to get result. As we can see in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  For advanced queries, the aggregation pipeline and mapreduce are used. 
 
-As mentioned in ~\ref{nosql-mongodb}, MongoDB does not support join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. The callback functions are used  to get for further processing. Queries that supports secondary indexes have been optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here:
+As mentioned in ~\ref{nosql-mongodb}, MongoDB has no support for  join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. Secondary indexes are created only when queries can be optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here:
 
 \begin{itemize}
-\item Q1 directly implements the default index \textit{\_id} due to the the our data model for MongoDB. First, the collection is filtered and then \textit{name} field is specified to be selected. 
+\item Q1 implements the default index \textit{\_id}. Firstly, the collection is filtered then \textit{name} field is specified for selection. 
 
-\item for Q2 and Q3, first, two indexes in fields \textit{initial} and \textit{"bidder.increase"} of collection \textit{open\_auctions}  has been created. With various step of aggregation pipeline, result is returned.
+\item for Q2 and Q3, firstly, two indexes in fields \textit{initial} and \textit{"bidder.increase"} of collection \textit{open\_auctions} are created. With various steps of aggregation pipeline the result is returned.
 
 \item A comparison operator is implemented in Q5 that can be easily optimized with index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
-\item According to our data model for MongoDB, Q6 is the count of document in the collection \textit{regions}. This query is itself optimized
-\item The Q8 is implements joins between two collections \textit{people} and \textit{closed\_auction}. An index in field \textit{buyer.person} has been implemented, thefore the person search is efficient. The Q9 implements same index of Q8 also added two new secondary indexes on \textit{regions} field of \textit{regions} collection which is also utilized in Q13.
-\item For Q10, another inded is created on \textit{profile.interest} field of \textit{people}. A helper function is used to join and format the data for output.
-\item For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. The XQuery search for full text but in MongoDB is it only the substring search.
+\item According to our data model for MongoDB, Q6 counts the number of documents in the collection \textit{regions}.
+\item In Q8, joins between two collections \textit{people} and \textit{closed\_auction} has been performed. The field \textit{buyer.person} has been indexed, therefore the \textit{person} search is efficient. 
+The Q9 implements index of Q8 and a new index on \textit{regions} field of \textit{regions} collection is added which is also utilized in Q13.
+\item For Q10, another index on \textit{profile.interest} field of \textit{people} collection is created. A helper function is used to join and format the data.
+\item For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. 
+\item The result of Q15 and Q16 do not match the exact result of XQuery, because  XQuery uses  XPath whereas MongoDB do not.
 
-\item Q15 and Q16 are the two queries where result do not match in exact. Deep XPath in MongoDB is not possible same way as in XQuery. 
+\item The quey Q18 implements user-defined function. In MongoDB, it has to process two steps: A used defined function is created and stored in database system document. Then, through mapreduce it is called. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
 
-\item The quey Q18 implements user-defined function. In MongoDB, it has to process two steps. A used defined function is created and stored in database system configuration file. Then, through mapreduce it is implemented. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
-
-\item for Q19, a secondary index on field \textit{location} of collection \textit{regions} is used for sorting the data. The final query Q20 implements the aggregations, We have used mapreduce for which is simpler as compare to aggregation for this query.
-
+\item For Q19, a secondary index on field \textit{location} of collection \textit{regions} is created.
+It is used for sorting the data by the \textit{location}. 
+\item
+The final query Q20 based on aggregations. This query in mapreduce  is much simpler than aggregation pipeline.
 \end{itemize}
-Full list of MongoDB queries and index can be found in ~\ref{couchbase-query-list}
+Full list of MongoDB queries and index can be found in ~\ref{mongodb-query-list}
 
 \begin{figure}
 \centering
@@ -84,21 +88,19 @@ db.open_auctions.mapReduce(
 
 
 \subsection{XMark Queries in Couchbase}
- In Couchbase, everythinng queried against the views. The output of the views are queried like through programming interface. For each query, the \textit{doctype} should be checked.  All XMark queries have been queried and evaluated through Node.js in Couchbase. 
- 
- some queries are explained here: 
+ In Couchbase, everything is queried with the views. The output of the views are queried through programming interface. For each query, the \textit{doctype} should be checked.  All XMark queries have been queried and evaluated through Node.js in Couchbase. Some of the important queries are illustrated here:
  \begin{itemize}
- \item Q1 is a simple query where the map function emits id and name of document if the condition is matched.
+ \item Q1 is a simple query where the map function emits \textit{id} and \textit{name} of document if the condition is matched.
  \item In Q2 and Q3, arrays are processed and emmited in Map function. 
  \item The Q5 and Q6 uses the built-in reduce function of views \textit{\_count}.
- \item For join queries, each \textit{doctype} should have a view, then join operation is implemented through Node.js. The Q8 contains two views, select the \textit{id} and \textit{name} field from \textit{people} documents. other view is used to aggregation of doctype \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both are combined through Node.js. 
+ \item For join queries, each \textit{doctype} should have a view, then join operation is performed through Node.js. The Q8 contains two views, one selects the \textit{id} and \textit{name} field from \textit{people} documents. other view aggregates doctype  \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both views are combined through Node.js. 
  
- \item The substring search 
+ \item 
  
  \end{itemize}
  
  %For Q14, the map function convert the JSON to string and filter for substring. 
-table~\ref{tbl:couchbase-q20} illustrates a sample example of XMark  Q20 with map and reduce functions. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}
+Table~\ref{tbl:couchbase-q20} illustrates a sample example of XMark  Q20 with map and reduce functions. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}
 
 \begin{longtable}{c|c|c}
 	\caption{ XMark query Q20 in Couchbase Server}
