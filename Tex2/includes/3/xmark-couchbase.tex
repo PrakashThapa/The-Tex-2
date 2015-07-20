@@ -1,9 +1,4 @@
-Couchbase does not have the concept of grouping documents like \textit{collections} in MongoDB  or \textit{tables} of RethinkDB. Therefore, the data model of Section ~\ref{xmark-nosql} is applied without modification. All the documents are stored in a single bucket independent of each other with \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
- An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}
-%\subsubsubsection{Queries}
-%write full code
-
-\begin{figure}
+\begin{figure}[h]
 \begin{lstlisting}[language=JSON,  basicstyle =\scriptsize]
 {
 	"id":  "item1000",
@@ -25,3 +20,8 @@ Couchbase does not have the concept of grouping documents like \textit{collectio
 \caption{Couchbase pseudo-document of the XMark data for item with id \textit{item1000}}
 \label{code:couchbase-item0}
 \end{figure}
+
+Couchbase does not have the concept of grouping documents like \textit{collections} in MongoDB  or \textit{tables} in RethinkDB. 
+Therefore, the data model of Section ~\ref{xmark-nosql} is applied without modification.
+ All the documents are stored in a single bucket with identifier attribute \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
+ An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}

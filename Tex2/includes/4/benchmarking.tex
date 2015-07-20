@@ -1,4 +1,4 @@
-In this section, we will focus on the analysis of different databases based on the  evaluation of XMark queries. BaseX, Mongodb, Couchbase and RethinkDB are completely different database system  with their own data model and different query languages.  Due to their complete different nature, a query of a database would perform better than others if data was normalized according to their specified data model. For example, BaseX would probably perform better if the data is normalized. Therefore, our goal is not to compare queries between these databases but evaluate the results individually.  All databases have been tested in 6 different size XMark dataset as mentioned in ~\ref{xmark}. Firstly, the results  of the four systems will be analyzed individually. Further the performances of all the databases of 111MB dataset examined together.
+In this section, we will focus on the analysis of different databases based on the  evaluation of XMark queries. BaseX, MongoDB, Couchbase and RethinkDB are completely different database system  with their own data model and different query languages.  Due to their complete different nature, a query of a database would perform better than others if data was normalized according to their specified data model. For example, BaseX would probably perform better if the data is normalized. Therefore, our goal is not to compare queries between these databases but evaluate the results individually.  All databases have been tested in 6 different size XMark dataset as mentioned in ~\ref{xmark}. Firstly, the results  of the four systems will be analyzed individually. Further the performances of all the databases of 111MB dataset examined together.
 
 \subsection{MongoDB}
 Figure~\ref{fig:xmark-result-mongodb-all} presents the time measurement of XMark queries in MongoDB. MongoDB automatically uses all the free memory of a machine for its cache. But this usage is dynamic and if other processes need the Server's RAM, it handovers such cached memory to other processes. Hence, the result of XMark queries might depend on the other processes running in the machine.  The result of the queries will be explained below:
@@ -39,7 +39,7 @@ Q19 returned result in new field \textit{item} that reduces the performance, bec
 \end{figure}
 
 \subsection{Basex}
-The results of all six different databases in BaseX is shown in Figure~\ref{fig:xmark-result-basex-all}. All the queries were tested with text, attribute and full text indexes. The query Q1 utilizes the attributes index and return a single result. This query was completed in less than 5ms in all databases. The query Q2 and Q3  with positional predicates took longer time if the size of database is increased. The queries Q5 and Q6 uses count operation and both were relatively faster. As seen in previous section, these queries performed better in MongoDB than in BaseX. For databases larger than 11MB, among the join-queries,  Q11 and Q12 could not be completed in specified time frame. For reference join Q8 and Q9, the attribute index is utilized. The time taken by these two queries is  similar to that of MongoDB.  The full text search query Q14 was slightly affected by the size of database. The queries Q15-Q17 implements the location paths, with similar performances and query Q18  implements user defined function for calculation. Q19 consumes most of resources for sorting the data. This query is faster in Mongodb compared to BaseX. Finally, the aggregation query Q20 produces constant result in all database instances. 
+The results of all six different databases in BaseX is shown in Figure~\ref{fig:xmark-result-basex-all}. All the queries were tested with text, attribute and full text indexes. The query Q1 utilizes the attributes index and return a single result. This query was completed in less than 5ms in all databases. The query Q2 and Q3  with positional predicates took longer time if the size of database is increased. The queries Q5 and Q6 uses count operation and both were relatively faster. As seen in previous section, these queries performed better in MongoDB than in BaseX. For databases larger than 11MB, among the join-queries,  Q11 and Q12 could not be completed in specified time frame. For reference join Q8 and Q9, the attribute index is utilized. The time taken by these two queries is  similar to that of MongoDB.  The full text search query Q14 was slightly affected by the size of database. The queries Q15-Q17 implements the location paths, with similar performances and query Q18  implements user defined function for calculation. Q19 consumes most of resources for sorting the data. This query is faster in MongoDB compared to BaseX. Finally, the aggregation query Q20 produces constant result in all database instances. 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.95\textwidth]{img/result/basex/basex-all}
@@ -54,7 +54,7 @@ All the time evaluation of XMark queries in RethinkDB is given in Fig.~\ref{fig:
  \item  
   RethinkDB is able to handle arrays better way than other NoSQL databases. Chains of queries can be used as a pipeline but unlike MongoDB's pipeline that produces result in multiple stages, RethinkDB runs a query on a server at once, hence it has been seen that queries Q2 and Q3 produces better result compare to MongoDB. 
  \item
- Queries Q5 and Q6 were comparatively slow in  RethinkDB. Firstly, MongoDB uses secondary index on Q5, but RethinkDB cannot use an secondary index in \textit{filter()} function. Secondly, the \textit{count()} operation in RethinkDB is always slow due to stream properties. It executes everything in server, most of the stream operations \todo{explain stream/lazy operation in introduction} including \textit{filter} runs lazily. The \textit{run} function returns the results as soon as the first block of data is available, It does not load whole table data  at once. It will only load the data as clients iterate over the cursor. Hence, the memory changes with the usage. In case of \textit{count()}, the query has to wait until all the data is loaded. 
+ Queries Q5 and Q6 were comparatively slow in  RethinkDB. Firstly, MongoDB uses secondary index on Q5, but RethinkDB cannot use an secondary index in \textit{filter()} function. Secondly, the \textit{count()} operation in RethinkDB is always slow due to stream properties. It executes everything in server, most of the stream operations including \textit{filter} runs lazily. The \textit{run} function returns the results as soon as the first block of data is available, It does not load whole table data  at once. It will only load the data as clients iterate over the cursor. Hence, the memory changes with the usage. In case of \textit{count()}, the query has to wait until all the data is loaded. 
  \item As we have mentioned the support of join query in ~\ref{xmark-rethinkdb}, RethinkDB was not able to take advantages of native joins except query Q11 and Q12. The join operation in Q8, Q9 and Q10 were similar in case of time measurement with rest of system. Q10 is slower due to large output and many new fields. 
  \item In query Q13, index is utilized on \textit{regions} field of the table that produces comparable result to MongoDB but better than BaseX. Queries Q14-Q19 have returned similar result except Q15. Due to many arrays and object operations, Q15 was a bit slower. 
 \item The query Q20 was once again slow in RethinkDB due to cardinalities at the end of the query. All the grouping and categorizing operations were a lot faster than the \textit{count()} at the end. 
@@ -77,8 +77,8 @@ Each Couchbase bucket is assigned RAM quota for caching data, therefore, the per
 	\label{fig:xmark-result-cb-all}
 \end{figure}
 
-\subsection{Conclusion}
-Even though our aim is not to compare query performance in different systems directly, it would be interesting to see how these queries look like together. Figure~\ref{fig:xmark-result-1-all-new} illustrates all the queries for different database systems together for 111MB XMark data instance. MongoDB and BaseX had produced the best result in Q1. In Q2 and Q3, all database except MongoDB  had an identical result but in Q5 and Q6 MongoDB was the clear leader followed by Couchbae and BaseX, whereas RethinkDB was lagging behind other databases. In the join queries, the results produced by different databases were mixed in nature. MongoDB and BaseX were relatively better in Q8 and Q9 followed by Couchbase and RethinkDB. In Query Q10, the RethinkDB has failed to return result in a given time frame, but all other databases has similar results. The value join queries Q11 and Q12 were the best queries for RethinkDB followed by MongoDB and Couchbase, but BaseX could not complete the result. Even the Q13 has similar results for all systems, RethinkDB had generated the best performance followed by MongoDB due to their efficient indexes. The FT search query Q14 is substring search for NoSQL databases, so that the query is a bit faster on them. The complex path queries Q15 and Q16 of Basex has better result with Couchbase than RethinkDB and MongoDB.
+\subsection{Summary}
+Even though our aim is not to compare query performance in different systems directly, it would be interesting to see how these queries look like together. Figure~\ref{fig:xmark-result-1-all-new} illustrates all the queries for different database systems together for 111MB XMark data instance. MongoDB and BaseX had produced the best result in Q1. In Q2 and Q3, all database except MongoDB  had an identical result but in Q5 and Q6 MongoDB was the clear leader followed by Couchbae and BaseX, whereas RethinkDB was lagging behind other databases. In the join queries, the results produced by different databases were mixed in nature. MongoDB and BaseX were relatively better in Q8 and Q9 followed by Couchbase and RethinkDB. In Query Q10, the RethinkDB has failed to return result in a given time frame, but all other databases has similar results. The value join queries Q11 and Q12 were the best queries for RethinkDB followed by MongoDB and Couchbase, but BaseX could not complete the result. Even the Q13 has similar results for all systems, RethinkDB had generated the best performance followed by MongoDB due to their efficient indexes. The FT search query Q14 is substring search for NoSQL databases, so that the query is a bit faster on them. The complex XPath queries Q15 and Q16 of Basex has better result with Couchbase than RethinkDB and MongoDB.
 Q17-Q19 results are identical but in Q20 the Couchbase was the leader followed by Basex, MongoDB and RethinkDB. 
 \par
 It has been seen that the NoSQL queries that were able to use secondary indexes performed better than BaseX with some exception. Even though some NoSQL databases do not support join queries, the result they produces were competitive in nature. The reason was favourable data model defined for those databases compare to BaseX. BaseX would probably perform better if the queries or data were normalized.
@@ -100,29 +100,3 @@ R\hbox{\pdfliteral{0 1 0 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} 
 	\caption{XMark queries of 111MB data in all databases }
 	\label{fig:xmark-result-1-all-new}
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-********** end here ******************

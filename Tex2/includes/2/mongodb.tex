@@ -3,7 +3,7 @@ MongoDB is a schema-less document-oriented database developed by MongoDB Inc. wi
 \subsubsection{Data design} 
 \paragraph{Document}
 	A document is abstract and storable unit in MongoDB. It is the data structure expressed in the form of JSON and is stored in BSON, a binary variant of JSON that supports additional data types like ObjectId, timestamp, datetime etc. All the accessible data including database records, query selectors, index specifications, server configurations etc. are represented as documents. An example  MongoDB document is given in Figure~\ref{sample-mongodb-document}.
-Every document is referenced with a unique key. A document is retrieved either by the key or any other attribute of the document. Collection in MongoDB is a group of documents and it is stored in a database. It is more convenient to group similar structure documents in a collection but not mandatory. Mongodb has two principles that allow the users to represent the relationships between the documents: \textit{references} and \textit{embedded} documents~\citep{mongodb:org}. 
+Every document is referenced with a unique key. A document is retrieved either by the key or any other attribute of the document. Collection in MongoDB is a group of documents and it is stored in a database. It is more convenient to group similar structure documents in a collection but not mandatory. MongoDB has two principles that allow the users to represent the relationships between the documents: \textit{references} and \textit{embedded} documents~\citep{mongodb:org}. 
 \begin{itemize}
 \item {Embedded:}\label{mongo:embedded}
     In Embedded document, data is nested. The documents are structured as sub-document in the form of Arrays or Objects~\citep{nosql/comparision}. 
@@ -24,13 +24,15 @@ Every document is referenced with a unique key. A document is retrieved either b
 \begin{figure}[h]
 	\centering
 	\subfloat[Reference document]{
-		\includegraphics[width=0.44\textwidth]{img/mongodb-reference}
+		\includegraphics[width=.95\textwidth]{img/mongodb-reference}
+		%{img/mongo/mongodb-reference}
 		%\caption{R-tree structure}
 		\label{fig:mongodb-ref-doc}
 	}
+	\\
 	\centering
 	\subfloat[Embedded document]{
-		\includegraphics[width=0.44\textwidth]{img/mongodb-embedded}
+		\includegraphics[width=.9\textwidth]{img/mongo/mongodb-embedded}
 		%\caption{R-tree}
 		\label{fig:mongodb-emb-doc}
 	}

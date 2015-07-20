@@ -18,23 +18,27 @@ The main entities of XMark data are in two groups. The first group consists of  
 		  A \textit{catgraph} links categories into a network.  The full semantics of the XMark dataset can be found in~\cite{xmark/original}.
 \end{itemize}
 The full ER-Diagram of XMark dataset is illustrated in Fig.~\ref{fig:xmark-schema}. 
-\begin{figure}[H]
+\begin{figure}[h]
+
 	\centering
 	\subfloat[Reference in \textit{XMark}]{
-		\includegraphics[width=0.40\textwidth]{img/xmark/101}{ %xmark-references.png
+		\includegraphics[width=.5\textwidth]{img/xmark/xmark-ref}{ %xmark-references.png
 			\label{fig:xmark-reference}
 		}
 	}
+	\\
 	\centering
 	\subfloat[Reference in \textit{XMark} dataset tree]{
-		\includegraphics[width=0.4\textwidth]{img/xmark-tree.png}{
+		\includegraphics[width=0.95\textwidth]{img/xmark/xmark-tree-1.png}{
 			\label{fig:xmark-tree}
 		}
 	}
 	\caption{XMark data tree and reference~\citep{xmark/original}}
 	\label{fig:xmark-tree-reference}
 \end{figure}
-\begin{figure}[H]
+
+
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.90\textwidth]{img/xmark-schema-4}
 	\caption{XMark ER-Diagram. Nodes, solid arrows, and dashed arrows represent schema elements (or attributes, with prefix '@'), structural links, and value links, respectively. Elements with suffix '*' are of SetOf type\citep{xmark/schema-sumerize}}

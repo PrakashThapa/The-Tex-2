@@ -1,5 +1,4 @@
- Couchbase Server is designed to access real-time operational data. It is a NoSQL database that serves both as key-value and document-oriented database. As a key-value store, it is able to store any type of data including  strings, numbers and binary data and the data is treated as an opaque Binary Large Object(BLOB). When used as document store, data is stored in a valid JSON format. The data is stored in logical unit called buckets. These buckets are isolated to each other and have their own RAM quota and replica settings. Buckets can be compared with \texttt{database} of MongoDB or any other RDBMS. Couchbase recommends few number of buckets in a single cluster. 
- \todo{write about raplica settings and ram quota}
+ Couchbase Server is designed to access real-time operational data. It is a NoSQL database that serves both as key-value and document-oriented database. As a key-value store, it is able to store any type of data including  strings, numbers and binary data and the data is treated as an opaque Binary Large Object(BLOB). When used as document store, data is stored in a valid JSON format. The data is stored in logical unit called buckets. These buckets are isolated to each other and have their own RAM quota and replica settings. Buckets can be compared with \texttt{database} of MongoDB or any other RDBMS. Couchbase recommends few number of buckets in a single cluster.
  
  \subsubsection{Data Model}%repeat check once
  
@@ -52,7 +51,7 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.4\textwidth]{img/vbucket2}
+	\includegraphics[width=0.33\textwidth]{img/vbucket2}
 	\caption{ Couchbase Key, Bucket and   vBucket ~\cite{couchbasedocs}}
 	\label{fig:cb-vbucket}
 \end{figure}
