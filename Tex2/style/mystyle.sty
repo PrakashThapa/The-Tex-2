@@ -132,7 +132,8 @@
 
 \lstdefinestyle{XQuery}{
 	language=XQuery,
-	float=h,
+	float=ht,
+	 basicstyle=\scriptsize
 }
 \lstdefinestyle{XQueryNoFloat}{
 	language=XQuery,
@@ -208,7 +209,7 @@
 }
 
 \lstnewenvironment{fakeXML}[1][]{
-	\lstset{basicstyle=\footnotesize\sffamily,
+	\lstset{ basicstyle=\scriptsize,
 		linewidth=\linewidth,
 		breaklines=true, 
 		%numbers=left,
@@ -229,7 +230,7 @@
 
 \lstnewenvironment{fakeJSON}[1][]{
 	\lstset{
-		basicstyle=\footnotesize\sffamily,
+		 basicstyle=\scriptsize,
 		keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
 		ndkeywords={class, export, boolean, throw, implements, import, this},
 		sensitive=false,

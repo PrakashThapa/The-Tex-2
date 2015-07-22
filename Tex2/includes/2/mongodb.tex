@@ -104,17 +104,20 @@ The \textit{find()} method is the most common way to retrieve data from a collec
 		       ]);
 		  \end{lstlisting}
 		  
-		  \item{\textbf{MapReduce}} is a data processing framework design to support large volumes of data that goes beyond the limitations and restriction of aggregation pipeline.  In MongoDB's Mapreduce operation,  \textit{map} applies to each input document and emits the key-value pair as output. Any arbitrary sorting and limiting  of single collection is performed before map stage. The reduce applies to the map's output where a key is associated with multiple values to return the aggregated data. The output of \textit{reduce} may pass optionally through finalize function to further process the result. Map-reduce functions are written in JavaScript and executed in MongoDB's demon process ~\cite{mongodbaggregation}.  Unlike pipeline framework, Map-reduce support options for choosing to store result  data in a node as collection or return the output. 
+		  \item{\textbf{MapReduce}} is a data processing framework design to support large volumes of data that goes beyond the limitations and restriction of aggregation pipeline.  In MongoDB's Mapreduce operation,  \textit{map} applies to each input document and emits the key-value pair as output. Any arbitrary sorting and limiting  of single collection is performed before map stage. The reduce applies to the map's output where a key is associated with multiple values to return the aggregated data. The output of \textit{reduce} may pass optionally through finalize function to further process the result. Map-reduce functions are written in JavaScript and executed in MongoDB's demon process ~\cite{mongodbaggregation}.  Unlike pipeline framework, Map-reduce support options for choosing to store result  data in a node as collection or return the output. Table~\ref{mongdb-mapreduce} illustrates a Mapreduce implementation in MongoDB. Two JavaScript function are defined for map and reduce. The \textit{runCommand} executes these functions in a collection.
 		  
 \end{itemize}		
 
 \begin{longtable}{c|c}
+\caption{Mapreduce in MongoDB}
+ \label{mongdb-mapreduce}\\
+	
 	{\textit{map}} function(a) & {\textit{reduce}} function(b)\\
 	\hline
 	\begin{minipage}{.4\textwidth}
 		\centering		
 		\begin{lstlisting}[language=XML,basicstyle = \scriptsize,label=couchbase-map-sample]
-map = function() {
+mapFunction = function() {
 	for (var i in this.tags) {
 		var recency = 1 / (new Date() - this.date);
 		var score = recency * this.score;
@@ -126,10 +129,10 @@ map = function() {
 };	
 		\end{lstlisting}		
 	\end{minipage} &
-	\begin{minipage}{.55\textwidth}
+	\begin{minipage}{.49\textwidth}
 		\centering
 		\begin{lstlisting}[language=JSON, basicstyle =\scriptsize, label=couchbase-reduce-sample]
-reduce = function(key, emits) {
+reduceFucntion = function(key, emits) {
 	var total = {urls: [],score: 0 }
 	for (var i in emits) {
 		emits[i].urls.forEach(function(url) {
@@ -140,18 +143,26 @@ reduce = function(key, emits) {
 	return total;
 };
 		\end{lstlisting}
-	\end{minipage}\\
+	\end{minipage}
+	\\
 	\hline
-	\begin{minipage}{.55\textwidth}
-	\begin{lstlisting}[language=JSON, basicstyle =\scriptsize,]
-        db.runCommand({"mapreduce" : "collection-name", "map" : map, "reduce" : reduce})
-    \end{lstlisting}
-	\end{minipage}\\
-	\caption{Mapreduce in MongoDB}
-	\label{mongdb-mapreduce}\\
+	\multicolumn{2}{c}{
+	    \scriptsize
+	    
+	Use: 	db.runCommand({"mapreduce" : \textit{collectionName}, 
+	                       "map" : \textit{mapFunction}, 
+	                       "reduce" : \textit{reduceFunction}})
+		
+	}
+  	
+  	\\
+	\hline
+	
 \end{longtable}
 
 %end here
+
+
 
 \begin{comment}
 
