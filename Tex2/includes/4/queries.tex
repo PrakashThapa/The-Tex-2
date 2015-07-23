@@ -15,17 +15,17 @@ As mentioned in ~\ref{nosql-mongodb}, MongoDB has no support for  join queries. 
 \begin{itemize}
 \item Q1 implements the default index \textit{\_id}. Firstly, the collection is filtered then \textit{name} field is specified for selection. 
 
-\item for Q2 and Q3, firstly, two indexes in fields \textit{initial} and \textit{"bidder.increase"} of collection \textit{open\_auctions} are created. With various steps of aggregation pipeline the result is returned.
+\item For Q2 and Q3, two indexes in fields \textit{initial} and \textit{"bidder.increase"} of collection \textit{open\_auctions} are created. With various steps of aggregation pipeline the result is returned.
 
 \item A comparison operator is implemented in Q5 that can be easily optimized with index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
 \item According to our data model for MongoDB, Q6 counts the number of documents in the collection \textit{regions}.
-\item In Q8, joins between two collections \textit{people} and \textit{closed\_auction} has been performed. The field \textit{buyer.person} has been indexed, therefore the \textit{person} search is efficient. 
+\item In Q8, joins between two collections \textit{people} and \textit{closed\_auction} are performed. The field \textit{buyer.person} is  indexed, therefore the \textit{person} search is efficient. 
 The Q9 implements index of Q8 and a new index on \textit{regions} field of \textit{regions} collection is added which is also utilized in Q13.
 \item For Q10, another index on \textit{profile.interest} field of \textit{people} collection is created. A helper function is used to join and format the data.
 \item For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. 
 \item The result of Q15 and Q16 do not match the exact result of XQuery, because  XQuery uses  XPath whereas MongoDB do not.
 
-\item The quey Q18 implements user-defined function. In MongoDB, it has to process two steps: A used defined function is created and stored in database system document. Then, through mapreduce it is called. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
+\item The quey Q18 implements user-defined function. In MongoDB, it has to process two steps: A function is created and stored in database system document. Then, it is called through mapreduce. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
 
 \item For Q19, a secondary index on field \textit{location} of collection \textit{regions} is created.
 It is used for sorting the data by the \textit{location}. 
@@ -87,16 +87,18 @@ db.open_auctions.mapReduce(
  In Couchbase, everything is queried with the views. The output of the views are queried through programming interface. For each query, the \textit{doctype} should be checked.  All XMark queries have been queried and evaluated through Node.js in Couchbase. Some of the important queries are illustrated here:
  
  \begin{itemize}
- \item Q1 is a simple query where the map function emits \textit{id} and \textit{name} of document if the condition is matched.
- \item In Q2 and Q3 are deeper array and object processing for couchbase.
- \item Both Q5 and Q6 use the built-in reduce function of views \textit{\_count}.
- \item The join operation in Couchbase is bit complicated as compare to other NoSQL database. Each \textit{doctype} should have a view and it can be implemented multiple times. For example, in case of Q11 and Q12, view on \textit{open\_auctions} can be used for both both queries.  The join operation is completed using programming interface. The Q8 contains two views, one selects the \textit{id} and \textit{name} field from \textit{people}. other view aggregates doctype  \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both views are combined using Node.js. 
- \item In Q14, the \textit{description} field in \textit{regions} are converted into string  that makes substring search is possible.
- 
- \item In Q18, for a user-defined function implementation, a JavaScript function is created at map section and called at during emit. 
- \item In Q19, a query parameter \textit{descending} have to make false for result in ascending order. 
+ \item Q1 is a simple query in which the map function emits \textit{id} and \textit{name} of document if the condition is matched.
+ \item Q2 and Q3 are deeper array and object processing. Map function use JavaScript code to find the required objects or arrays elements to emit them. 
+ \item Both Q5 and Q6 use the built-in \textit{\_count} in reduce section.
+ \item The join operation in Couchbase is bit complicated as compare to other NoSQL database. Each \textit{doctype} should have a view and it can be implemented multiple times. For example, in case of Q11 and Q12, view on 
+ \textit{open\_auctions} can be used for both queries.  The join operation is completed using programming interface. The Q8 contains two views, one selects the \textit{id} and \textit{name} field from \textit{people}. other view aggregates \textit{doctype} \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both views are combined using Node.js. 
+ \item In Q14, the \textit{description} field in \textit{regions} are converted into string  that makes substring search possible.
+ \newpage
+ \item In Q18, for a user-defined function implementation, a JavaScript function is created at map section and called it during emit. 
+ \item In Q19, a query parameter \textit{descending} set to \textit{false} for result in ascending order. 
  \end{itemize}
  
+
  Table~\ref{tbl:couchbase-q20} illustrates a sample example of XMark  Q20 with  mapreduce functions and the query parameters. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}.
 
 \begin{longtable}{c|c|c}
@@ -140,7 +142,7 @@ function (doc, meta) {
 
 \subsection{XMark Queries in RethinkDB}
 
-In RethinkDB, the performance of a read query can be improved through the secondary indexes. In XMark queries,  wherever possible, these indexes are utilized to improve the performance. The index has to be defined in the query and can be used only in one of the four functions \textit{getAll()}, \textit{between()}, \textit{eqJoin()} and \textit{orderBy()}. Table~\ref{tbl:rethinkdb-index-query} illustrates an example of creating a secondary index and its usage in a query.
+In RethinkDB, the performance of a read query can be improved through the secondary indexes. For XMark queries,  wherever possible, these indexes are utilized. The index has to be defined in the query and can be used only in one of the four functions \textit{getAll()}, \textit{between()}, \textit{eqJoin()} and \textit{orderBy()}. Table~\ref{tbl:rethinkdb-index-query} illustrates an example of creating a secondary index and its usage in a query.
 \begin{longtable}{c|c}
 	\caption{ RethinkDB secondary index and Query for Q13}
 	\label{tbl:rethinkdb-index-query}\\

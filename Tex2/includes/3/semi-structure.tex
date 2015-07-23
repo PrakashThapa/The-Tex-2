@@ -1,9 +1,9 @@
-XML is a textual markup language in which data elements are ordered by nature: \textit{string} is the core data type, other data types like integers, floats, user-defined abstract data, etc. are derived. ~\citep{xmark/original}. It is both human and machine readable, and it is used as the data exchange format in the web. It is derived from Standard Generalized Markup Language(SGML) and standardized by the World wide web Consortium(W3C).
+XML is a textual markup language in which data elements are ordered by nature: \textit{string} is the core data type, other data types like integers, floats, user-defined abstract data, etc. are derived. ~\citep{xmark/original}. It is both human and machine readable, and  used as the data exchange format in the web. XML is derived from Standard Generalized Markup Language(SGML) and standardized by the World wide web Consortium(W3C).
 \par
-%JSON is a programming language model that consist of minimal textual representation and a subset of JavaScript. 
-    JSON is another data format that is designed to exchange the data in key-value format. It is popular for its web services. As it is the subset of JavaScript, it is perfectly suited for the web-based architectures. In modern browsers parsing JSON is comparatively much faster than XML. A JSON document consists of two data structures:
+%JSON is a programming language model that consist of minimal textual representation and a subset of JavaScript. its web services. As it is the subset of JavaScript, it is perfectly suited 
+    JSON is another data format that is designed to exchange the data in key/value format. As subset of JavaScript, it perfectly suits for the web-based services. In modern browsers parsing JSON is comparatively much faster than XML. A JSON document consists of two data structures:
 \begin{itemize}
-	\item Object, an unordered collection of key-value pair that are encapsulated by curly braces \{ and \}. The key is a string embedded in double quotes and followed by a column(:) to its value. The key must be unique for each object.
+	\item Object, an unordered collection of key/value pair that are encapsulated with curly braces \{ and \}. The key is a string embedded in double quotes and followed by a column(:) to its value. The key must be unique for each object.
 	%TODO:   which are numbers of key value pairs
 	\item Arrays, that are an ordered list of values
 \end{itemize}
@@ -11,16 +11,16 @@ A JSON value can be Object, Array, number, string, true, false and null.
   %XML is suitable for document description, that is the hierarichal elements can also have attributes, which is not available in JSON. JSON is much preferred for text format object serialization, because of its concise syntax for defining the lists of elements. An additional library is required for XML to work with JavaScript. Whereas JSON can directly parse and work directly with js objects.
   
 \section{Problem to translate from XML to JSON}
-JSON and XML are conceptually similar as they both are text based markups, that are designed to represent data in human-readable form, exchangeable across multiple platforms and parseable by common programming language but differ in their syntax~\citep{lee2011jxon}. JSON and XML are fundamentally incompatible with each other, as listed below:
+JSON and XML are conceptually similar as they both are text based markups, that are designed to represent data in human-readable form, exchangeable across multiple platforms and parsable by common programming language, but differ in their syntax~\citep{lee2011jxon}. JSON and XML are fundamentally incompatible with each other, as listed below:
 \begin{itemize}
 \item \textit{Root node and anonymous values}
 \\
-Each XML document has one root node. JSON supports anonymous values also referred as string values, that do not need key-value pairs. For example, in Table~\ref{tbl:Anonymous-xmljson} the XML root node is implicitly created in the model and will not have a textual representation in JSON.
+Each XML document has one root node. JSON supports anonymous values also referred as string values, that do not need key/value pairs. For example, in Table~\ref{tbl:Anonymous-xmljson} the XML root node is implicitly created in the model and will not have a textual representation in JSON.
 
 	\item \textit{Arrays}\\
 		Arrays are native data types of JSON that does not exists in XML. There is no direct markup for arrays in XML.
 		\item \textit{Identifiers}\\
-		XML is much more restrictive for identifiers compared to JSON, which allows any string to be an identifier. Translating from XML to JSON does not cause any problem, but in reverse, it might lead to not well formed XML. For example, "Hello World" is a valid identifier in JSON but not valid attribute or element in XML, as there is a whitespace between the two words.
+		XML is much more restrictive for identifiers compared to JSON, which allows any string to be an identifier. Translating from XML to JSON does not cause any problem, but in reverse case it might lead to not well formed XML. For example, "Hello World" is a valid identifier in JSON but not valid attribute or element in XML, as there is a whitespace between the two words.
 		\item \textit{Attributes}\\
 		JSON does not have the notion or any representation of attributes. When mapping data from XML to JSON, the attributes are translated to name object members along with other child elements. This information will be lost in mapping from JSON to XML.
 		\item \textit{Namespaces}\\
@@ -54,7 +54,7 @@ or
 	
 		
 \section{Mapping}
-XML and JSON have different data types. XML has more flexible data types in comparison to JSON. Table~\ref{tbl:xml-json:types} types of data are listed for simple XML and relevant JSON types.
+XML and JSON have different data types. XML has more flexible data types compare with JSON. Table~\ref{tbl:xml-json:types} types of data are listed for simple XML and relevant JSON types.
 \begin{longtable}{c|c}
 \caption{Translation of simple XML data types into JSON}
 \label{tbl:xml-json:types}\\
@@ -123,26 +123,26 @@ xs:integer
 \end{minipage}\\
 \end{longtable}
 
-For complex type elements in XML that contains other elements and attributes, JSON can have two possibilities either an object or an array type based on XML element as illustrated in the next section.
+
+For complex type elements in XML that contains nested elements and attributes, JSON can have two possibilities: either an object or an array type.  Sectio~\ref{xml-to-json-migration} illustrates the translation of complex XML type to JSON.
 
 \section{Migration from XML to JSON}\label{xml-to-json-migration}
-	\todo{explain why we need migration}
-We have defined the several stages to convert XML to JSON documents.
+We have defined the several stages to convert XML to JSON documents:
 \begin{enumerate}[label=\textbf{Step \arabic *.}]
 	\item~\\
 	\textbf{XML to JSON friendly XML}
 	\par
-	Algorithm~\ref{algorithm-JSONXML} provides pseudo-code for XML-to-JSON friendly XML. At the first step of the conversion process, all attributes of XML document are represented as ordered child elements. There can be more than one attribute that is inserted in order. Then, the inserted attributes are deleted.  XML nodes can contain both text and element node as a child, whereas JSON can have only key-value pair or value only for array. Each text node that  has also an element node as sibling is moved to "childtext"(name of the element) node. At the end of the first step, if an element contains another element as a child node, then it is represented as object type of JSON. It is necessary to identify if a siblings of an element node($S$) has same the element name or not. If this condition exists, $S$ is represented as an array in JSON. All the child nodes of all siblings are moved inside $S$ node. If $S$ is already  object type  then it is replace with array type  a new array is added. %In this algorithm, the loop of one action affect other, so they are looped independently.
+	Algorithm~\ref{algorithm-JSONXML} provides pseudo-code for XML-to-JSON friendly XML. At the first step of the conversion process, all attributes of XML document are represented as ordered child elements. There can be more than one attribute that is inserted in order. Then, the inserted attributes are deleted.  XML nodes can contain both text and element node as a child, whereas JSON can have only key/value pair or value only for array. Each text node that  has also an element node as sibling is moved to \textit{childtext}(name of the element) node. At the end of the first step, if an element contains another element as a child node, then it is represented as object type of JSON. It is necessary to identify if a siblings of an element node($S$) has same the element name or not. If this condition exists, $S$ is represented as an array in JSON. All the child nodes of all siblings are moved inside $S$ node. If $S$ is already  object type  then it is replace with array type  a new array is added. %In this algorithm, the loop of one action affect other, so they are looped independently.
 	
 	\item~\\
 	\textbf{Data type of XML-to-JSON data type}
 	\par
 	After JSON-friendly XML in Step 1, the complex data type of XML is marked as either object or array type of JSON illustrated in Table~\ref{tbl:xmljson}. In this Step,  as in 
-	Algorithm~\ref{algorithm-JSONXML-type}, all the scalar type of xml document are identified and marked with their type in JSON according to Table ~\ref{tbl:xml-json:types}.
+	Algorithm~\ref{algorithm-JSONXML-type}, all the scalar type of XML document are identified and marked with their type in JSON according to Table ~\ref{tbl:xml-json:types}.
 	\item~\\
-	\textbf{Map XML to JSON object or array}
+	\textbf{Mapping XML to JSON object or array}
 	\par
-	After Step 1 and 2, a complete JSON-friendly XML is generated. All XML object and array are mapped to $<$$key$, $value$$>$ pair of JSON and their respective data types. Table ~\ref{tbl:xmljson-convert-3} illustrates final conversion from XML to JSON.
+	After Step 1 and 2, a complete JSON-friendly XML is generated. All XML objects and arrays are mapped to $<$$key$, $value$$>$ pair of JSON and their respective data types. Table ~\ref{tbl:xmljson-convert-3} illustrates final conversion from XML to JSON.
 \end{enumerate}
 
 		\begin{algorithm}[h]

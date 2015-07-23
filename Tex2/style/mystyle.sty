@@ -2,19 +2,17 @@
 \ProvidesPackage{style/mystyle}
 %  all packages are start here 
 \usepackage{graphicx,titling, color,listings,comment}
-%\usepackage[round]{natbib} % package for author-year references instead of standard numbered references.
 \usepackage[square,numbers]{natbib}
 \usepackage[pdftex,dvipsnames]{xcolor}
 \usepackage{nomencl}
 \usepackage[graphicx]{realboxes}
 \usepackage{rotating}
-\definecolor{light-gray}{gray}{0.80}
 \usepackage{url}
 \usepackage[top=2cm, bottom=2cm, left=4cm, right=2cm]{geometry}
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \usepackage{titlesec}
 %\usepackage{minted} %for js code
-\usepackage{tikz}
+
 \usetikzlibrary{arrows,shapes,positioning,shadows,trees,calc,backgrounds}
 \usepackage{amsmath,amssymb,enumitem,epstopdf,float,subfig,caption}
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
@@ -63,23 +61,6 @@
 
 \RequirePackage{fancyvrb}
 \RequirePackage{color}
-\definecolor{lightblue}{rgb}{.3,.5,1}
-\definecolor{orange}{rgb}{1,.7,0}
-\definecolor{darkorange}{rgb}{1,.4,0}
-\definecolor{darkgreen}{rgb}{0,.4,0}
-\definecolor{darkblue}{rgb}{0,0,.4}
-\definecolor{darkred}{rgb}{.56,0,0}
-\definecolor{gray}{rgb}{.2,.2,.2}
-\definecolor{darkgray}{rgb}{.2,.2,.2}
-\definecolor{shadecolor}{gray}{0.95}
-\definecolor{gray}{rgb}{0.4,0.4,0.4}
-\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
-\definecolor{cyan}{rgb}{0.0,0.6,0.6}
-
-\colorlet{punct}{red!60!black}
-\definecolor{delim}{RGB}{20,105,176}
-\colorlet{numb}{magenta!60!black}
-
 \lstset{
 	basicstyle=\ttfamily,
 	columns=fullflexible,
@@ -92,16 +73,9 @@
 {
 	basicstyle=\ttfamily\footnotesize,
 	morestring=[b]",
-%	moredelim=[s][\bfseries\color{Maroon}]{<}{\ },
-%	moredelim=[s][\bfseries\color{Maroon}]{</}{>},
-%	moredelim=[l][\bfseries\color{Maroon}]{/>},
-%	moredelim=[l][\bfseries\color{Maroon}]{>},
 	morecomment=[s]{<?}{?>},
 	morecomment=[s]{<!--}{-->},
-%	commentstyle=\color{DarkOliveGreen},
-%	stringstyle=\color{blue},
 	captionpos=b,
-	%identifierstyle=\color{red}
 }
 
 \lstdefinestyle{XML}{
@@ -145,86 +119,23 @@
 
 % end of Xquery
 
-
-
-\begin{comment}
-\lstset{
-	language={XQuery},
-	basicstyle      = \ttfamily\small,%
-	keywordstyle    = [1]\bfseries\color{darkblue},%
-	keywordstyle    = [2]\color{darkblue}\underbar,%
-	keywordstyle    = [3]\color{lightblue}\underbar,%
-	keywordstyle    = [4]\itshape,%
-	keywordstyle    = [5]\bfseries\color{red},%
-	keywordstyle	= [6]\color{darkgreen},%
-	keywordstyle	= [7]\color{darkgreen},%
-	stringstyle     = \color{red},%
-	commentstyle    = \sffamily\color{darkgray},%
-	identifierstyle = \color{darkgreen},
-	%showstringspaces= false,%
-	%fancyvrb        = true,%
-	%firstnumber=auto,%
-	%      frame=tb,%
-	breaklines=true,
-	breakatwhitespace=true,%
-	%      prebreak=\textellipsis,postbreak=\textellipsis,%
-	emphstyle=\color{red}\underbar, emphstyle={[2]\color{blue}\underbar},%
-	%numbers=left, numberstyle=\tiny, stepnumber=2, numbersep=3pt,%
-	%extendedchars=true,
-	inputencoding=utf8,%
-	%backgroundcolor=\color{shadecolor},
-	xleftmargin=3pt,
-	xrightmargin=1.5pt,
-	escapechar=\#,
-	abovecaptionskip=10pt,
-	captionpos=b,
-	% mathescape=true,
-	breaklines=true,
-	breakatwhitespace=true,%
-	escapeinside={(*@}{@*)},
-	gobble=0,
-}
-\end{comment}
-
-
 \lstset{
 	language=XQuery,
 	basicstyle=\footnotesize\sffamily,
 	linewidth=\linewidth,
 	breaklines=true, 
-	%numbers=left,
-	%stepnumber=1,
-	%numbersep=10pt,
-	%frame=single,
 	framerule=1.0pt,
 	captionpos=b,
-	%backgroundcolor=\color{darkgray},
-%	identifierstyle=\color[rgb]{1,0,0},
-%	emph={intersects}, 
-%	emphstyle=\color{red},
-%	keywordstyle=\color[rgb]{0,0,1},
-%	commentstyle=\color[rgb]{0.133,0.545,0.133},
-%	stringstyle=\color[rgb]{0.627,0.126,0.941},
-%	morekeywords={xml, ref, xs, version, targetNamespace, minOccurs, maxOccurs},
 }
 
 \lstnewenvironment{fakeXML}[1][]{
 	\lstset{ basicstyle=\scriptsize,
 		linewidth=\linewidth,
 		breaklines=true, 
-		%numbers=left,
-		%stepnumber=1,
-		%numbersep=10pt,
-		%frame=single,
 		framerule=1.0pt,
-		%backgroundcolor=\color{darkgray},
 		language=HTML,
-		%identifierstyle=\color[rgb]{1,0,0},
 		emph={intersects}, 
 		emphstyle=\color{red},
-		%keywordstyle=\color[rgb]{0,0,1},
-		%commentstyle=\color[rgb]{0.133,0.545,0.133},
-		%stringstyle=\color[rgb]{0.627,0.126,0.941},
 		morekeywords={xml, ref, xs, version, targetNamespace, minOccurs, maxOccurs}
 	}\lstset{#1}}{}
 
@@ -241,11 +152,6 @@
 		linewidth=\linewidth,
 		breaklines=true,
 		escapeinside={\%*}{*)},
-		%numbers=left,
-		%stepnumber=1,
-		%numbersep=10pt,
-		%frame=single,
-		%framerule=1.0pt,
 		language=JSON,
 		emph={}
 	}\lstset{#1}}{}
@@ -255,31 +161,10 @@
 \lstdefinelanguage{json}{
 	basicstyle=\normalfont\ttfamily,
 	linewidth=\linewidth,
-	%numbers=left,
-	%numberstyle=\scriptsize,
-	%stepnumber=1,
 	numbersep=8pt,
 	showstringspaces=false,
 	breaklines=true,
 	captionpos=b,
-	%frame=lines,
-%	literate=
-%	*{0}{{{\color{numb}0}}}{1}
-%	{1}{{{\color{numb}1}}}{1}
-%	{2}{{{\color{numb}2}}}{1}
-%	{3}{{{\color{numb}3}}}{1}
-%	{4}{{{\color{numb}4}}}{1}
-%	{5}{{{\color{numb}5}}}{1}
-%	{6}{{{\color{numb}6}}}{1}
-%	{7}{{{\color{numb}7}}}{1}
-%	{8}{{{\color{numb}8}}}{1}
-%	{9}{{{\color{numb}9}}}{1}
-%	{:}{{{\color{punct}{:}}}}{1}
-%	{,}{{{\color{punct}{,}}}}{1}
-%	{\{}{{{\color{delim}{\{}}}}{1}
-%	{\}}{{{\color{delim}{\}}}}}{1}
-%	{[}{{{\color{delim}{[}}}}{1}
-%	{]}{{{\color{delim}{]}}}}{1},
 }
 
 

@@ -1,13 +1,14 @@
-The goal of this thesis was to convert, investigate and analyze the data of XML database to NoSQL database. These both databases are process the data that does not have pre-defined structure. We specifically focused on BaseX, an nativ XML database and three document-oriented NoSQL databases: MongoDB, Couchbase and RethinkDB. 
+The goal of this thesis was to convert, investigate and analyze the data of XML database to NoSQL database. These both databases  process the data that does not have pre-defined structure. We specifically focused on BaseX, an nativ XML database and three document-oriented NoSQL databases: MongoDB, Couchbase and RethinkDB. 
 
 We defined the different data models for each of the NoSQL database based on the XML database for query and benchmarking purpose. The architecture, query model and indexing mechanism of these databases has been studied and examined. The general concept of indexing and query plan of the native XML database BaseX was also investigated. NoSQL database stores data in JSON format. We analyzed the problems  to translate  from XML to JSON. Based the XMark dataset, some algorithms were defined to convert XML into JSON.
 The XQuery expressions of standard XML benchmarking project XMark has been converted into each of NoSQL database queries and evaluated according to the their data model. \par
-We tested and analyzed the performance all the systems. The experiment is done including running different types and numbers of queries with variable database sizes. 
+We tested and analyzed the performance of all the systems. The experiment is done running different types and numbers of queries with variable database sizes. 
 
-XQuery is powerful functional language which is also the query language of XML database. Most of the NoSQL databases support basic queries. Couchbase has query language compare to MongoDB has relatively better query operations. ReQL, the query language of RethinkDB is most advanced among the NoSQL databases. 
+XQuery is powerful functional language which is also the query language of XML database. Most of the NoSQL databases support basic queries. MongoDB has relatively better query operations compare to Couchbase query language. ReQL, the query language of RethinkDB is most advanced among the NoSQL databases. 
 
 \par
-NoSQL databases are designed to handle small size of large numbers of documents. They cannot process or the efficiency is decrease if document is a huge block. The XML databases process the very large size of XML documents. When the application has massive updates, NoSQL database suited better because the write operation is automic in a single document. If the application has large size of documents but less write operations,  XML database suited better. 
+NoSQL databases are designed to handle small size of large numbers of documents. They cannot process a huge block  data, even if they do efficiency decreases. The XML databases process very large size of XML documents. NoSQL database suited better for the an application with massive updates,  because the write operation is automic in a single document. On the other hand, XML database is best suited for the application that has large size of document but less write operation.
+%If the application has large size of documents but less write operations,  XML database suited better. 
 
 %Even though both of these systems are designed to handle the data that are do not have pre-defined model or  
 

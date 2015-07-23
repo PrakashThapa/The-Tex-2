@@ -1,4 +1,4 @@
-%I will do it....
+\todo{I will do it.... some}
 MongoDB is a schema-less document-oriented database developed by MongoDB Inc. with the support of Open Source community. It is also known as a flexible, fast and Multi-datacenter scalable system.
 \subsubsection{Data design} 
 \paragraph{Document}
@@ -58,6 +58,7 @@ Every document is referenced with a unique key. A document is retrieved either b
 \end{figure}
 
 \subsubsection{Indexing}\label{mong-xmark-indexing}
+
 Each document in MongoDB is uniquely identified by a field \textit{\_id} which is also a primary index. Hence, the collection is sorted by \textit{\_id}~\citep{nosql/comparision}.
 Apart from the primary index, MongoDB provides a mechanism to create secondary indexes for all fields of document. It supports various user defined indexes for field values including single field index, multikey index, multidimensional index, geo-spatial index, text index and hash index.
 %Single field, multidimensional and multikey indexes are organized using B-tree, whereas geospatial index is implemented using quad trees.Once index is defined on a field,
@@ -67,7 +68,9 @@ Apart from the primary index, MongoDB provides a mechanism to create secondary i
 \item To index a field that contains an array value, MongoDB provides special indexing called \textit{Multikey index}.
 \item \textit{Text index} helps efficient search of a string in documents.
 \end{itemize}
-\subsubsection{Query Model}%\todo{modify with christian's suggestions}
+\subsubsection{Query Model}\label{mongo-query-model}
+
+%\todo{modify with christian's suggestions}
 Queries in MongoDB are expressed in a JSON-like syntax and are sent to MongoDB as BSON objects by a database driver\citep{orend2010analysis}. A query can be specified by exact match on the embedded document or by using individual field with a \textit{dot notation}. It is used to access an element in document of an array or an object in the form of  $<$$array$.$index$$>$ or  $<$$object$.$childobject$$>$. For general queries, mongo shell can be used. It is an user friendly JavaScript shell that allows to implement callback functions to manipulate the data returned by the  queries.  
 \par
 The Query model supports the following features:
