@@ -193,10 +193,11 @@ function 9() {
 	
 	\item \label{mongodb-q-13}%13
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
-	    db.regions.find(
-		{regions:"australia"},
-		{_id:0,name:1,description:1}
-        )
+    db.regions.aggregate([
+	{$match:{regions:"australia"}},
+	{$project:{_id:0,
+	    item:{name:"$name",description:"$description"}}}
+])
 	\end{lstlisting}
 	
     \item \label{mongodb-q-14}%14
@@ -361,7 +362,7 @@ function 9() {
 \item \label{mongodb-i-7}
 \begin{lstlisting}[language=JSON]
   	db.regions.createIndex([
-                   { description: "text" },
+                   { "$**": "text" },
                    { name: "TextIndex" }
             ])
 

@@ -31,7 +31,9 @@ in field \textit{profile.interest} of \textit{people} collection is created.
 
 \item Query \ref{mongodb-q-13} utilized the index created on field \textit{regions} of \textit{regions} collection. 
 
-\item For {mongodb-q-14} , a \textit{text index}[{mongodb-i-7}] is created in field \textit{description} of collection \textit{regions}. The first parameter in \textit{createIndex} defines the field to be index and second parameter is the name of index that indexes all the values of objects or arrays.  In query, simple \textit{find} function is implemented with query criteria. \textit{\$text} indicates that query is using \textit{text index } and \textit{\$search} specifies a string of word that \textit{text} operator passes.
+\item For \ref{mongodb-q-14} , a \textit{text index}[\ref{mongodb-i-7}] is created on collection \textit{regions}. The first parameter in \textit{createIndex} defines the field to be indexed and second parameter is the name of the index. Text indexes can include any field whose value is a string or an array of string elements or whole document. The sub-document \textit{description} of collection \textit{regions} is an object type so that text index cannot be applied only to this field but whole documents of \textit{regions} collection. 
+\par
+For query, simple \textit{find} function is implemented with query criteria. \textit{\$text} indicates that query is using text index and \textit{\$search} operator specifies a string to be search. 
 
 \item Compared to XQuery representations \ref{mongodb-q-15} and \ref{mongodb-q-16} are relatively complex in all NoSQL databases including MongoDB, because the child axes original query need to rewritten in various aggregation stages.
 
@@ -199,7 +201,7 @@ function (doc, meta) {
 \end{minipage}
 \end{longtable}
 
-\subsection{XMark Queries in RethinkDB}
+\subsection{Queries in RethinkDB}
 
 In RethinkDB, the performance of a read query can be improved through the secondary indexes. For XMark queries,  wherever possible, these indexes are utilized. The index has to be defined in the query and can be used only in one of the four functions \textit{getAll()}, \textit{between()}, \textit{eqJoin()} and \textit{orderBy()}. Table~\ref{tbl:rethinkdb-index-query} illustrates an example of creating a secondary index and its usage in a query.
 \begin{longtable}{c|c}
