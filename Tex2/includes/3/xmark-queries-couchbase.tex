@@ -1,16 +1,15 @@
 \label{xmark-queries-couchbase}
-\begin{enumerate}[label=Q\arabic*.]
-	\item %1
+\begin{enumerate}[label=Q\arabic*]
+	\item \label{cb-q-1}%1
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 			function (doc, meta) {
 			   if(doc.doctype && doc.doctype=="people" && doc.id=="person0"){
 				emit(doc.name);	   
 			    }
-			  
 			}
 		\end{lstlisting}
 
-	\item %2
+	\item \label{cb-q-2}%2
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	function (doc, meta) {
 	   if(doc.doctype && doc.doctype=="open_auctions"){
@@ -31,7 +30,7 @@
 	}
 	\end{lstlisting}
 	
-    \item %3
+    \item \label{cb-q-3}%3
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
        if(doc.doctype && doc.doctype=="open_auctions" 
@@ -63,11 +62,11 @@
 	\end{lstlisting}
 	
 	
-    \item %4
+    \item \label{cb-q-4}%4
 	\par
 	
 	
-    \item %5
+    \item \label{cb-q-5}%5
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	map:
 	   function (doc, meta) {
@@ -83,7 +82,7 @@
 	    _count
 	\end{lstlisting}
 	
-    \item %6
+    \item \label{cb-q-6}%6
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  map:
 	  function (doc, meta) {
@@ -97,11 +96,11 @@
 	\end{lstlisting}
 	
 	
-    \item %7
+    \item \label{cb-q-7}%7
     \par
 	
 	
-    \item %8
+    \item \label{cb-q-8}%8
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	View1: person_info
 	map:
@@ -128,11 +127,11 @@
 	\end{lstlisting}
 	
 	
-    \item %9
+    \item \label{cb-q-9}%9
 \par
 	
 	
-    \item %10
+    \item \label{cb-q-10}%10
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  View 1: 
 	 map:
@@ -198,7 +197,7 @@ query:
 	\end{lstlisting}
 	
 	
-    \item %11
+    \item \label{cb-q-11}%11
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	view 1: 
 	map:
@@ -218,7 +217,7 @@ query:
     }
 	\end{lstlisting}
 	
-	\item %12
+	\item \label{cb-q-12}%12
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	view 1: 
 	map:
@@ -242,7 +241,7 @@ query:
 	\end{lstlisting}
 	
 	
-    \item %13
+    \item \label{cb-q-13}%13
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   function (doc, meta) {
 	     if(doc.doctype && doc.doctype == "regions" 
@@ -255,7 +254,7 @@ query:
 	   }
 	\end{lstlisting}
 	
-    \item %14
+    \item \label{cb-q-14}%14
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 		//don't supprt full text search
 	 	function (doc, meta) {
@@ -270,7 +269,7 @@ query:
 	 	}
 	\end{lstlisting}	
 
-    \item %15
+    \item \label{cb-q-15}%15
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 function (doc, meta) {
 	   if(doc.doctype=="closed_auctions"){
@@ -293,7 +292,7 @@ query:
 	 }
 	\end{lstlisting}	
 
-    \item %16
+    \item \label{cb-q-16}%16
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 function (doc, meta) {
 	   if(doc.doctype=="closed_auctions"){
@@ -321,7 +320,7 @@ query:
 	\end{lstlisting}	
 
     
-    \item %17
+    \item \label{cb-q-17}%17
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
 	    if(doc.doctype=="people"){
@@ -332,7 +331,7 @@ query:
 	  }
 	\end{lstlisting}	
 
-    \item %18
+    \item \label{cb-q-18}%18
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  function (doc, meta) {
       if(doc.doctype=="open_auctions"){
@@ -345,8 +344,9 @@ query:
     }
 	\end{lstlisting}	
 
-    \item %19
+    \item \label{cb-q-19}%19
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
+	Map:
 	  function (doc, meta) {
 	    if(doc.doctype=="regions" && doc.name){
 	      var location = (doc.location)?doc.location:"";
@@ -354,9 +354,13 @@ query:
 	    }
 	  }
 	  })
+	 
+	 query: 
+	    descending=false
+	  
 	\end{lstlisting}	
 	
-    \item %20
+    \item \label{cb-q-20}%20
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  map:
 	  function (doc, meta) {

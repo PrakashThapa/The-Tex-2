@@ -9,14 +9,14 @@ All the XQuery expressions are translated into NoSQL database queries based on t
 
 In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For example, the \textit{find()} function can be used for Q1 to get result. As we can see in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  For advanced queries, the aggregation pipeline and mapreduce are used.   The \textit{allowDiskUse} option in aggregation pipeline is enabled, that allows to execute the query beyond the memory limit.
 
-As mentioned in ~\ref{nosql-mongodb}, MongoDB has no support for  join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. Secondary indexes are created only when queries can be optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here:
+As mentioned in ~\ref{nosql-mongodb}, MongoDB has no support for  join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. Secondary indexes are created only when queries can be optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here, full list of MongoDB queries and index is given in ~\ref{mongodb-query-list}.
 
 \begin{itemize}
 \item \ref{mongodb-q-1} implements the default index \textit{\_id}. The collection is filtered with the criteria and the second parameter specified the field to be selected in \textit{find()}. 
 
 \item Two queries \ref{mongodb-q-2} and \ref{mongodb-q-3}  return the bidder information from \textit{open\_auctions} collection.  The field \textit{bidder} is array type in all JSON. Different operators in aggregation pipeline are used to get the result.
 
-\item In \ref{mongodb-q-5}, a comparison operator \textit{\$gte(>=)} is used to filter the collection and documents return number of document. This query can be optimized with an index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
+\item In \ref{mongodb-q-5}, a comparison operator \textit{\$gte}(greater than or equal to) is used to filter the collection and documents return number of document. This query can be optimized with an index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
 
 \item According to our data model for MongoDB, \ref{mongodb-q-6} counts the number of documents in the collection \textit{regions}.
 
@@ -31,7 +31,7 @@ in field \textit{profile.interest} of \textit{people} collection is created.
 
 \item Query \ref{mongodb-q-13} utilized the index created on field \textit{regions} of \textit{regions} collection. 
 
-\item For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. 
+\item For {mongodb-q-14} , a \textit{text index}[{mongodb-i-7}] is created in field \textit{description} of collection \textit{regions}. The first parameter in \textit{createIndex} defines the field to be index and second parameter is the name of index that indexes all the values of objects or arrays.  In query, simple \textit{find} function is implemented with query criteria. \textit{\$text} indicates that query is using \textit{text index } and \textit{\$search} specifies a string of word that \textit{text} operator passes.
 
 \item Compared to XQuery representations \ref{mongodb-q-15} and \ref{mongodb-q-16} are relatively complex in all NoSQL databases including MongoDB, because the child axes original query need to rewritten in various aggregation stages.
 
@@ -41,31 +41,28 @@ in field \textit{profile.interest} of \textit{people} collection is created.
 
 \item For \ref{mongodb-q-19}, a field  \textit{location} is indexed in collection \textit{regions} for sorting the data by location. This query is also implemented through aggregation pipeline. 
 \item
-The final query \ref{mongodb-q-18} based on aggregations. Mapreduce comparatively simpler but also possible from pipeline. For our test we have implemented Mapreduce. 
+The final query \ref{mongodb-q-20} is to calculate the aggregation. Mapreduce comparatively simpler but also possible from pipeline. For our test we have implemented Mapreduce. 
 \end{itemize}
-Full list of MongoDB queries and index can be found in ~\ref{mongodb-query-list}
+
 
 \begin{figure}
 \centering
 \begin{lstlisting}[language=JSON, caption=XMark Query Q1 in MongoDB, label=mongo-xmark-q1]
 		db.people.find({_id:"person0"},{_id:0,"name":1});
 \end{lstlisting}
-
 \centering
 \begin{lstlisting}[language=JSON, caption=MongoDB secondary Index, label=mongodb-create-index]
-             db.closed_auctions.createIndex({regions:1})
+          db.closed_auctions.createIndex({regions:1})
 \end{lstlisting}
 \end{figure}
 
 
-
-\begin{longtable}{c|c}
-    \hline
-	\caption{ User-defiend function and implementation in MongoDB(Q18)}
-	\label{tbl:mongodb-q18}\\
+\begin{longtable}[hbt]{c|c}
+    \caption{ User-defiend function \\and implementation in MongoDB(Q18)}
+    \label{tbl:mongodb-q18}\\
     {function } & {map-reduce}\\
 	\hline
-\begin{minipage}{.4\textwidth}
+\begin{minipage}{.3\textwidth}
 \begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
     db.system.js.save({ 
         "_id": "reserve", 
@@ -93,26 +90,77 @@ db.open_auctions.mapReduce(
 \end{minipage}
 \end{longtable}
 
+\newpage
 
-\subsection{XMark Queries in Couchbase}
- In Couchbase, everything is queried with the views. The output of the views are queried through programming interface. For each query, the \textit{doctype} should be checked.  All XMark queries have been queried and evaluated through Node.js in Couchbase. Some of the important queries are illustrated here:
- 
+\subsection{Queries in Couchbase}
+Views are the query interface in Couchbase. The output of the views are queried through the SDKs to get result. Each query except join queries consists of one view and the \textit{doctype} should be checked before \textit{emit} in \textit{map} function. \textit{Views} are stored in \textit{design document}. The recommended number of views in single design documents is ten. We have created three design documents for all queries. Q1-Q7 are stored in the first design document, the join queries Q8-Q12 views in second and finally remaining views in the third document design. 
+\par
+We have different buckets for each database instances. 
+The views in development mode takes subset of documents to create sample index and  production mode all documents used to create full index  as illustrated in Figure~\ref{fig:cb-views-workflow}. These indexes affect the performance because each bucket has own RAM quota. We have many 6 buckets for each instance of XMark dataset. At the time of measurements, the views of other buckets are  assigned in development mode so that enough memory could be assign to that specific bucket. 
+\par
+
+All XMark queries  are queried and evaluated through Node.js. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}. Some of the important queries are explained here:
+
+
  \begin{itemize}
- \item Q1 is a simple query in which the map function emits \textit{id} and \textit{name} of document if the condition is matched.
- \item Q2 and Q3 are deeper array and object processing. Map function use JavaScript code to find the required objects or arrays elements to emit them. 
- \item Both Q5 and Q6 use the built-in \textit{\_count} in reduce section.
- \item The join operation in Couchbase is bit complicated as compare to other NoSQL database. Each \textit{doctype} should have a view and it can be implemented multiple times. For example, in case of Q11 and Q12, view on 
- \textit{open\_auctions} can be used for both queries.  The join operation is completed using programming interface. The Q8 contains two views, one selects the \textit{id} and \textit{name} field from \textit{people}. other view aggregates \textit{doctype} \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both views are combined using Node.js. 
- \item In Q14, the \textit{description} field in \textit{regions} are converted into string  that makes substring search possible.
- \newpage
- \item In Q18, for a user-defined function implementation, a JavaScript function is created at map section and called it during emit. 
- \item In Q19, a query parameter \textit{descending} set to \textit{false} for result in ascending order. 
- \end{itemize}
+ \item  In query \ref{cb-q-1}, the map function filters the documents by \textit{doctype} and the \textit{id} of document then emits \textit{name} field.
+ \item \ref{cb-q-2} and \ref{cb-q-3} are deep arrays and objects processing queries like other NoSQL databases. Map function uses JavaScript code to find the required elements in objects or arrays to emit them. 
+ \item Both queries \ref{cb-q-5} and \ref{cb-q-6} use the built-in \textit{\_count} in reduce section of Mapreduce.  In Q5, only \textit{doctype} \textit{open\_auctions} is selected and emited if the codnition match for \textit{price} attribute. Query Q6 
+ emit all the \textit{id} of \textit{regions} \textit{doctype}.  The \textit{\_count} function in reduce counts the numbers of emitted items. 
  
+ \item The join operation in Couchbase is a bit complicated as compare to other NoSQL databases. Each \textit{doctype} should have a view and can be used for for other queries. For example, in case of \ref{cb-q-11} and \ref{cb-q-12}, view on \textit{open\_auctions} can be used for both queries.  The \ref{cb-q-8} contains two views: the first select the \textit{id} and \textit{name} field of \textit{people}. The second view aggregates \textit{doctype} \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both views are combined using Node.js. 
+ 
+ \item In \ref{cb-q-10}, two views on \textit{people}  are combined to get the result. Table~\ref{tbl:couchbase-q10-a} illustrate the view \textit{people\_interest} for Q10. In Map phase, all the \textit{category} as key and document \textit{id} as value are emitted. In reduce, we have defined a custom reduce function that groups the values(doc.id) by key(category). The query defines the level of group which is 1 for the view. This view generates  \textit{id} of the \textit{people} group by interest. Another view \textit{people\_profile} emits the \textit{id} as key and  formatted profile of \textit{people} as value. The \textit{people\_profile} is joined to \textit{people\_interest}.
+ 
+ \begin{longtable}[hbt]{c|c|c}
+	\caption{ view \textit{person\_interest} in doctype \textit{people} for Q10}
+	\label{tbl:couchbase-q10-a}\\
+    {map} & {reduce} & {query}\\
+	\hline
+\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+function (doc, meta) {
+      if(doc.doctype && doc.doctype=="people" 
+      && doc.profile && doc.profile.interest){
+        var interest = doc.profile.interest;
+            for(i=0; i < interest.length; i++) {
+          if(interest[i] && interest[i].category) {
+            emit(interest[i].category, meta.id) 
+          }
+        }
+      }
+    }
+\end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.3\textwidth}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+ function(keys, values, rereduce) {
+  return values
+}
+\end{lstlisting}
+\end{minipage} &
+\begin{minipage}{.15\textwidth}
+\begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
+     group_level
+            = 1
+\end{lstlisting}
+\end{minipage}
+\end{longtable}
 
- Table~\ref{tbl:couchbase-q20} illustrates a sample example of XMark  Q20 with  mapreduce functions and the query parameters. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}.
+\item For \ref{cb-q-11} and \ref{cb-q-12}, a common view in \textit{open\_auctions} is joined to two different views in \textit{people} for each query.
 
-\begin{longtable}{c|c|c}
+ \item In \ref{cb-q-14} , the \textit{description} field in \textit{regions} is converted into string  that makes substring search possible. There is a problem in doing so, both \textit{key} and \textit{value} of JSON is converted into string. 
+ \item Queries \ref{cb-q-15} and \ref{cb-q-16} are deep child axes search using javascript like other NoSQL databases. The  \ref{cb-q-17} is simple filter in view.  
+ \item In \ref{cb-q-18}, a javascript function is defiend inside map and called at emit.  
+ 
+ \item A view in doctype \textit{regions} is created for \ref{cb-q-19}. The map emits the \textit{location} as key and a JSON object as values.  A parameter \textit{descending} set to \textit{false} to get result in ascending order. 
+ 
+ 
+ \item The final query \ref{cb-q-20} is given in Table~\ref{tbl:couchbase-q20}. In map function, the document is emitted accoding to their class and a counter value. In reduce the built-in reduce function \textit{\_sum} with the help of query\textit{group\_level=1} sums all the values group by key, the class.
+ \end{itemize}
+
+
+\begin{longtable}[hbt]{c|c|c}
 	\caption{ XMark query Q20 in Couchbase Server}
 	\label{tbl:couchbase-q20}\\
     {map} & {reduce} & {query}\\

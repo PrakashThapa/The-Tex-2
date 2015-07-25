@@ -76,10 +76,11 @@
         
 	\end{lstlisting}
 	
-    \item \label{mongodb-q-9}%9
+    \item \label{mongodb-q-9}%9 
+    \todo{check query well}
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	
-function q921() {
+function 9() {
     var person = new Array();
 	var ctr =0;
 	var getItemEuropeById = function(id){ return db.regions.find({_id:id, regions:"europe"},{_id:0,name:1}).name;};
@@ -200,12 +201,10 @@ function q921() {
 	
     \item \label{mongodb-q-14}%14
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
-	  db.regions.aggregate([
-		{$match:{$text:{$search:"gold"}}},
-		{$group:{_id:"$_id"}},
-		{$group:{_id:null,count:{$sum:1}}},
-		{$project:{_id:0,count:1}}
-	])
+	  db.regions.find(
+		{$text:{$search:"gold"}},
+		{_id:0,name:1}
+	)
 	\end{lstlisting}
 	
     \item \label{mongodb-q-15}%15
@@ -362,7 +361,7 @@ function q921() {
 \item \label{mongodb-i-7}
 \begin{lstlisting}[language=JSON]
   	db.regions.createIndex([
-                   { "$**": "text" },
+                   { description: "text" },
                    { name: "TextIndex" }
             ])
 
