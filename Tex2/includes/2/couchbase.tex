@@ -2,7 +2,7 @@
  
  \subsubsection{Data Model}%repeat check once
  
-The data model of Couchbase is different than other NoSQL databases. The data is stored in the form of key/value pair inside a bucket. Individual documents are indentified by its key called Document ID. A bucket can contain any type of data but other than JSON type can be retrieved only by its key. Therefore, before fetching, it is important to check metadata \textit{type} that is stored with a single document. Each document is stored independently and there is no notion of grouping of documents like collections in MongoDB or tables in other RDBMS. An user-defined type attribute can be created to differentiate the various documents stored in the bucket and  create indexes on them.  For example, \textit{user} and \textit{post} are two collections of MongoDB. The documents of these two collections can be represented in Couchbase by adding a new field \textit{documentType}  in each document with value \textit{user} and \textit{post} respectively. 
+The data model of Couchbase is different than other NoSQL databases. The data is stored in the form of key/value pair inside a bucket. Individual documents are identified by its key called Document ID. A bucket can contain any type of data but other than JSON type can be retrieved only by its key. Therefore, before fetching, it is important to check metadata \textit{type} that is stored with a single document. Each document is stored independently and there is no notion of grouping of documents like collections in MongoDB or tables in other RDBMS. A user-defined \textit{documenttype} field can be created to differentiate the various documents stored in the bucket and  create indexes on them.  For example, \textit{user} and \textit{post} are two collections of MongoDB. The documents of these two collections can be represented in Couchbase by adding a new field \textit{documentType}  in each document with value \textit{user} and \textit{post} respectively. 
 
 \paragraph{RAM Quota}
 It is necessary to define the amount of memory for Server and individual bucket in Couchbase before storing data. 
@@ -17,23 +17,26 @@ For data caching, certain amount of RAM should be allocated to an individual buc
 %may be we can remove it.
 For every value stored in a bucket, Couchbase generates following meta information that is associated with a document~\cite[p. 26]{cb/ostrovsky2014pro}. 
 \begin{itemize}
-	\item{Expiration time:}
+\item{Document Key:}
+ Every value in Couchbase is saved with unique identifier called document key. Unlike MongoDB, in Couchbase the key should be manually generated. The key length should be with in 250 characters.
+ 
+ 
+\item{Type:}
+ \textit{type} is the type of a document either \textit{json} or Base64 encoded string.
+ 	\item{Expiration time:}
 		The Time to Live(TTL) also named as expiration time is the life time of a document. The default value of TTL is 0 that indicates document will never expire and also can be set as Unix epoch time after which document is removed.
 	\item{Check-and-Set(CAS):}
 		The CAS value is 64-bit integer that is updated by the server when associated item is modified. The document is updated only  if unique identifier matches the identifier of the document. CAS is used to manage concurrency when multiple client attempts to update the same document simultaneously. 
 	\item{Flags:} 
 Flags are SDK-specific parameter that are used to identify the format and the type of data objects being stored.
-\item{Type:}
- \textit{type} is the type of a document either \textit{json} or Base64 encoded string.
- \item{Document Key:}
- Every value in Couchbase is saved with unique identifier called document key. Unlike MongoDB, in Couchbase the key should be manually generated. The key length should be with in 250 characters.
+
 \end{itemize}	
 
 %In case of XMark data each \texttt{id} attributes of  \texttt{item}, \texttt{person}, \texttt{open\_auction}, \texttt{category} represent as key. In case of  \texttt{closed\_auction} and  \texttt{edge} key can be manually generated. 
 \begin{figure}[h]
 	\centering
 	\subfloat[Views in Document Design]{
-		\includegraphics[width=0.4\textwidth]{img/cb/Small_view_elements}
+		\includegraphics[width=0.6\textwidth]{img/cb/Small_view_elements}
 		\label{fig:cb-views-design}
 	}
 	\\
@@ -46,6 +49,8 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 	\label{fig:cb-views-document-design}	
 \end{figure}
 
+
+\begin{comment}%removed after christian's suggestion
 \paragraph{Bucket and vBucket}
  Data bucket used by the Couchbase is a logical container of information that provides a logical grouping of physical resources within a cluster~\citep{lichtenberg2013nosql}. Documents in Couchbase do not have fixed structure. Each bucket is split into 1024 logical partitions called vBuckets. A vBucket is treated as a owner of subset of keys as shown in Figure~\ref{fig:cb-vbucket}.  
 %%why we need vbucket
@@ -56,6 +61,7 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 	\caption{ Couchbase Key, Bucket and   vBucket ~\cite{couchbasedocs}}
 	\label{fig:cb-vbucket}
 \end{figure}
+\end{comment}
 
 %where is reference of images
 
@@ -63,7 +69,7 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 
 \subsubsection{Querying and Indexing}
 
- In Couchbase, views are used to create indexes and query the data. Depending on the format and structure of the data, an index is created by the view. When the expiration pager operates to remove a document from the database, then the documents are removed from indexes. Views are used for various purposes such as indexing, querying, producing lists and tables, filtering and extracting information from the database etc. Multiple views create multiple indexes for storing the data. Views are defined in a special kind of document called \textit{design document}~\ref{fig:cb-views-design}. These documents are bounded to a single bucket and cannot be executed from other buckets. A query completes in two stages: mapreduce to create the views and to perform query on the views.
+ In Couchbase, documents can be retrieved by the keys. It is not possible to search a document by other attributes or fields of a document by using key.  Therefore, the \textit{Views} are used to create indexes and query the documents by any attributes or to perform other aggregation on documents. These views are defined in a special kind of document called \textit{design documents} which are also the indexer. A \textit{design document} contains multiple views as shown in Figure~\ref{fig:cb-views-design} and these documents are bounded to a single bucket, hence cannot be executed from other buckets. Each view has a map function and a optional reduce function. All the views inside a design document are executed at same time whenever  documents are changed in the bucket. When the expiration pager operates to remove documents from a bucket, they are also removed from indexes. Views are used for various purposes such as indexing, querying, producing lists and tables, filtering and extracting information from the bucket and perform aggregation.  Views are created by using mapreduce and query is completed by querying in these views.
  
 \paragraph{Mapreduce:} 
 The mapreduce reads the entire dataset in parallel across the cluster. Similarly, in Couchbase views, all the documents are processed with respect to each view. The design document holds JavaScript code that implements mapreduce operations. Couchbase uses incremental mapreduce, where the index is updated as the bucket changes. The Mapreduce is achieved by two functions \textit{map} and \textit{reduce}. 
@@ -113,6 +119,8 @@ function (doc, meta) {
 \par
  Query in Couchbase is done against pre-materialize views through REST API or SDK. Different query options like \textit{limit}, \textit{group\_level}, \textit{key}, \textit{keys}, \textit{skip}, etc can be used in view to get required result. 
  
+\par 
+Views are created in development environments and works on small subset of data that create sample index. Views creates the indexes which implies use of resources and slow down of performance of the system. Production views are deployed environment that take full dataset and create index. Figure~\ref{fig:cb-views-document-design} illustrates the both types of views and index created by them. It is necessary to be noted for benchmarking at Chapter~\ref{ch:benchmarking}, where multiple buckets with different size dataset will be used.
    
  
  

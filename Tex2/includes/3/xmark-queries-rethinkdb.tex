@@ -1,18 +1,18 @@
 \label{xmark-queries-rethindb}
 \begin{enumerate}[label=Q\arabic*.]
-	\item %1
+	\item \label{rethink-q-1}%1
 	
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 		r.table("people").get("person0")("name")
 	\end{lstlisting}
 
-	\item %2
+	\item \label{rethink-q-2}%2
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	r.table("open_auctions").map(function(doc) {return {increase:doc("bidder").nth(0)("increase").nth(0).default("")}})
 	
 	\end{lstlisting}
 	
-    \item %3
+    \item \label{rethink-q-3}%3
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("open_auctions").hasFields("bidder").filter(
 	                r.row("bidder").nth(0)("increase").nth(0).mul(2).le(r.row("bidder").nth(r.row("bidder").count().sub(1))("increase").nth(0))
@@ -23,32 +23,28 @@
 	\end{lstlisting}
 	
 	
-    \item %4
-	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
-	   
-	\end{lstlisting}
+    \item \label{rethink-q-4}%4
+	\par
 	
 	
-    \item %5
+    \item \label{rethink-q-5}%5
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("closed_auctions").count(function(f){
 	                 return f("price").default(0).gt(40)
 	               })
 	\end{lstlisting}
 	
-    \item %6
+    \item \label{rethink-q-6}%6
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("regions").count()
 	\end{lstlisting}
 	
 	
-    \item %7
-	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
-	   
-	\end{lstlisting}
+    \item \label{rethink-q-7}%7
+    \par
 	
 	
-    \item %8
+    \item \label{rethink-q-8}%8
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("people").map(function(d){
 	                var x = r.table("closed_auctions").getAll(d("id"),{index:"buyer_person"}).count();
@@ -57,7 +53,7 @@
 	\end{lstlisting}
 	
 	
-    \item %9
+    \item \label{rethink-q-9}%9
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("regions").getAll("europe",{index:"regions"}).eqJoin("id",r.table("closed_auctions"),{index:"closed_itemref_item"}).map({
 	                 name:r.row("left")("name"), id:r.row("left")("id"),
@@ -65,7 +61,7 @@
 	\end{lstlisting}
 	
 	
-    \item %10
+    \item \label{rethink-q-10}%10
     
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("people")("profile")("interest").concatMap(function(f){return f}).distinct()
@@ -103,7 +99,7 @@
 	\end{lstlisting}
 	
 	
-    \item %11
+    \item \label{rethink-q-11}%11
     
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 r.table("people").pluck("id",{profile:{income:true}})
@@ -119,7 +115,7 @@
 	\end{lstlisting}
 	
 	
-    \item %12
+    \item \label{rethink-q-12}%12
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("people").filter(function(f){return f("profile")("income").default(0).gt(50000)})
 	                 .map(function(f){
@@ -133,19 +129,19 @@
 	\end{lstlisting}
 	
 	
-    \item %13
+    \item \label{rethink-q-13}%13
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	   r.table("regions").getAll("australia",{index:"regions"}).map({item:{name:r.row("name"),description:r.row("description")}})
 	\end{lstlisting}
 	
-    \item %14
+    \item \label{rethink-q-14}%14
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 	r.table("regions").filter(function(doc) {
 	 	    return doc('description').coerceTo("STRING").match("gold")
 	 	    })('name') 
 	\end{lstlisting}	
 
-    \item %15
+    \item \label{rethink-q-15}%15
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	 r.table("closed_auctions")("annotation")("description")("parlist").concatMap(function(f){
 	           return f('listitem')('parlist')
@@ -154,31 +150,31 @@
 	         })
 	\end{lstlisting}	
 
-    \item %16
+    \item \label{rethink-q-16}%16
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("closed_auctions").hasFields({annotation:{description:{parlist:true}}})
 	              ("annotation")("description").concatMap(r.row("parlist")).hasFields({listitem:{parlist:true}})("listitem").concatMap(r.row("parlist")).hasFields({listitem:{text:{emph:{keyword:true}}}})
 	\end{lstlisting}	
 
     
-    \item %17
+    \item \label{rethink-q-17}%17
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("people").filter(function(d){return d.hasFields("homepage").not()}).map({person:{name:r.row("name")}})
 	\end{lstlisting}	
 
-    \item %18
+    \item \label{rethink-q-18}%18
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
-	  r.table("open_auctions").hasFields("reserve").map(r.row("reserve").mul(2.20371))
+	  r.table("open_auctions").hasFields("reserve").map(function(f){return f("reserve").mul(2.20371)})
 	\end{lstlisting}	
 
-    \item %19
+    \item \label{rethink-q-19}%19
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("regions").orderBy({index:"location"}).pluck("location","name").map(function(f){
 	    return {item:{name:f("name"),location:f("location")}}
 	  })
 	\end{lstlisting}
 	
-    \item %20
+    \item \label{rethink-q-20}%20
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
 	  r.table("people").map(function(doc){return {income:doc("profile")("income").default(0)}})
 	            .map({

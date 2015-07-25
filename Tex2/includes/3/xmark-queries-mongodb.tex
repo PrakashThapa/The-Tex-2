@@ -1,11 +1,11 @@
 \label{xmark-queries-mongodb}
-\begin{enumerate}[label=Q\arabic*.]
-	\item %1
-	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
+\begin{enumerate}[label=Q\arabic*]
+	\item \label{mongodb-q-1}%1
+	\begin{lstlisting}[language=JSON,  basicstyle=\scriptsize]
 		db.people.find({_id:"person0"},{_id:0,"name":1});
 	\end{lstlisting}
 	
-	\item %2
+	\item \label{mongodb-q-2}%2
 	\begin{lstlisting}[language=JSON,  basicstyle=\scriptsize]
 	db.open_auctions.aggregate([
 		{$project:{_id:1,bidder:"$bidder"}},
@@ -17,7 +17,7 @@
 	])
 	\end{lstlisting}
 	
-    \item %3
+    \item \label{mongodb-q-3}%3
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	   db.open_auctions.aggregate([
 		{ $unwind: "$bidder"},
@@ -31,17 +31,17 @@
 	   ])
 	\end{lstlisting}
 	
-	
     \item %4
 	\par
 	
 	
-    \item %5
+    \item \label{mongodb-q-5}%5
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	   db.closed_auctions.find({price:{$gte:40}}).count()
+	   
 	\end{lstlisting}
 	
-    \item %6
+    \item \label{mongodb-q-6}%6
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	   db.regions.find().count()
 	\end{lstlisting}
@@ -51,7 +51,7 @@
 	\par
 	
 	
-    \item %8
+    \item \label{mongodb-q-8}%8
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	   function q8() {
             var person = new Array();
@@ -73,16 +73,38 @@
             });
             return item;
         }
+        
 	\end{lstlisting}
 	
-	
-    \item %9
+    \item \label{mongodb-q-9}%9
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
-	   
+	
+function q921() {
+    var person = new Array();
+	var ctr =0;
+	var getItemEuropeById = function(id){ return db.regions.find({_id:id, regions:"europe"},{_id:0,name:1}).name;};
+	db.people.find({},{name:1}).forEach(function(p){
+		var item = new Array();
+		var pid = p._id;
+		db.closed_auctions.find({"buyer.person":pid},{_id:0,"itemref.item":1}).forEach(function(doc){
+			var itemId = doc.itemref.item;
+			var itemName = getItemEuropeById(itemId);
+			if( typeof itemName!= 'undefined' && itemName!= ''){
+				item.push(itemName);
+			}
+			
+		});
+		person[ctr] = (item.length > 0) ? {name:p.name,item:item} : {name:p.name}; 
+		ctr++;
+		
+	});	
+	return person;
+}
+
 	\end{lstlisting}
 	
 	
-    \item %10
+    \item \label{mongodb-q-10}%10
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	function q10() {
 	    var getProfileByCategory = function(catId){
@@ -128,7 +150,7 @@
 	\end{lstlisting}
 	
 	
-    \item %11
+    \item \label{mongodb-q-11}%11
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	  function q11() {
     	var start = new Date().getTime();
@@ -149,7 +171,7 @@
 	\end{lstlisting}
 	
 	
-    \item %12
+    \item \label{mongodb-q-12}%12
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	   function q12() {
     	var debugId = "person3"
@@ -168,7 +190,7 @@
     }
 	\end{lstlisting}
 	
-	\item %13
+	\item \label{mongodb-q-13}%13
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	    db.regions.find(
 		{regions:"australia"},
@@ -176,7 +198,7 @@
         )
 	\end{lstlisting}
 	
-    \item %14
+    \item \label{mongodb-q-14}%14
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	  db.regions.aggregate([
 		{$match:{$text:{$search:"gold"}}},
@@ -186,7 +208,7 @@
 	])
 	\end{lstlisting}
 	
-    \item %15
+    \item \label{mongodb-q-15}%15
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	 db.closed_auctions.aggregate([
 		{$project:{_id:1,parlist:"$annotation.description.parlist"}},
@@ -198,7 +220,7 @@
 	])
 	\end{lstlisting}
 	
-    \item %16
+    \item \label{mongodb-q-16}%16
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	  db.closed_auctions.aggregate([
 		{$project:{_id:1,parlist:"$annotation.description.parlist",person:"$seller.person"}},
@@ -210,25 +232,44 @@
 	])
 	\end{lstlisting}	
 
-    \item %17
+    \item \label{mongodb-q-17}%17
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	  db.people.find({homepage:{$exists:false}},{_id:0,person:"$name"})
 	])
 	\end{lstlisting}	
 
-    \item %18
+    \item \label{mongodb-q-18}%18
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
-	  db.open_auctions.aggregate([{$match:{reserve:{$exists:true}}},
-		{$project:{_id:0,reserve:{$multiply:["$reserve",2.20371]}}}])
-	\end{lstlisting}	
+	
+//user-defined function:
+    reserve = function(val){
+    db.system.js.save({ 
+       "_id": "reserve", 
+       "value": function(a) { return 2.20371 * a; } 
+    })
+    };
 
-    \item %19
+//actual-query:
+    db.open_auctions.mapReduce(
+        function() {
+           if(this.reserve){
+            emit(this._id, reserve(this.reserve));
+           }    
+        },
+        function(key,values) {
+            return Array.sum(values);
+        },
+        { "out": { "inline": 1 } }
+     );
+\end{lstlisting}	
+
+    \item \label{mongodb-q-19}%19
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	  db.regions.aggregate([{$sort:{location:1}},
 		{$project:{_id:0,"item.name":"$name","item.location":"$location"}}])
 	\end{lstlisting}	
     
-    \item %20
+    \item \label{mongodb-q-20}%20
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	
 	 db.people.mapReduce(
@@ -269,38 +310,77 @@
     
 	\end{lstlisting}
 \end{enumerate}
-\noindent\makebox[\linewidth]{\rule{\paperwidth}{0.4pt}}
-\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize, label=mongodb-xmark-index, caption=Secondary indexes in MongoDB's XMark data]
-	  db.open_auctions.ensureIndex({
+\subsection{Indexes}
+\begin{enumerate}[label=I\arabic*.]
+\item \label{mongodb-i-1}
+\begin{lstlisting}[language=JSON,  basicstyle=\scriptsize]
+   db.open_auctions.createIndex({
 		initial:1
 	})
-	db.open_auctions.ensureIndex({
+\end{lstlisting}
+
+\item \label{mongodb-i-2}
+\begin{lstlisting}[language=JSON,  basicstyle=\scriptsize]
+  	db.open_auctions.createIndex({
 		bidder:1
 	})
-	db.open_auctions.ensureIndex({
+\end{lstlisting}
+
+\item \label{mongodb-i-3}
+\begin{lstlisting}[language=JSON]
+  	db.open_auctions.createIndex({
 		"bidder.increase":1
 	})
 	
-	db.regions.ensureIndex({
+\end{lstlisting}
+
+\item \label{mongodb-i-4}
+\begin{lstlisting}[language=JSON]
+  	db.regions.createIndex({
 		name:1,
 		location:1
 	})
-	db.regions.ensureIndex({
+\end{lstlisting}
+
+\item \label{mongodb-i-5}
+\begin{lstlisting}[language=JSON]
+  db.regions.createIndex({
 		regions:1
 	})
-	db.regions.ensureIndex({
+
+\end{lstlisting}
+
+
+\item \label{mongodb-i-6}
+\begin{lstlisting}[language=JSON]
+  	db.regions.createIndex({
 		location:1
 	})
-	db.regions.ensureIndex([
+\end{lstlisting}
+
+
+\item \label{mongodb-i-7}
+\begin{lstlisting}[language=JSON]
+  	db.regions.createIndex([
                    { "$**": "text" },
                    { name: "TextIndex" }
-                         ])
-	db.people.ensureIndex({
-		"people.interest":1
-	})
+            ])
 
-	db.closed_auctions.ensureIndex({
+\end{lstlisting}
+
+
+\item \label{mongodb-i-8}
+\begin{lstlisting}[language=JSON]
+   	db.closed_auctions.createIndex({
 		"buyer.person":1
 	});
-	db.closed_auctions.ensureIndex({price:1})
-	\end{lstlisting}
+\end{lstlisting}
+
+
+\item \label{mongodb-i-9}
+\begin{fakeJSON}
+  db.closed_auctions.createIndex({price:1})
+\end{fakeJSON}
+
+
+\end{enumerate}

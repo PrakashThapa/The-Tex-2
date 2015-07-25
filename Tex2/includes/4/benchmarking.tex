@@ -14,7 +14,7 @@ But in case of Q10, the complex result generation could not be completed in the 
 
 \item Compared to the XQuery representation, queries Q15 and Q16 are relatively complex in all NoSQL databases including MongoDB, because the child axes of the original query need to rewritten to various aggregation stages. The results produced by these queries were not exactly the same as for XQuery but the performance was in the same order of magnitude. Performance of Q17 was similar to other systems.
 
-\item Q18 ...... 
+\item Q18 ...... \ref{mongodb-q-18}
 
 \item In Q19, a new field \textit{item} is generated. Because of that, performance decreases, because  MongoDB has to use an aggregation pipeline for the new field. The Query would be much faster if the result is returned without a new field by using \textit{find()} function.
 

@@ -1,36 +1,47 @@
 All the XQuery expressions are translated into NoSQL database queries based on the output result. In case of availability of secondary indexes, they have been created and utilized for efficient result. There are some problems for following queries:
-\todo{why not Q4?}
 \begin{itemize}
 \item Q4 and Q7 cannot be applied to NoSQL databases. These queries will be skipped during the measurement and analysis. In Q7, XPath  wild cards cannot be used in NoSQL databases, which makes it impossible to perform the query. 
 
 \item In Q14, full text search is measured in XQuery. MongoDB, Couchbase and RethinkDB do not support full text search, therefore  sub-string search is performed in these databases. 
 \end{itemize}
 
-\subsection{XMark Queries in MongoDB}
+\subsection{Queries in MongoDB}
 
-In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For an example, the \textit{find()} function can be used for Q1 to get result. As we can see in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  For advanced queries, the aggregation pipeline and mapreduce are used. 
+In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For example, the \textit{find()} function can be used for Q1 to get result. As we can see in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  For advanced queries, the aggregation pipeline and mapreduce are used.   The \textit{allowDiskUse} option in aggregation pipeline is enabled, that allows to execute the query beyond the memory limit.
 
 As mentioned in ~\ref{nosql-mongodb}, MongoDB has no support for  join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. Secondary indexes are created only when queries can be optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here:
 
 \begin{itemize}
-\item Q1 implements the default index \textit{\_id}. Firstly, the collection is filtered then \textit{name} field is specified for selection. 
+\item \ref{mongodb-q-1} implements the default index \textit{\_id}. The collection is filtered with the criteria and the second parameter specified the field to be selected in \textit{find()}. 
 
-\item For Q2 and Q3, two indexes in fields \textit{initial} and \textit{"bidder.increase"} of collection \textit{open\_auctions} are created. With various steps of aggregation pipeline the result is returned.
+\item Two queries \ref{mongodb-q-2} and \ref{mongodb-q-3}  return the bidder information from \textit{open\_auctions} collection.  The field \textit{bidder} is array type in all JSON. Different operators in aggregation pipeline are used to get the result.
 
-\item A comparison operator is implemented in Q5 that can be easily optimized with index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
-\item According to our data model for MongoDB, Q6 counts the number of documents in the collection \textit{regions}.
-\item In Q8, joins between two collections \textit{people} and \textit{closed\_auction} are performed. The field \textit{buyer.person} is  indexed, therefore the \textit{person} search is efficient. 
-The Q9 implements index of Q8 and a new index on \textit{regions} field of \textit{regions} collection is added which is also utilized in Q13.
-\item For Q10, another index on \textit{profile.interest} field of \textit{people} collection is created. A helper function is used to join and format the data.
+\item In \ref{mongodb-q-5}, a comparison operator \textit{\$gte(>=)} is used to filter the collection and documents return number of document. This query can be optimized with an index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
+
+\item According to our data model for MongoDB, \ref{mongodb-q-6} counts the number of documents in the collection \textit{regions}.
+
+\item In \ref{mongodb-q-8}, the result is based on the join  between  \textit{people} and \textit{closed\_auction} collections. The \textit{buyer.person} of \textit{closed\_auctions} is indexed [\ref{mongodb-i-8}] that helps to efficient search in \textit{\$match} operator of aggregation pipeline.
+ \item 
+The  \ref{mongodb-q-9} has to join  three collections \textit{regions}, \textit{people} and \textit{closed\_auctions} to get result.  An index \ref{mongodb-i-8} from Q8 is utilized. Secondary index on \textit{regions} of \textit{regions}  is added for query Q9 which is also usable in Q13. 
+
+\item The complex result generation query \ref{mongodb-q-10} uses a helper function in console which format the output. two \textit{categories} and \textit{collection}  have joins. An index  
+in field \textit{profile.interest} of \textit{people} collection is created. 
+
+\item Queries \ref{mongodb-q-11} and \ref{mongodb-q-12} are value join queries between \textit{open\_auctions} and \textit{people} collection. 
+
+\item Query \ref{mongodb-q-13} utilized the index created on field \textit{regions} of \textit{regions} collection. 
+
 \item For Q14, a \textit{text index} is created in a collection \textit{regions} that allow to search by any sub-strings in whole collection. 
-\item The result of Q15 and Q16 do not match the exact result of XQuery, because  XQuery uses  XPath whereas MongoDB do not.
 
-\item The quey Q18 implements user-defined function. In MongoDB, it has to process two steps: A function is created and stored in database system document. Then, it is called through mapreduce. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
+\item Compared to XQuery representations \ref{mongodb-q-15} and \ref{mongodb-q-16} are relatively complex in all NoSQL databases including MongoDB, because the child axes original query need to rewritten in various aggregation stages.
 
-\item For Q19, a secondary index on field \textit{location} of collection \textit{regions} is created.
-It is used for sorting the data by the \textit{location}. 
+\item Query \ref{mongodb-q-17} is another simple query in MongoDB. The \textit{find} function can be to check the criteria and projection. 
+
+\item The quey \ref{mongodb-q-18} implements user-defined function. In MongoDB, it has to process two steps: A function is created and stored as document system collection \textit{system.js}. Afterwards, it is called through mapreduce. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
+
+\item For \ref{mongodb-q-19}, a field  \textit{location} is indexed in collection \textit{regions} for sorting the data by location. This query is also implemented through aggregation pipeline. 
 \item
-The final query Q20 based on aggregations. This query in mapreduce  is much simpler than aggregation pipeline.
+The final query \ref{mongodb-q-18} based on aggregations. Mapreduce comparatively simpler but also possible from pipeline. For our test we have implemented Mapreduce. 
 \end{itemize}
 Full list of MongoDB queries and index can be found in ~\ref{mongodb-query-list}
 

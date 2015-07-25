@@ -1,10 +1,13 @@
-RethinkDB stores data in the form tables which are similar to collections in MongoDB.  Each Section~\textit{doctype} of \ref{xmark-nosql} is represented as an individual table. The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as of \textit{doctype} in \ref{xmark-nosql}. Hence the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added as an identifier during the time of insertion. In Figure~\ref{code:rethindb-person0}, an illustration of XMark's person with id \textit{person0} is given
-\begin{figure}
+RethinkDB stores the documents inside a table which is identical to the collection in MongoDB. 
+The documents are grouped according to their \textit{doctype} and store in a table.
+Each \textit{doctype} of \ref{xmark-nosql} is represented as an individual table. 
+The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as of \textit{doctype}. Hence the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added as an identifier during the time of insertion. Figure~\ref{code:rethindb-person0} shows a document with id \textit{person0} in \textit{people} table.
+\begin{figure}[hbt]
 \centering
 \begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
 
 	{
-		"id": "person0",
+		 <@\textbf{"id": "person0"}@>,
 		"name": "Kasidit Treweek",
 		"emailaddress": "mailto:Treweek@cohera.com",
 		"phone": "+0 (645) 43954155",
@@ -12,14 +15,15 @@ RethinkDB stores data in the form tables which are similar to collections in Mon
 		"creditcard": "9941 9701 2489 4716",
 		"profile": {
 			"income": 20186.59,
-			"interest": [{
-				"category": "category251"
-			}],
+			"interest": [
+			    { "category": "category251" },
+				{"category": "category341"}
+			],
 			"education": "Graduate School",
 			"business": "No"
 		}
 	}
 \end{lstlisting}
-\caption{RethinkDB document \textit{person0} in people table}
+\caption{RethinkDB document \textit{person0} in \textit{people} table}
 \label{code:rethindb-person0}
 \end{figure}

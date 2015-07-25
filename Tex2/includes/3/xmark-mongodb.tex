@@ -1,26 +1,28 @@
-\begin{figure}
-\begin{lstlisting}[language=JSON, basicstyle =\scriptsize]
-	{
-		"_id": "person0",
-		"name": "Kasidit Treweek",
-		"emailaddress": "mailto:Treweek@cohera.com",
-		"phone": "+0 (645) 43954155",
-		"homepage": "http://www.cohera.com/~Treweek",
-		"creditcard": "9941 9701 2489 4716",
-		"profile": {
-			"income": 20186.59,
-			"interest": [{
-				"category": "category251"
-			}],
-			"education": "Graduate School",
-			"business": "No"
-		}
-	}
-\end{lstlisting}
-\caption{MongoDB's document representation of XMARk data}
-\label{code:mongodb-person0}
-\end{figure}
 
-As defined in Section~\ref{nosql-mongodb}, collection consists of group of documents with similar structure. Therefore, the data modeling concept of \ref{xmark-nosql} has to be modified marginally for MongoDB. Each \textit{doctype} from Section~\ref{xmark-nosql} is represented as a  collection and this field is removed from document.
+In MongoDB, collections consist of group of documents with similar structure. Therefore, the data modeling concept of Section~\ref{xmark-nosql} has to be modified marginally for MongoDB. The documents are grouped with their \textit{doctype} from Section~\ref{xmark-nosql}. Each \textit{doctype} represent a collection, there are all together 6 collections. The field \textit{doctype} is already represented as collections, it is removed from all documents.  
 For \textit{item} entity,  field \textit{regions} does not change. The \textit{\_id} is the primary index of a document in MongoDB, the identifier attribute of the XMark data \textit{id} is renamed to \textit{\_id} for default indexing.  \textit{closed\_auctions} and \textit{catgraph} do not have an identifier attribute \textit{id}, therefore, system will automatically generate the \textit{\_id} in these collections.
 A typical example of MongoDB document for person with identifier \textit{person0} is given in Figure~\ref{code:mongodb-person0}.	
+
+\begin{figure}[hbt]
+\begin{lstlisting}[language=JSON, basicstyle =\scriptsize]
+    {
+    	<@\textbf{"\_id": "person0",}@>
+    	"name": "Kasidit Treweek",
+    	"emailaddress": "mailto:Treweek@cohera.com",
+    	"phone": "+0 (645) 43954155",
+    	"homepage": "http://www.cohera.com/~Treweek",
+    	"creditcard": "9941 9701 2489 4716",
+    	"profile": {
+    		"income": 20186.59,
+    		"interest": [
+    			{"category": "category251"},
+    			{"category": "category341"}
+    			],
+    		"education": "Graduate School",
+    		"business": "No"
+    	}
+    }
+\end{lstlisting}
+\caption{MongoDB document of XMark data in \textit{people} collection}
+\label{code:mongodb-person0}
+\end{figure}

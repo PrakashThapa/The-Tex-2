@@ -23,6 +23,9 @@
 \usepackage[toc,page]{appendix}
 % for the hyperlink of ref and cite
 \usepackage{hyperref}
+%for quote 
+\usepackage{textcomp}
+
 %package end here
 
 % start of subsubsubsection environment % %
@@ -161,10 +164,9 @@
 \lstdefinelanguage{json}{
 	basicstyle=\normalfont\ttfamily,
 	linewidth=\linewidth,
-	numbersep=8pt,
 	showstringspaces=false,
 	breaklines=true,
 	captionpos=b,
 }
 
-
+\lstset{escapeinside={<@}{@>},upquote=true}

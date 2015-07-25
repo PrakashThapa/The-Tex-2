@@ -1,27 +1,24 @@
-\begin{figure}[h]
-\begin{lstlisting}[language=JSON,  basicstyle =\scriptsize]
-{
-	"id":  "item1000",
-	"doctype":  "regions",
-	"regions":  "africa",
-	"name":  "duteous nine eighteen" ,
-	"payment":  "Creditcard" ,
-	"quantity": 1 ,
-	"shipping":  "Will ship internationally, See description for charges" ,
-	"incategory": [
-		{
-		"category":  "category0"
-		}
-	] ,
-	"mailbox":[],
-	"description":{ }
-}
-\end{lstlisting} 
-\caption{Couchbase pseudo-document of the XMark data for item with id \textit{item1000}}
-\label{code:couchbase-item0}
-\end{figure}
-
 Couchbase does not have the concept of grouping documents like \textit{collections} in MongoDB  or \textit{tables} in RethinkDB. 
 Therefore, the data model of Section ~\ref{xmark-nosql} is applied without modification.
- All the documents are stored in a single bucket with identifier attribute \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
- An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}
+ All the documents of an XMark instance  are stored in a single bucket with identifier attribute \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
+An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}. The \textit{id} attribute is identifier of XMark data and document key in Couchbase, the \textit{doctype} with  value \textit{regions} represents it is and item and finally the \textit{regions} attributes is to represent the in which regions does this attributes belongs to.\todo{english}
+\begin{figure}[hbt]
+\begin{lstlisting}[language=JSON,  basicstyle =\scriptsize]
+    {
+    	<@\textbf{"id": "item1000"}@>,
+    	<@\textcolor{red}{"doctype":  "regions"}@>,
+    	<@\textit{"regions":  "africa"}@>,
+    	"name":  "duteous nine eighteen" ,
+    	"payment":  "Creditcard" ,
+    	"quantity": 1 ,
+    	"shipping":  "Will ship internationally, See description for charges" ,
+    	"incategory": [{
+    		"category":  "category0"
+    		}] ,
+    	"mailbox":[],
+    	"description":{}
+    }
+\end{lstlisting} 
+\caption{Couchbase document of the XMark data for item with id \textit{item1000}}
+\label{code:couchbase-item0}
+\end{figure}
