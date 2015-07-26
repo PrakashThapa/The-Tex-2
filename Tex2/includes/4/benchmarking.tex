@@ -1,4 +1,4 @@
-In this section, we will focus on the analysis of different databases based on the  evaluation of XMark queries. BaseX, MongoDB, Couchbase and RethinkDB are completely different database system  with their own data model and different query languages.  Due to their complete different nature, a query of a database would perform better than others if data was normalized according to their specified data model. For example, BaseX would probably perform better if the data is normalized. Therefore, our goal is not to compare queries between these databases but evaluate the results individually.  All databases have been tested with 6 different size XMark dataset as mentioned in ~\ref{benchmark-database-size}. Firstly, the results  of the four systems will be analyzed individually. Further the performances of all the databases of 111MB dataset examined together.
+In this section, we will focus on the analysis of different databases based on the  evaluation of XMark queries. BaseX, MongoDB, Couchbase and RethinkDB are completely different database systems with their own data model and different query languages.  Due to their complete different nature, a query of a database would perform better than others if data was normalized according to their specified data model. For example, BaseX would probably perform better if the data is normalized. Therefore, our goal is not to compare queries between these databases but evaluate the results individually.  All databases have been tested with 6 different size XMark dataset as mentioned in ~\ref{benchmark-database-size}. Firstly, the results  of the four systems will be analyzed individually. Further the performances of all the databases of 111MB dataset are examined together.
 
 \subsection{MongoDB}
 Figure~\ref{fig:xmark-result-mongodb-all} presents the time measurements of XMark queries in MongoDB. MongoDB automatically uses all the free memory of a machine for its cache. The result of the queries will be explained below:
@@ -14,7 +14,7 @@ But in case of Q10, the complex result generation could not be completed in the 
 
 \item Compared to the XQuery representation, queries Q15 and Q16 are relatively complex in all NoSQL databases including MongoDB, because the child axes of the original query need to rewritten to various aggregation stages. The results produced by these queries were not exactly the same as for XQuery but the performance was in the same order of magnitude. Performance of Q17 was similar to other systems.
 
-\item Q18 ...... \ref{mongodb-q-18}
+\item  The user-defined function can be implemented only from mapreduce. The \ref{mongodb-q-18}, utilized a lot resources for two largest instances. The mapreduce that uses manual function call from another documents made query inefficient. 
 
 \item In Q19, a new field \textit{item} is generated. Because of that, performance decreases, because  MongoDB has to use an aggregation pipeline for the new field. The Query would be much faster if the result is returned without a new field by using \textit{find()} function.
 
@@ -22,7 +22,7 @@ But in case of Q10, the complex result generation could not be completed in the 
 \end{itemize}
 \begin{figure}[hbt]
 	\centering
-	\includegraphics[width=0.95\textwidth]{img/result/mongodb/mongodb-all}
+	\includegraphics[width=0.95\textwidth]{img/result/mongodb/mongodb-all-18-20}
 	\caption{XMark queries in MongoDB}
 	\label{fig:xmark-result-mongodb-all}
 	
@@ -53,16 +53,16 @@ But in case of Q10, the complex result generation could not be completed in the 
 \subsection{Basex}
 The results of all six different databases in BaseX is shown in Figure~\ref{fig:xmark-result-basex-all}. All the queries were tested with text, attribute and full text indexes. 
 \begin{itemize}
-\item The query Q1 utilized the attributes index and return a single result. This query was completed in less than 5ms in all database instances.
+\item The query Q1 utilized the attributes index and returned a single result. This query was completed in less than 5ms in all database instances.
 
 \item Positional predicates are defined in Q2 and Q3, and resulting items are returned into new elements. These two queries are relatively better than MongoDB. 
 
-\item Queries Q5 and Q6 contain \textit{count()} function and both were comparitively faster than RethinkDB and Couchbase but as we have seen in previous section, these queries  were performed most efficiently by MongoDB.
+\item Queries Q5 and Q6 contain \textit{count()} function and both were comparitively faster than RethinkDB and Couchbase but as we have seen in previous section, these queries were performed most efficiently by MongoDB.
 
 \item 
-Among the join queries, the database instances larger than 11MB were not completed in Q11 and Q12. They were also most inefficient queries in BaseX.  For reference join queries Q8 and Q9, the attribute index is utilized. The time taken by these two queries is comparable to that of MongoDB. Q10 could not finished in given time frame for two largest instances but among the completed, the results are similar in all database systems 
+Among the join queries, the database instances larger than 11MB were not completed in Q11 and Q12. They were also most inefficient queries in BaseX.  For reference join queries Q8 and Q9, the attribute index is utilized. The time taken by these two queries is comparable to that of MongoDB. Q10 was not completed in given time frame for two largest instances but among the completed the results are similar in all database systems 
 
-\item  In text search query Q14, all NoSQL databases  performed better due to substring search.
+\item  In text search query Q14, all NoSQL databases performed better due to substring search.
 
 \item In Q15-Q18, the result is competitive. Q19 consumes most of resources for sorting the data. This query is faster in MongoDB compared to BaseX.
 
@@ -80,10 +80,10 @@ All the time evaluation of XMark queries in RethinkDB is given in Fig.~\ref{fig:
 \begin{itemize}
 \item Query \ref{rethink-q-1} consume more time compared to MongoDB and BaseX in average.
  \item  
-  RethinkDB is able to handle arrays better way than other NoSQL databases. The chainable query can be used as a pipeline but unlike MongoDB's pipeline that produces result in multiple stages, RethinkDB runs a query on a server at once, hence it has been seen that queries Q2 and Q3 produces better result compare to MongoDB. 
+  RethinkDB is able to handle arrays better way than other NoSQL databases. The chainable query can be used as a pipeline, but unlike MongoDB's pipeline that produces result in multiple stages, RethinkDB runs a query on a server at once, hence it has been seen that queries Q2 and Q3 produces better result compare to MongoDB. 
  \item
  Queries Q5 and Q6 were comparatively slow in  RethinkDB.
- The \textit{count()} operation in RethinkDB is always slow due to streaming property. It executes everything in server, most of the stream operations including \textit{filter} runs lazily. The \textit{run} function returns the results as soon as the first block of data is available. It does not load whole table data  at once. It will only load the data as clients iterate over the cursor. Hence, the memory changes with the usage. In case of \textit{count()}, the query has to wait until all the data is loaded.
+ The \textit{count()} operation in RethinkDB is always slow due to streaming property. It executes everything in server, most of the stream operations including \textit{filter} runs lazily. The \textit{run} function returns the results as soon as the first block of data is available. It does not load whole table data  at once but only after client iterate over the cursor. In case of \textit{count()}, the query has to wait until all the data is loaded.
  
  
  \item As we have mentioned the support of join query in ~\ref{xmark-rethinkdb}, RethinkDB was not able to take advantages of native joins except query Q11 and Q12. The join operation in Q8, Q9 and Q10 were similar in case of time measurement with rest of system. Q10 is slower due to large output and many new fields. 

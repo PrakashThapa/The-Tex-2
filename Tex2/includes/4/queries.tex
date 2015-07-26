@@ -1,4 +1,5 @@
-All the XQuery expressions are translated into NoSQL database queries based on the output result. In case of availability of secondary indexes, they have been created and utilized for efficient result. There are some problems for following queries:
+The XQuery expressions of XMark project are translated into NoSQL database queries based on the output result. In case of availability of secondary indexes, they have been created and utilized for efficient result.\todo{lotfi}.
+ The following queries have some issues:
 \begin{itemize}
 \item Q4 and Q7 cannot be applied to NoSQL databases. These queries will be skipped during the measurement and analysis. In Q7, XPath  wild cards cannot be used in NoSQL databases, which makes it impossible to perform the query. 
 
@@ -7,46 +8,41 @@ All the XQuery expressions are translated into NoSQL database queries based on t
 
 \subsection{Queries in MongoDB}
 
-In MongoDB, all the possible query methods have been implemented to get the same result as of XQuery.  For example, the \textit{find()} function can be used for Q1 to get result. As we can see in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.  For advanced queries, the aggregation pipeline and mapreduce are used.   The \textit{allowDiskUse} option in aggregation pipeline is enabled, that allows to execute the query beyond the memory limit.
+In MongoDB, all the possible query methods are implemented to get the same result as of XQuery. For simple queries, \textit{find()} function is used. But for advanced queries, the aggregation pipeline and mapreduce are applied. The memory limit of aggregation pipeline for a single stage is 100 MB as mentioned in Section~\ref{mongo-query-model}. Enabling the \textit{allowDiskUse} option in aggregation pipeline allows to execute the query beyond the memory limit.
+%For example, the \textit{find()} function can be used for Q1 to get result. As shown in  Code~\ref{mongo-xmark-q1}, the collection is filtered with default index \textit{\_id}  and the second parameter specifies the \textit{name} field to be retrieved.
 
-As mentioned in ~\ref{nosql-mongodb}, MongoDB has no support for  join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. Secondary indexes are created only when queries can be optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. MongoDB secondary index can be created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here, full list of MongoDB queries and index is given in ~\ref{mongodb-query-list}.
+MongoDB has no support for join queries. All the queries that need more than one collection  Q8, Q9, Q10, Q11 and Q12  are processed through \textit{mongo shell}. Secondary indexes are created only when queries can be optimized. Without indexes, MongoDB has to scan every document in a collection to match the criteria of the query. The index is created by using \textit{createIndex} function as in Code~\ref{mongodb-create-index}. Some of the important queries are explained here, full list of MongoDB queries and indexes are given in ~\ref{mongodb-query-list}.
 
 \begin{itemize}
-\item \ref{mongodb-q-1} implements the default index \textit{\_id}. The collection is filtered with the criteria and the second parameter specified the field to be selected in \textit{find()}. 
+\item \ref{mongodb-q-1} utilized the default index \textit{\_id}. The simple \textit{find()} function with  query criteria as first parameter and projection field  as second parameter in the collection \textit{people} returns the result.
 
-\item Two queries \ref{mongodb-q-2} and \ref{mongodb-q-3}  return the bidder information from \textit{open\_auctions} collection.  The field \textit{bidder} is array type in all JSON. Different operators in aggregation pipeline are used to get the result.
+\item In two queries \ref{mongodb-q-2} and \ref{mongodb-q-3}  the resulting items are wrapped up into new element.  The sub-document \textit{bidder} has values of array type and contains numbers of bidders as object in each elements. Different operators in pipeline are used to process  arrays and objects to generate the output.
 
-\item In \ref{mongodb-q-5}, a comparison operator \textit{\$gte}(greater than or equal to) is used to filter the collection and documents return number of document. This query can be optimized with an index. A secondary index is created in field \textit{price} of \textit{closed\_auctions} collection. 
+\item In \ref{mongodb-q-5}, a comparison operator \textit{\$gte}(greater than or equal to) is used to filter a collection and return number of documents. This query can be optimized by a secondary index on the field \textit{price} of \textit{closed\_auctions} collection.  The \ref{mongodb-q-6} counts the number of documents in the collection \textit{regions}.
 
-\item According to our data model for MongoDB, \ref{mongodb-q-6} counts the number of documents in the collection \textit{regions}.
+\item In \ref{mongodb-q-8}, the result is based on the join operation  between  \textit{people} and \textit{closed\_auction} collections.
+The query iterates on \textit{people}  collections and count the numbers of item bought by the person in \textit{closed\_auctions} collection.
+The \textit{buyer.person} of \textit{closed\_auctions} is indexed for efficient filter in \textit{\$match} operator of aggregation pipeline.   
 
-\item In \ref{mongodb-q-8}, the result is based on the join  between  \textit{people} and \textit{closed\_auction} collections. The \textit{buyer.person} of \textit{closed\_auctions} is indexed [\ref{mongodb-i-8}] that helps to efficient search in \textit{\$match} operator of aggregation pipeline.
  \item 
-The  \ref{mongodb-q-9} has to join  three collections \textit{regions}, \textit{people} and \textit{closed\_auctions} to get result.  An index \ref{mongodb-i-8} from Q8 is utilized. Secondary index on \textit{regions} of \textit{regions}  is added for query Q9 which is also usable in Q13. 
+The  \ref{mongodb-q-9} has in three collections \textit{regions}, \textit{people} and \textit{closed\_auctions}.  An index \ref{mongodb-i-8} of Q8 is utilized for \textit{closed\_auctions} and another index on fields \textit{regions} of \textit{regions} collection is created to filter item by region name which is also applicable in Q13. All three collection has to manually join in mongo shell.
 
-\item The complex result generation query \ref{mongodb-q-10} uses a helper function in console which format the output. two \textit{categories} and \textit{collection}  have joins. An index  
-in field \textit{profile.interest} of \textit{people} collection is created. 
+\item The query \ref{mongodb-q-10} uses  \textit{categories} and \textit{people} collections to produce complex result with many new elements. The field \textit{profile.interest} of \textit{people} contains  arrays of categories of a person is indexed, results the array filter efficient.
 
-\item Queries \ref{mongodb-q-11} and \ref{mongodb-q-12} are value join queries between \textit{open\_auctions} and \textit{people} collection. 
+\item The\ref{mongodb-q-11} and \ref{mongodb-q-12} are value join queries between \textit{open\_auctions} and \textit{people} collection. The callback function \textit{forEach} of MongoDB cursor in  \textit{people} collection calculate the result of \textit{open\_auctions} collection and return the result. 
 
-\item Query \ref{mongodb-q-13} utilized the index created on field \textit{regions} of \textit{regions} collection. 
+\item The \textit{aggregate} function is used in \ref{mongodb-q-13} that  utilized the index on field \textit{regions} of \textit{regions} collection for \$match operator. The output is returned in new field \textit{item} with  \textit{name} and \textit{description} of the item.
 
-\item For \ref{mongodb-q-14} , a \textit{text index}[\ref{mongodb-i-7}] is created on collection \textit{regions}. The first parameter in \textit{createIndex} defines the field to be indexed and second parameter is the name of the index. Text indexes can include any field whose value is a string or an array of string elements or whole document. The sub-document \textit{description} of collection \textit{regions} is an object type so that text index cannot be applied only to this field but whole documents of \textit{regions} collection. 
-\par
-For query, simple \textit{find} function is implemented with query criteria. \textit{\$text} indicates that query is using text index and \textit{\$search} operator specifies a string to be search. 
+\item For \ref{mongodb-q-14} , a \textit{text index}[\ref{mongodb-i-7}] is created on collection \textit{regions}. The first parameter in \textit{createIndex} defines the field to be indexed and second parameter is the name of the index. Text indexes can applied on whole document or on the field whose value is a string or an array of string elements. The sub-document \textit{description} of collection \textit{regions} is an object so that text index cannot be applied only to this field but whole documents of \textit{regions} collection.  For query, simple \textit{find} function is implemented with query criteria. \textit{\$text} indicates that query is using text index and \textit{\$search} operator specifies a string to be search. 
 
 \item Compared to XQuery representations \ref{mongodb-q-15} and \ref{mongodb-q-16} are relatively complex in all NoSQL databases including MongoDB, because the child axes original query need to rewritten in various aggregation stages.
+\item Query \ref{mongodb-q-17} is another simple query in MongoDB. The boolean operator \textit{\$exists} can filter the documents in \textit{find} function and the projection parameter select the field to be returned. 
 
-\item Query \ref{mongodb-q-17} is another simple query in MongoDB. The \textit{find} function can be to check the criteria and projection. 
-
-\item The quey \ref{mongodb-q-18} implements user-defined function. In MongoDB, it has to process two steps: A function is created and stored as document system collection \textit{system.js}. Afterwards, it is called through mapreduce. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
-
-\item For \ref{mongodb-q-19}, a field  \textit{location} is indexed in collection \textit{regions} for sorting the data by location. This query is also implemented through aggregation pipeline. 
+\item The query \ref{mongodb-q-18} implements user-defined function. In MongoDB, it is completed in two steps: A function is created and stored as document in system collection \textit{system.js}. Afterwards, it is called through mapreduce. Table~\ref{tbl:mongodb-q18} illustrates Q18 using mapreduce.
+\item For \ref{mongodb-q-19}, the field  \textit{location} is indexed in collection \textit{regions} for sorting the data by location. The result is returned in new element \textit{item}.
 \item
-The final query \ref{mongodb-q-20} is to calculate the aggregation. Mapreduce comparatively simpler but also possible from pipeline. For our test we have implemented Mapreduce. 
+The final query \ref{mongodb-q-20} is to calculate the aggregation. Mapreduce comparatively simpler but also possible from pipeline. For our benchmarking we have implemented Mapreduce. 
 \end{itemize}
-
-
 \begin{figure}
 \centering
 \begin{lstlisting}[language=JSON, caption=XMark Query Q1 in MongoDB, label=mongo-xmark-q1]
@@ -92,28 +88,27 @@ db.open_auctions.mapReduce(
 \end{minipage}
 \end{longtable}
 
-\newpage
 
 \subsection{Queries in Couchbase}
-Views are the query interface in Couchbase. The output of the views are queried through the SDKs to get result. Each query except join queries consists of one view and the \textit{doctype} should be checked before \textit{emit} in \textit{map} function. \textit{Views} are stored in \textit{design document}. The recommended number of views in single design documents is ten. We have created three design documents for all queries. Q1-Q7 are stored in the first design document, the join queries Q8-Q12 views in second and finally remaining views in the third document design. 
+Views are the query interface in Couchbase. The output of the views are queried through the SDKs to get result. Each query except join queries consists of one view and the \textit{doctype} should be checked before \textit{emit} in \textit{map} function. Multiple views can be stored in a \textit{design document} and it is recommended to have few number of views a single design document. There can be any numbers of design documents. For benchmarking, three design documents are created for all the queries. Q1-Q7 are stored in the first, the join queries Q8-Q12 views in second and remaining views in the third document design. 
 \par
-We have different buckets for each database instances. 
-The views in development mode takes subset of documents to create sample index and  production mode all documents used to create full index  as illustrated in Figure~\ref{fig:cb-views-workflow}. These indexes affect the performance because each bucket has own RAM quota. We have many 6 buckets for each instance of XMark dataset. At the time of measurements, the views of other buckets are  assigned in development mode so that enough memory could be assign to that specific bucket. 
+We have different buckets for each database instances. The views in development mode takes subset of documents to create sample index. In production mode all documents are used to create full index of the view  as illustrated in Figure~\ref{fig:cb-views-workflow}. These indexes affect the performance because each bucket has its own RAM quota. We have 6 buckets for each instance of XMark dataset. At the time of measurements, the views of other buckets are assigned in development mode so that enough memory can be assigned to that specific bucket. 
 \par
 
 All XMark queries  are queried and evaluated through Node.js. The full list of Couchbase Mapreduce can be found in ~\ref{couchbase-query-list}. Some of the important queries are explained here:
 
 
  \begin{itemize}
- \item  In query \ref{cb-q-1}, the map function filters the documents by \textit{doctype} and the \textit{id} of document then emits \textit{name} field.
- \item \ref{cb-q-2} and \ref{cb-q-3} are deep arrays and objects processing queries like other NoSQL databases. Map function uses JavaScript code to find the required elements in objects or arrays to emit them. 
- \item Both queries \ref{cb-q-5} and \ref{cb-q-6} use the built-in \textit{\_count} in reduce section of Mapreduce.  In Q5, only \textit{doctype} \textit{open\_auctions} is selected and emited if the codnition match for \textit{price} attribute. Query Q6 
- emit all the \textit{id} of \textit{regions} \textit{doctype}.  The \textit{\_count} function in reduce counts the numbers of emitted items. 
+ \item  In \ref{cb-q-1}, the map function filters the documents by \textit{doctype} and the \textit{id} returns the required field by calling it in \textit{emit} funciton.
  
- \item The join operation in Couchbase is a bit complicated as compare to other NoSQL databases. Each \textit{doctype} should have a view and can be used for for other queries. For example, in case of \ref{cb-q-11} and \ref{cb-q-12}, view on \textit{open\_auctions} can be used for both queries.  The \ref{cb-q-8} contains two views: the first select the \textit{id} and \textit{name} field of \textit{people}. The second view aggregates \textit{doctype} \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both views are combined using Node.js. 
+ \item \ref{cb-q-2} and \ref{cb-q-3} are deep arrays and objects processing queries like other NoSQL databases. In map,  JavaScript code is applied  to find the required elements in objects or arrays. 
  
- \item In \ref{cb-q-10}, two views on \textit{people}  are combined to get the result. Table~\ref{tbl:couchbase-q10-a} illustrate the view \textit{people\_interest} for Q10. In Map phase, all the \textit{category} as key and document \textit{id} as value are emitted. In reduce, we have defined a custom reduce function that groups the values(doc.id) by key(category). The query defines the level of group which is 1 for the view. This view generates  \textit{id} of the \textit{people} group by interest. Another view \textit{people\_profile} emits the \textit{id} as key and  formatted profile of \textit{people} as value. The \textit{people\_profile} is joined to \textit{people\_interest}.
+ \item Both queries \ref{cb-q-5} and \ref{cb-q-6} use the built-in \textit{\_count} function  in reduce section.  In Q5, the map emits only when the condition match with \textit{price} field of \textit{open\_auctions} whereas for Q6, the map
+ emits all the \textit{id} of \textit{regions} \textit{doctype}.  The \textit{\_count} function in reduce counts the numbers of emitted items. 
  
+ \item The join operation in Couchbase is a bit complicated compared to other NoSQL databases. Each \textit{doctype} should have at least a view but it can be also used for other queries. In case of \ref{cb-q-11} and \ref{cb-q-12}, view on \textit{open\_auctions} can be used for both queries. The \ref{cb-q-8} contains two views: the first view selects the \textit{id} and \textit{name} field of \textit{people}. The second view aggregates \textit{doctype} \textit{closed\_auctions} using reduce function with query option \textit{group\_level=1}. Finally, both views are joined using Node.js. 
+ 
+ \item In \ref{cb-q-10}, two views on \textit{people}  are joined to get the results. Table~\ref{tbl:couchbase-q10-a} illustrate the view \textit{people\_interest} for Q10. At map phase, all the \textit{category} as key and  document key \textit{id} as value are emitted. In reduce, a custom reduce function groups the values by key. The query defines the grouping level which is 1 for this view that indicates the key. This view generates  \textit{people}'s \textit{id} group by interest category. Another view \textit{people\_profile} emits the \textit{id} as key and formatted profile of \textit{people} as values. The view \textit{people\_interest}  is joined to \textit{people\_profile} to get formatted result.
  \begin{longtable}[hbt]{c|c|c}
 	\caption{ view \textit{person\_interest} in doctype \textit{people} for Q10}
 	\label{tbl:couchbase-q10-a}\\
@@ -149,16 +144,13 @@ function (doc, meta) {
 \end{minipage}
 \end{longtable}
 
-\item For \ref{cb-q-11} and \ref{cb-q-12}, a common view in \textit{open\_auctions} is joined to two different views in \textit{people} for each query.
+%\item For \ref{cb-q-11} and \ref{cb-q-12}, a common view in \textit{open\_auctions} is joined to two different views in \textit{people} for each query.
 
- \item In \ref{cb-q-14} , the \textit{description} field in \textit{regions} is converted into string  that makes substring search possible. There is a problem in doing so, both \textit{key} and \textit{value} of JSON is converted into string. 
- \item Queries \ref{cb-q-15} and \ref{cb-q-16} are deep child axes search using javascript like other NoSQL databases. The  \ref{cb-q-17} is simple filter in view.  
- \item In \ref{cb-q-18}, a javascript function is defiend inside map and called at emit.  
+ %\item In \ref{cb-q-14} , the \textit{description} field in \textit{regions} is converted into string  that makes substring search possible.  The \ref{cb-q-15} and \ref{cb-q-16} are deep child axes queries. 
  
- \item A view in doctype \textit{regions} is created for \ref{cb-q-19}. The map emits the \textit{location} as key and a JSON object as values.  A parameter \textit{descending} set to \textit{false} to get result in ascending order. 
+ \item A view in the \textit{regions} documents created for \ref{cb-q-19}. The map emits the \textit{location} as key and a JSON object as values.  A query  \textit{descending=false}  returns the resulting values in ascending order. 
  
- 
- \item The final query \ref{cb-q-20} is given in Table~\ref{tbl:couchbase-q20}. In map function, the document is emitted accoding to their class and a counter value. In reduce the built-in reduce function \textit{\_sum} with the help of query\textit{group\_level=1} sums all the values group by key, the class.
+ \item The final query \ref{cb-q-20} is given in Table~\ref{tbl:couchbase-q20}. In the map function, the document is emitted according to their class-name as key  and a counter value. In reduce, the \textit{\_sum} function sums all the counter values group by key as query \textit{group\_level=1}.
  \end{itemize}
 
 
@@ -228,7 +220,19 @@ r.table("regions")
 \end{lstlisting}
 \end{minipage}
 \end{longtable}
-Some of the importain queries in RethinkDB explained here.
+The full list of RethinkDB queries and indexes  are given in Appendix~\ref{rethinkdb-query-list}. 
+Some of the important queries in RethinkDB explained here.
 
+\begin{itemize}
+\item  In \ref{rethink-q-1}, the \textit{get} function retrieve a document by its primary key from the \textit{people} table  and select field \textit{name}.   
 
-For query Q1, the document can be retrieved by the primary key \textit{id} using \textit{get()} function.  ReQl has more features for arrays and objects compare to  other NoSQL databases that helped in Q2 and Q3. Due to native support for joins between table, join queries are more flexible in RethinkDB. An index \textit{buyer\_person} is created in field "buyer.person" of \textit{closed\_auctions} table for Q8. Similarly, the Q9 can be improved by creating indexes in the tables \textit{regions} and \textit{closed\_auctions}. Other queries like Q13 and Q19 is also evaluated using indexes. For substring search in Q14, the value of  field \textit{description} is converted into text and then it is matched for the sub-string. All the queries and indexes are used for RethinkDB is given in ~\ref{rethinkdb-query-list}.
+\item  The \textit{lamda} function of ReQL is one of the most powerful features among NoSQL databases to process the arrays and objects. these functions are implemented in  queries \ref{rethink-q-2} and \ref{rethink-q-3} to filter and format the results. 
+
+\item 
+ In queires \ref{rethink-q-5} and \ref{rethink-q-6}, the \textit{count} function is implemented in a table. 
+ 
+ \item Due to native support for joins between table, join queries in RethinkDB are simpler compare to other NoSQL databases. An index \textit{buyer\_person} is created in field "buyer.person" of \textit{closed\_auctions} table is created for \ref{rethink-q-8} and \ref{rethink-q-9}. In Q8, the \textit{map} joins the query 
+
+\end{itemize}
+
+\textit{closed\_auctions} table for Q8. Similarly, the Q9 can be improved by creating indexes in the tables \textit{regions} and \textit{closed\_auctions}. Other queries like Q13 and Q19 is also evaluated using indexes. For substring search in Q14, the value of  field \textit{description} is converted into text and then it is matched for the sub-string. All the queries and indexes are used for RethinkDB is given in ~\ref{rethinkdb-query-list}.

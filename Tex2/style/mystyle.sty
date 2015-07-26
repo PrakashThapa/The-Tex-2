@@ -8,7 +8,9 @@
 \usepackage[graphicx]{realboxes}
 \usepackage{rotating}
 \usepackage{url}
-\usepackage[top=2cm, bottom=2cm, left=4cm, right=2cm]{geometry}
+%\usepackage[top=2cm, bottom=2cm, left=4cm, right=2cm]{geometry}
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \usepackage{titlesec}
 %\usepackage{minted} %for js code
@@ -25,6 +27,7 @@
 \usepackage{hyperref}
 %for quote 
 \usepackage{textcomp}
+	\usepackage{caption}
 
 %package end here
 
@@ -88,33 +91,6 @@
 
 % end of XML
 
-% start of xquery
-% XQuery v1.0 (2007-01), http://www.w3.org/TR/xquery/#id-terminal-delimitation
- \lstdefinelanguage{XQuery}{%
- 	morekeywords=[1]{for,in,let,where,return,if,then,else,case,satisfies,default,typeswitch},% 
- 	morekeywords=[1]{child,descendant,attribute,self,descendant-or-self,following-sibling,following,parent,ancestor,preceding-sibling,preceding,ancestor-or-self,},% 
- 	morekeywords=[2]{cast,as,castable,instance,of,some,every,in,unordered,ordered,stable,order,by,descending,empty,collation,derives-from,nilled,nillable,node,schema-element,document-node},%
- 	morekeywords=[3]{element,function,variable,comment,processing-instruction,text,document,attribute,to},%
- 	morekeywords=[4]{xquery,declare,namespace,module,option,ordering,version,encoding,order,last,copy-namespaces,preserve,no-inherit,import,schema,at,external,construction,strip,base-uri,boundary-space},%
- 	morekeywords=[3]{fn:count,fn:sum,fn:empty,fn:max,fn:doc,fn:avg,fn:node-name,fn:last,fn:position,fn:error,position,last,size,count,substring,fn:substring,string,fn:string,contains,fn:contains,concat,fn:concat},% 
- 	morekeywords=[5]{mod,eq,or,and,idiv,true,false,is,div,union,intersect,except,gt,lt,},%
- 	morekeywords=[7]{\$\%,}, 
-	morekeywords=[7]{\_,},
- 	morestring=[b]",%
- 	morecomment=[s]{(:}{:)},%
- 	literate={<----}{$\longleftarrow\;\,\,$}{3},
- 	sensitive%
- }[keywords,comments,strings]
- 
-
-\lstdefinestyle{XQuery}{
-	language=XQuery,
-	float=ht,
-	 basicstyle=\scriptsize
-}
-\lstdefinestyle{XQueryNoFloat}{
-	language=XQuery,
-}
 
 \lstdefinestyle{none}{
 	float=h,
@@ -122,17 +98,10 @@
 
 % end of Xquery
 
-\lstset{
-	language=XQuery,
-	basicstyle=\footnotesize\sffamily,
-	linewidth=\linewidth,
-	breaklines=true, 
-	framerule=1.0pt,
-	captionpos=b,
-}
 
 \lstnewenvironment{fakeXML}[1][]{
-	\lstset{ basicstyle=\scriptsize,
+	\lstset{ 	%basicstyle=\normalfont\ttfamily,    
+	 basicstyle=\scriptsize,
 		linewidth=\linewidth,
 		breaklines=true, 
 		framerule=1.0pt,
@@ -162,7 +131,8 @@
 
 
 \lstdefinelanguage{json}{
-	basicstyle=\normalfont\ttfamily,
+	%basicstyle=\normalfont\ttfamily,
+	 basicstyle=\scriptsize,
 	linewidth=\linewidth,
 	showstringspaces=false,
 	breaklines=true,

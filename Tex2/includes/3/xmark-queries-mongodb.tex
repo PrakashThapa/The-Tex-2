@@ -1,4 +1,3 @@
-\label{xmark-queries-mongodb}
 \begin{enumerate}[label=Q\arabic*]
 	\item \label{mongodb-q-1}%1
 	\begin{lstlisting}[language=JSON,  basicstyle=\scriptsize]
@@ -54,25 +53,27 @@
     \item \label{mongodb-q-8}%8
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	   function q8() {
-            var person = new Array();
-            var item = new Array();
-            db.people.find({},{name:1}).forEach(function(people){
-        		person[people._id] = people.name;
-        	});
-            var ct=0
-            db.closed_auctions.aggregate([
-        		{$project:{_id:1,person:"$buyer.person"}},
-        		{$match:{person:{$in:Object.keys(person)}}},
-        		{$group:{_id:"$person",count:{$sum:1}}},
-        		{$sort:{count:-1}},
-        		{$project:{person:"$_id",count:"$count",_id:0}}
-        	],
-              {allowDiskUse:true}).forEach(function(closed){
-                item[ct] = {person:person[closed.person],count:closed.count}
-                ct++;  
-            });
-            return item;
-        }
+    var item = new Array();
+	var ct =0;
+	var itemBought = function(personId){
+		return db.closed_auctions.aggregate([
+		{$project:{_id:1,person:"$buyer.person"}},
+		{$match:{person:personId}},
+		{$group:{_id:"$person",count:{$sum:1}}},
+		{$sort:{count:-1}},
+		{$project:{count:"$count",_id:0}}
+	],{allowDiskUse:true}).count;
+	};
+    db.people.find({},{name:1}).forEach(function(people){
+		var count = itemBought(people._id);
+		 count = ((count) && (typeof count !== "undefined")) ? count : 0 ;
+		
+		item[ct] = {person:people.name,count:count};
+		ct++;
+	});
+	
+	return item;
+ }
         
 	\end{lstlisting}
 	
@@ -154,8 +155,6 @@ function 9() {
     \item \label{mongodb-q-11}%11
 	\begin{lstlisting}[language=JSON,   basicstyle=\scriptsize]
 	  function q11() {
-    	var start = new Date().getTime();
-    	var debugId = "person3"
     	var ids = new Array();
     	var open_auc = function(initial){
     		return db.open_auctions.find({initial:{$lt:initial}},{_id:1}).count();
@@ -311,7 +310,7 @@ function 9() {
 	\end{lstlisting}
 \end{enumerate}
 \subsection{Indexes}
-\begin{enumerate}[label=I\arabic*.]
+\begin{enumerate}[label=I\arabic*]
 \item \label{mongodb-i-1}
 \begin{lstlisting}[language=JSON,  basicstyle=\scriptsize]
    db.open_auctions.createIndex({
