@@ -117,8 +117,7 @@ function (doc, meta) {
 \paragraph{Query:}
  In contrast to MongoDB,  Couchbase's queries are closely associated with client,  where each operations has to be performed through SDKs.
 \par
- Query in Couchbase is done against pre-materialize views through REST API or SDK. Different query options like \textit{limit}, \textit{group\_level}, \textit{key}, \textit{keys}, \textit{skip}, etc can be used in view to get required result. 
- 
+ Query in Couchbase is done against pre-materialize views through REST API or SDK. Different query options like \textit{limit}, \textit{group\_level}, \textit{key}, \textit{keys}, \textit{skip}, etc can be used in view to get required result. The \textit{group\_level} options in query controls whether the reduce function reduces to a set of distinct keys or to a single result row.  \textit{descending} changes the direction of search by key in results. The two query options are most frequently used in our benchmarking queries.
 \par 
 Views are created in development environments and works on small subset of data that create sample index. Views creates the indexes which implies use of resources and slow down of performance of the system. Production views are deployed environment that take full dataset and create index. Figure~\ref{fig:cb-views-document-design} illustrates the both types of views and index created by them. It is necessary to be noted for benchmarking at Chapter~\ref{ch:benchmarking}, where multiple buckets with different size dataset will be used.
    

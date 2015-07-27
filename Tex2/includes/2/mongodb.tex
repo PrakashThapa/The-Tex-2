@@ -118,30 +118,19 @@ The \textit{find()} method is the most common way to retrieve data from a collec
 	\begin{minipage}{.4\textwidth}
 		\centering		
 		\begin{lstlisting}[language=XML,basicstyle = \scriptsize,label=couchbase-map-sample]
-mapFunction = function() {
-	for (var i in this.tags) {
-		var recency = 1 / (new Date() - this.date);
-		var score = recency * this.score;
-		emit(this.tags[i], {
-			"urls": [this.url],
-			"score": score
-		});
-	}
-};	
+map = function() {
+           if(this.reserve){
+            emit(this._id, this.reserve);
+           }    
+        };	
 		\end{lstlisting}		
 	\end{minipage} &
 	\begin{minipage}{.49\textwidth}
 		\centering
 		\begin{lstlisting}[language=JSON, basicstyle =\scriptsize, label=couchbase-reduce-sample]
-reduceFucntion = function(key, emits) {
-	var total = {urls: [],score: 0 }
-	for (var i in emits) {
-		emits[i].urls.forEach(function(url) {
-			total.urls.push(url);
-		}
-		total.score += emits[i].score;
-	}
-	return total;
+reduce = function(key,values) {
+            return Array.sum(values);
+        };
 };
 		\end{lstlisting}
 	\end{minipage}
@@ -150,9 +139,10 @@ reduceFucntion = function(key, emits) {
 	\multicolumn{2}{c}{
 	    \scriptsize
 	    
-	Use: 	db.runCommand({"mapreduce" : \textit{collectionName}, 
-	                       "map" : \textit{mapFunction}, 
-	                       "reduce" : \textit{reduceFunction}})
+	Use: 	db.runCommand({"mapreduce" : 
+	\textit{collectionName}, 
+	                       "map" : \textit{map}, 
+	                       "reduce" : \textit{reduce}})
 		
 	}
   	
