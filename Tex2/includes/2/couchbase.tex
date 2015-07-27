@@ -6,31 +6,41 @@ The data model of Couchbase is different than other NoSQL databases. The data is
 
 \paragraph{RAM Quota}
 It is necessary to define the amount of memory for Server and individual bucket in Couchbase before storing data. 
-\begin{itemize}
-\item {Server quota:}
-          Server quota is allocated when Couchbase server is first installed. The amount of RAM allocation depends on per-node basis. The quota is identical to all the nodes. For instance, if there are 8 nodes with AND A 16GB Server quota, there is 144GB RAM available across the cluster. Further addition of 2 nodes to the cluster and the new nodes would need 16GB of free RAM, in total the RAM available in the cluster would be 160GB.   
-\item{Bucket quota:}    
-For data caching, certain amount of RAM should be allocated to an individual bucket. These bucket quotas are on per-node basis. For example, when a new bucket is created with a bucket quota of 1GB, in a 8 node cluster then in total there would be 8GB of bucket quota in the cluster. By adding 2 more nodes to the cluster would extend bucket quota to 10GB. 
-\end{itemize}
+\begin{description}
+\item[Server quota] \hfill \\
+          Server quota is allocated when Couchbase server is first installed. The amount of RAM allocation depends on per-node basis. The quota is identical to all the nodes.
+          \begin{comment}	 
+          For instance, if there are 8 nodes with AND A 16GB Server quota, there is 144GB RAM available across the cluster. Further addition of 2 nodes to the cluster and the new nodes would need 16GB of free RAM, in total the RAM available in the cluster would be 160GB.   
+          
+\end{comment}
+\item[Bucket quota] \hfill \\   
+For data caching, certain amount of RAM should be allocated to an individual bucket. These bucket quotas are on per-node basis. 
+\begin{comment}	
+For example, when a new bucket is created with a bucket quota of 1GB, in a 8 node cluster then in total there would be 8GB of bucket quota in the cluster. By adding 2 more nodes to the cluster would extend bucket quota to 10GB. 
+\end{comment}	
+
+\end{description}
            
 \paragraph{Metadata}\label{cb-metadata}
 %may be we can remove it.
-For every value stored in a bucket, Couchbase generates following meta information that is associated with a document~\cite[p. 26]{cb/ostrovsky2014pro}. 
-\begin{itemize}
-\item{Document Key:}
+For every value stored in a bucket, Couchbase generates \textit{Document Key}, \textit{Type}, \textit{Check-and-Set(CAS)} and \textit{Flags}  meta information that is associated with a document~\cite[p. 26]{cb/ostrovsky2014pro}. 
+\begin{description}
+\item[Document Key] \hfill \\
  Every value in Couchbase is saved with unique identifier called document key. Unlike MongoDB, in Couchbase the key should be manually generated. The key length should be with in 250 characters.
  
  
-\item{Type:}
- \textit{type} is the type of a document either \textit{json} or Base64 encoded string.
+\item[Type] \hfill \\
+ \textit{Type} is the type of a document either JSON or Base64 encoded string. The type of documents should be checked in query. 
+ 
+ \begin{comment}
  	\item{Expiration time:}
 		The Time to Live(TTL) also named as expiration time is the life time of a document. The default value of TTL is 0 that indicates document will never expire and also can be set as Unix epoch time after which document is removed.
 	\item{Check-and-Set(CAS):}
 		The CAS value is 64-bit integer that is updated by the server when associated item is modified. The document is updated only  if unique identifier matches the identifier of the document. CAS is used to manage concurrency when multiple client attempts to update the same document simultaneously. 
 	\item{Flags:} 
 Flags are SDK-specific parameter that are used to identify the format and the type of data objects being stored.
-
-\end{itemize}	
+\end{comment}
+\end{description}	
 
 %In case of XMark data each \texttt{id} attributes of  \texttt{item}, \texttt{person}, \texttt{open\_auction}, \texttt{category} represent as key. In case of  \texttt{closed\_auction} and  \texttt{edge} key can be manually generated. 
 \begin{figure}[h]
@@ -41,15 +51,15 @@ Flags are SDK-specific parameter that are used to identify the format and the ty
 	}
 	\\
 	\centering
-	\subfloat[View's Workflow]{
+	\subfloat[View's Workflow\protect\footnotemark]{
 		\includegraphics[width=0.6\textwidth]{img/cb/view-types-workflow}
 		\label{fig:cb-views-workflow}
-	}
+		}
 	\caption{Couchbase Server's Document Design ~\citep{couchbasedocs}}
 	\label{fig:cb-views-document-design}	
 \end{figure}
-
-
+  \footnotetext{It is necessary to be noted for benchmarking at Chapter~\ref{ch:benchmarking}, where multiple buckets with different size dataset will be used.}
+  
 \begin{comment}%removed after christian's suggestion
 \paragraph{Bucket and vBucket}
  Data bucket used by the Couchbase is a logical container of information that provides a logical grouping of physical resources within a cluster~\citep{lichtenberg2013nosql}. Documents in Couchbase do not have fixed structure. Each bucket is split into 1024 logical partitions called vBuckets. A vBucket is treated as a owner of subset of keys as shown in Figure~\ref{fig:cb-vbucket}.  
@@ -78,9 +88,12 @@ The mapreduce reads the entire dataset in parallel across the cluster. Similarly
 The map function takes the document and its metadata as the required parameters for initial processing. It provides structure and format of a view. The output depends on the filter used in \textit{emit()} inside  the map function. Each \textit{emit()}  returns a single row but can be called multiple times. The output of emit function is sent to reduce function if reduce is defined, otherwise the output will be in key/value pair. 
 
 \item {The reduce function:}
-The \textit{reduce} function is used to aggregate the numeric values generated in map phase. Couchbase has built-in reduce functions like \textit{\_count}, \textit{\_sum} and \textit{\_stats} aggregation.
+The \textit{reduce} function is used to aggregate the numeric values generated in map phase.
+
+Couchbase has built-in reduce functions like \textit{\_count}, \textit{\_sum} and \textit{\_stats} aggregation.
 
 \end{itemize}
+\begin{comment}
 Table ~\ref{tbl:cb-mapreduce} illustrates an example of MapReduce  in Couchbase. At the map phase, if the value of \textit{ doctype} is "closed\_auctions" and  price is greater than 40, then  id  is emitted. In \textit{reduce}, total number of ids are counted.
 
 %end here from benchmarking sections.
@@ -113,15 +126,15 @@ function (doc, meta) {
 \end{table}
 
 \par
+\end{comment}
 %start here 
 \paragraph{Query:}
  In contrast to MongoDB,  Couchbase's queries are closely associated with client,  where each operations has to be performed through SDKs.
 \par
  Query in Couchbase is done against pre-materialize views through REST API or SDK. Different query options like \textit{limit}, \textit{group\_level}, \textit{key}, \textit{keys}, \textit{skip}, etc can be used in view to get required result. The \textit{group\_level} options in query controls whether the reduce function reduces to a set of distinct keys or to a single result row.  \textit{descending} changes the direction of search by key in results. The two query options are most frequently used in our benchmarking queries.
 \par 
-Views are created in development environments and works on small subset of data that create sample index. Views creates the indexes which implies use of resources and slow down of performance of the system. Production views are deployed environment that take full dataset and create index. Figure~\ref{fig:cb-views-document-design} illustrates the both types of views and index created by them. It is necessary to be noted for benchmarking at Chapter~\ref{ch:benchmarking}, where multiple buckets with different size dataset will be used.
-   
- 
+Views are created in development environments and works on small subset of data that create sample index and deployed in production mode for full index. Views creates the indexes which implies use of resources and slow down of performance of the system. Figure~\ref{fig:cb-views-document-design} illustrates the both types of views and index created by them.
+	
  
  
  

@@ -32,7 +32,7 @@ Table~\ref{tbl:xmark-item-type} illustrate the extra attribute added in each of 
 A sample document of NoSQL database along with respective XMark document is illustrated in  Table~\ref{tbl:xmark-xml-json}. The conversion from XML to JSON is carried out using algorithms of Section~\ref{xml-to-json-migration} with one extra attribute "doctype" to represent the parent of a document. If an element in XML has siblings with same name, they are represented as an array in NoSQL document which is already mentioned in algorithm~\ref{algorithm-JSONXML}. As it can be seen, the \textit{person} of XMark is a document in NoSQL, it is not necessary to represent this attribute.  
 
 \begin{longtable}{c|c}
-	\caption{Example: XMARK data with id \textit{person0} in XML and JSON format }
+	\caption{Example: XMARK data with id \textit{person0} \\in XML and JSON format }
 	\label{tbl:xmark-xml-json}\\
 	{\textit{person0}} in XML(a) & {\textit{person0}} in JSON for a NoSQL database(b)\\
 	\hline
@@ -42,14 +42,19 @@ A sample document of NoSQL database along with respective XMark document is illu
 <people>
     <person id="person0">
        <name>Kasidit Treweek</name>
-       <emailaddress>mailto:Treweek@cohera.com</emailaddress>
+       <emailaddress>mailto:Treweek@cohera.com
+            </emailaddress>
        <phone>+0 (645) 43954155</phone>
-       <homepage>http://www.cohera.com/~Treweek</homepage>
-       <creditcard>9941 9701 2489 4716</creditcard>
+       <homepage>
+            http://www.cohera.com/~Treweek
+        </homepage>
+       <creditcard>9941 9701 2489 4716
+            </creditcard>
        <profile income="20186.59">
           <interest category="category251" />
-          <interest category="category341"/>
-          <education>Graduate School</education>
+          \<interest category="category341"/>
+          <education>Graduate School
+                </education>
           <business>No</business>
        </profile>
     </person>
@@ -70,11 +75,11 @@ A sample document of NoSQL database along with respective XMark document is illu
 	"profile": {
 		"income": 20186.59,
 		<@\textcolor{red}{
-		"interest": [{
+		"interest": [\{
 			"category": "category251"
-		},{
+		\},\{
 			"category": "category341"
-		}]}@>,
+		\}]}@>,
 		"education": "Graduate School",
 		"business": "No"
 	}
