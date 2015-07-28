@@ -1,6 +1,5 @@
 MongoDB is a schema-less document-oriented database developed by MongoDB Inc. with the support of Open Source community. 
 \subsubsection{Data design} 
-\paragraph{Document}
 	A document is abstract and storable unit in MongoDB. It is the data structure expressed in the form of JSON and is stored in BSON, a binary variant of JSON that supports additional data types like ObjectId, timestamp, datetime etc. All the accessible data including database records, query selectors, index specifications, server configurations etc. are represented as documents. An example  MongoDB document is given in Figure~\ref{sample-mongodb-document}.
 Every document is referenced with a unique key. A document is retrieved either by the key or any other attribute of the document. Collection in MongoDB is a group of documents and it is stored in a database. It is more convenient to group similar structured documents in a collection but not mandatory. MongoDB has two principles that allow the users to represent the relationships between the documents: \textit{references} and \textit{embedded} documents~\citep{mongodb:org}. 
 \begin{description}
@@ -58,15 +57,9 @@ Every document is referenced with a unique key. A document is retrieved either b
 \subsubsection{Indexing}\label{mong-xmark-indexing}
 
 Each document in MongoDB is uniquely identified by a field \textit{\_id} which is also a primary index. Hence, the collection is sorted by \textit{\_id}~\citep{nosql/comparision}.
-Apart from the primary index, MongoDB provides a mechanism to create secondary indexes for all fields of document. It supports various user defined indexes for field values including single field index, multikey index, multidimensional index, geo-spatial index, text index and hash index.
-%Single field, multidimensional and multikey indexes are organized using B-tree, whereas geospatial index is implemented using quad trees.Once index is defined on a field,
-\begin{itemize}
-\item \textit{Single field index} only includes data from a single field of documents in a collection. 
-\item \textit{Compound index} holds reference to the multiple fields within a collection's documents.
-\item To index a field that contains an array value, MongoDB provides special indexing called \textit{Multikey index}.
-\item \textit{Text index} helps efficient search of a string in documents.
-\end{itemize}
-\subsubsection{Query Model}\label{mongo-query-model}
+Apart from the primary index, MongoDB provides a mechanism to create secondary indexes for all fields of document. It supports various user defined indexes for field values including single field index, multikey index, multidimensional index, geo-spatial index, text index and hash index. A single field index and compound index can be applied a field and multiple fields of a document respectively, whereas the array values of a field use multikey index.  The text indexes are designed to help efficient search of a string in documents or sub-documents.
+
+\subsubsection{Query Model} \label{mongo-query-model}
 
 %\todo{modify with christian's suggestions}
 Queries in MongoDB are expressed in a JSON-like syntax and are sent to MongoDB as BSON objects by a database driver\citep{orend2010analysis}. A query can be specified by exact match on the embedded document or by using individual field with a \textit{dot notation}. It is used to access an element in document of an array or an object in the form of  $<$$array$.$index$$>$ or  $<$$object$.$childobject$$>$. For general queries, mongo shell can be used. It is an user friendly JavaScript shell that allows to implement callback functions to manipulate the data returned by the queries.  
@@ -117,12 +110,15 @@ The General syntax of find operation is given in Code~\ref{mongodb-find-sample}.
 		  \end{lstlisting}
 		  
 \end{comment}
+
 \item[MapReduce]  \hfill \\
 		  The MapReduce is a data processing framework design to support large volumes of data that goes beyond the limitations and restriction of aggregation pipeline.  In mapreduce,  \textit{map} function applies to each input document and emits the key-value pair as output. Any arbitrary sorting and limiting  of single collection is performed before map stage. The reduce applies to the map's output where a key is associated with multiple values to return the aggregated data. The output of \textit{reduce} may pass optionally through finalize function to further process the result. Mapreduce functions are written in JavaScript and executed in MongoDB's demon process ~\cite{mongodbaggregation}.  Unlike pipeline framework, Map-reduce support options for choosing to store result  data in a node as collection or return the output.
+		  
+\end{description}
+
 \begin{comment}		  
 		  Table~\ref{mongdb-mapreduce} illustrates a Mapreduce implementation in MongoDB. Two JavaScript function are defined for map and reduce. The \textit{runCommand} executes these functions in a collection.
-		  
-\end{description}		
+		
 
 \begin{longtable}{c|c}
 \caption{Mapreduce in MongoDB}
@@ -181,8 +177,4 @@ MongoDB can be run in two modes. In stand-alone mode, a single \textit{mongod} d
 	\label{fig:mongodb-clusters}
 \caption{MongoDB Clusters}
 \end{figure} %reference
-
-
-
-
 \end{comment}

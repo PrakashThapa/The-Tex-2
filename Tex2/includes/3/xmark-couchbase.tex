@@ -1,8 +1,7 @@
 Couchbase does not have the concept of grouping documents like \textit{collections} in MongoDB  or \textit{tables} in RethinkDB. 
 Therefore, the data model of Section ~\ref{xmark-nosql} is applied without modification.
  All the documents of an XMark instance  are stored in a single bucket with identifier attribute \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
-An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}. The \textit{id} attribute is identifier of XMark data and document key in Couchbase, the \textit{doctype} with  value \textit{regions} represents it is and item and finally the \textit{regions} attributes is to represent the in which regions does this attributes belongs to.\todo{english}
-
+An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}. The identifier attribute \textit{id}  of XMark data is the document key in Couchbase. The \textit{doctype} with  value \textit{regions} represents it as an \textit{item} and finally the \textit{regions} attribute is to represent in which regions does this \textit{item} associated with. \todo{english}
 \newbox\cbXmarkDocument
 \begin{lrbox}{\cbXmarkDocument}
 \begin{lstlisting}[language=JSON,  basicstyle =\scriptsize]

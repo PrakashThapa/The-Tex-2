@@ -1,15 +1,17 @@
-The goal of this thesis was to investigate and analyze the conversion of data from XML database to NoSQL database.
+The goal of this thesis was to investigate and analyze the conversion of data from XML database to NoSQL databases. Both types of databases process data of flexible structure. We specifically focused on BaseX, a native XML database, and three document-oriented NoSQL databases: MongoDB, Couchbase and RethinkDB. 
 
-Both databases  process the data that does not have pre-defined structure. We specifically focused on BaseX, a native XML database and three document-oriented NoSQL databases: MongoDB, Couchbase and RethinkDB. 
+We defined the different data models for each of the NoSQL databases based on the XML database for query and benchmarking purposes. The architecture, query model and indexing mechanism of these databases have been studied and examined. Query plans of the native XML database BaseX were investigated with regard to index optimizations. In contrast, NoSQL databases store data in JSON format. The problems in translating XML to JSON were analyzed. Based on the XMark dataset, some algorithms were defined to convert XML to JSON.
 
-We defined the different data models for each of the NoSQL databases based on the XML database for query and benchmarking purposes. The architecture, query model and indexing mechanism of these databases have been studied and examined. The general concept of indexing and query plan of the native XML database BaseX was also investigated. NoSQL database stores data in JSON format. The problems in translating XML to JSON are analyzed. Based the XMark dataset, some algorithms were defined to convert XML into JSON.
-The XQuery expressions of the standard XML benchmarking project XMark has been converted into each of NoSQL database queries and evaluated according to the their data model.
+The XQuery expressions of the standard XML benchmarking project XMark were rewritten for the NoSQL databases and their data model. We tested and analyzed the performance of all systems. The experiment was done by running different types and numbers of queries with variable database sizes.
 \par
-We tested and analyzed the performance of all the systems. The experiment is done by running different types and numbers of queries with variable database sizes. 
-XQuery is a powerful functional language which is also the query language of XML database. Most of the NoSQL databases support basic queries. MongoDB has relatively better query operations compared to Couchbase query language. ReQL, the query language of RethinkDB is the most advanced among the NoSQL databases. 
+Although BaseX, MongoDB, Couchbase and RethinkDB have been designed to store and process unstructured and semi-structure-data, they are comparatively different systems with regard to the underlying data model, query technique and indexing mechanism.
+
+In the performance results, it was shown that the secondary indexes of NoSQL databases could be utilized to speed up many of the rewritten queries. Even though the execution time of queries with deep child axes seems to be comparable, the results produced by the NoSQL databases were not quite as good as for the XPath-based processor BaseX. Some queries cannot be compared in case of performance as the purpose of different like in Q14.
+
+XQuery is a powerful functional language for XML databases. Most of the NoSQL databases only support basic query operations. MongoDB has a some more query features compared to Couchbase. ReQL, the query language of RethinkDB is the most advanced among the NoSQL databases.
 
 \par
-NoSQL databases are designed to handle a small size of large numbers of documents. They cannot process a huge block of data, but if forced to do so the performance will reduce. The XML databases process a very large size of XML documents. NoSQL database is suited better for an application with massive updates,  because the write operation is atomic in a single document. On the other hand, XML database is best suited for the application that has a large size of documents but fewer write operations.
+%NoSQL databases are designed to handle a small size of large numbers of documents. They cannot process a huge block of data, but if forced to do so the performance will reduce. The XML databases process a very large size of XML documents. NoSQL database is suited better for an application with massive updates,  because the write operation is atomic in a single document. On the other hand, XML database is best suited for the application that has a large size of documents but fewer write operations.
 %If the application has large size of documents but less write operations,  XML database suited better. 
 
 %Even though both of these systems are designed to handle the data that are do not have pre-defined model or  

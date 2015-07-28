@@ -38,11 +38,5 @@ Unlike other NoSQL databases, RethinkDB supports join queries between the tables
 %start here from bechmarking section
 %there should be some changes
 \subsubsection{Indexing}
-	RethinkDB uses B-Trees to store indexes. When tables are created, there is an option to specify the attribute as a primary key. \textit{id} behaves as a primary key if the attribute is not specified and it is used to index the document. If there is no  primary key, a random unique string is automatically generated to index the document. Beside the primary index, RethinkDB supports simple, compound, secondary, geospatial  and arbitrarily computed indexes. Every query including update operations uses only one index. 
-	\begin{itemize}
-		\item \textit{Simple indexes} are created to retrieve or sort efficiently by a value of an attribute.
-		\item \textit{Compound indexes} are used to retrieve document by multiple fields. 
-		\item\textit{ Multi indexes } are used for array value of a field. 
-		\item Any arbitrary expression can be used to create index from any type of user defined expressions like lamda functions.
-	\end{itemize}
+	RethinkDB uses B-trees to store indexes. When tables are created, there is an option to specify the attribute as a primary key. \textit{id} behaves as a primary key if the attribute is not specified and it is used to index the document. If there is no  primary key, a random unique string is automatically generated to index the document. Beside the primary index, RethinkDB supports simple, compound, secondary, geospatial indexes. Beside that any arbitrary expression can be used to create index from any type of user defined expressions like lamda functions. Every query including update operations uses only one index.
 	 Only \textit{getAll()} \textit{between()}, \textit{eqJoin()} and \textit{orderBy} functions can use secondary index.

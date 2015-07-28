@@ -12,23 +12,22 @@ A JSON value can be Object, Array, number, string, true, false and null.
   
 \section{Problem to translate from XML to JSON}
 JSON and XML are conceptually similar as they both are text based markups, that are designed to represent data in human-readable form, exchangeable across multiple platforms and parsable by common programming language, but differ in their syntax~\citep{lee2011jxon}. JSON and XML are fundamentally incompatible with each other, as listed below:
-\begin{itemize}
-\item \textit{Root node and anonymous values}
-\\
+\begin{description}
+\item[Root node and anonymous values] \hfill \\
 Each XML document has one root node. JSON supports anonymous values also referred as string values, that do not need key/value pairs. For example, in Table~\ref{tbl:Anonymous-xmljson} the XML root node is implicitly created in the model and will not have a textual representation in JSON.
 
-	\item \textit{Arrays}\\
+	\item[Arrays] \hfill \\
 		Arrays are native data types of JSON that does not exists in XML. There is no direct markup for arrays in XML.
-		\item \textit{Identifiers}\\
+		\item[Identifiers] \hfill \\
 		XML is much more restrictive for identifiers compared to JSON, which allows any string to be an identifier. Translating from XML to JSON does not cause any problem, but in reverse case it might lead to not well formed XML. For example, "Hello World" is a valid identifier in JSON but not valid attribute or element in XML, as there is a whitespace between the two words.
-		\item \textit{Attributes}\\
+		\item[Attributes] \hfill \\
 		JSON does not have the notion or any representation of attributes. When mapping data from XML to JSON, the attributes are translated to name object members along with other child elements. This information will be lost in mapping from JSON to XML.
-		\item \textit{Namespaces}\\
+		\item[Namespaces] \hfill \\
 		XML supports namespaces to identify  unique element and attributes in a document. Namespaces do not exist in JSON. Mapping QNames in XML with namespaces to JSON can lead to ambiguous and duplicate names.
 		%\item \textit{Others}\\
 		%TODO: {Processing Instructions, Character Set, Comments, Encodings}
 		%There are also some other problems like processing instructions and  comments which XML supports but not in JSON. Other issues for example, character set and encoding are not easily exchangeable in both format.
-\end{itemize}
+\end{description}
 
 \begin{longtable}{c|c}
 	\caption{Anonymous values of JSON in XML}
@@ -110,8 +109,8 @@ xs:integer
 
 \begin{minipage}{.4\textwidth}
 	\begin{lstlisting}
-	xs:anySimpleType
-	(Remaining all others)
+xs:anySimpleType
+(Remaining all others)
 	\end{lstlisting}
 \end{minipage} &
 \begin{minipage}{.4\textwidth}

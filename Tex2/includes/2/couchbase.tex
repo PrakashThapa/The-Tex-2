@@ -40,6 +40,7 @@ For every value stored in a bucket, Couchbase generates \textit{Document Key}, \
 	\item{Flags:} 
 Flags are SDK-specific parameter that are used to identify the format and the type of data objects being stored.
 \end{comment}
+
 \end{description}	
 
 %In case of XMark data each \texttt{id} attributes of  \texttt{item}, \texttt{person}, \texttt{open\_auction}, \texttt{category} represent as key. In case of  \texttt{closed\_auction} and  \texttt{edge} key can be manually generated. 
@@ -93,6 +94,7 @@ The \textit{reduce} function is used to aggregate the numeric values generated i
 Couchbase has built-in reduce functions like \textit{\_count}, \textit{\_sum} and \textit{\_stats} aggregation.
 
 \end{itemize}
+
 \begin{comment}
 Table ~\ref{tbl:cb-mapreduce} illustrates an example of MapReduce  in Couchbase. At the map phase, if the value of \textit{ doctype} is "closed\_auctions" and  price is greater than 40, then  id  is emitted. In \textit{reduce}, total number of ids are counted.
 
@@ -133,7 +135,7 @@ function (doc, meta) {
 \par
  Query in Couchbase is done against pre-materialize views through REST API or SDK. Different query options like \textit{limit}, \textit{group\_level}, \textit{key}, \textit{keys}, \textit{skip}, etc can be used in view to get required result. The \textit{group\_level} options in query controls whether the reduce function reduces to a set of distinct keys or to a single result row.  \textit{descending} changes the direction of search by key in results. The two query options are most frequently used in our benchmarking queries.
 \par 
-Views are created in development environments and works on small subset of data that create sample index and deployed in production mode for full index. Views creates the indexes which implies use of resources and slow down of performance of the system. Figure~\ref{fig:cb-views-document-design} illustrates the both types of views and index created by them.
+Views are created in development environments and works on small subset of data that create sample index and deployed in production mode for full index. Views creates the indexes which implies use of resources and slow down of performance of the system. Figure~\ref{fig:cb-views-document-design} illustrates the both types of views and index created by them. The in-memory nature of Coucubase directly affect the performance of queries in other buckets.
 	
  
  
