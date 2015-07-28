@@ -1,7 +1,7 @@
 RethinkDB stores the documents inside a table which is identical to the collection in MongoDB. 
 The documents are grouped according to their \textit{doctype} and store in a table.
 Each \textit{doctype} of \ref{xmark-nosql} is represented as an individual table. 
-The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as of \textit{doctype}. Hence the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added as an identifier during the time of insertion. Figure~\ref{code:rethindb-person0} shows a document with id \textit{person0} in \textit{people} table.
+The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as \textit{doctype}. Therefore, the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added as an identifier during the time of insertion. Figure~\ref{code:rethindb-person0} shows a document with id \textit{person0} in \textit{people} table.
 
 
 \newbox\rethinkdbXmarkDocument

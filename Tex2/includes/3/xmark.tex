@@ -1,13 +1,13 @@
 The XML benchmarking project XMARK~\citep{xmark/original} is one of the most popular and commonly used XML benchmarking projects to date. It provides a small executable tool called \textit{xmlgen} that can be used to create a synthetic XML dataset based on a fixed schema describing an Internet auctions database. xmlgen can be used to build a single record with a large, hierarchical XML tree structure. A factor is specified to scale the generated data, ranging from a few kilobytes to an arbitrary size, limited by the capacity of the system. The textual part of the resulting XML document is constructed from 17,000 most frequently occurring words of Shakespeare's plays.
 
 \subsection{Dataset}\label{xmark-dataset}
-The main entities of XMark data are in two groups. The first group consists of  \textit{person}, \textit{open\_auction}, \textit{closed\_auction}, \textit{item} and \textit{category}. The second group's entities \textit{annotation} and \textit{description} are natural language text and document-centric element structure. The relationship between the entities in the first group are expressed as reference and the second group entities are embedded into subtree of first group entities. Figure~\ref{fig:xmark-tree} shows the XMark dataset with the following properties:
+The main entities of XMark data are in two groups. The first group consists of  \textit{person}, \textit{open\_auction}, \textit{closed\_auction}, \textit{item} and \textit{category}. The second group's entities \textit{annotation} and \textit{description} are a natural language text and a document-centric element structure. The relationship between the entities in the first group are expressed as reference and the second group entities are embedded into subtrees of the first group entities. Figure~\ref{fig:xmark-tree} shows the XMark dataset with the following properties:
 \label{xmark:desc:each}
 \begin{itemize}	
 	\item
-	\textit{people} is a collection of \textit{person} element that is connected to buyer and seller of \textit{open\_auctions}, \textit{closed\_auctions}, etc. Each person has an unique identifier \textit{id} to reference to another entities like \textit{open\_auctions} and \textit{closed\_auctions}.
+	\textit{people} is a collection of \textit{person} elements that are connected to the buyer and seller of \textit{open\_auctions}, \textit{closed\_auctions}, etc. Each person has unique identifier \textit{id} to reference to other entities like \textit{open\_auctions} and \textit{closed\_auctions}.
 	\item
-	\textit{regions} is a collection world regions \textit{africa}, \textit{asia}, \textit{australia}, \textit{europe}, \textit{namerica} and \textit{samerica}. Each of these region has \textit{item} elements which are the objects for sale or already sold. Each \textit{item} carries a unique identifier \textit{id} and has properties like name, payment information, description and a reference to the seller that are encoded as elements. 
+	\textit{regions} is a collection of world regions like \textit{africa}, \textit{asia}, \textit{australia}, \textit{europe}, \textit{namerica} and \textit{samerica}. Each of these regions has \textit{item} elements which are the objects for sale or already sold. Each \textit{item} carries a unique identifier \textit{id} and has properties like name, payment information, description and a reference to the seller that are encoded as elements. 
 	\item
 		\textit{open\_auctions} refers to current auctions that contains bid history(increase/decrease over time) with references to bidders and sellers, current bid, the time interval of bid accepted, the status of the transaction, a reference to the item being sold etc.
 	\item
@@ -17,10 +17,7 @@ The main entities of XMark data are in two groups. The first group consists of  
 	\item
 		  A \textit{catgraph} links categories into a network.  The full semantics of the XMark dataset can be found in~\cite{xmark/original}.
 \end{itemize}
-The relationship of these entities is shown in Figure~\ref{fig:xmark-reference}. 
-
-The full ER-Diagram of XMark dataset is illustrated in Fig.~\ref{fig:xmark-schema}. 
-\todo{explain the figure}
+The relationship of between these entities is shown in Figure~\ref{fig:xmark-reference}.  The full ER-Diagram of XMark dataset can be seen in in Fig.~\ref{fig:xmark-schema}. 
 \begin{figure}[h]
 
 	\centering
