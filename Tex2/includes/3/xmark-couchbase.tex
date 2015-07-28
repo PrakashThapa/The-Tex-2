@@ -2,7 +2,9 @@ Couchbase does not have the concept of grouping documents like \textit{collectio
 Therefore, the data model of Section ~\ref{xmark-nosql} is applied without modification.
  All the documents of an XMark instance  are stored in a single bucket with identifier attribute \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
 An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}. The \textit{id} attribute is identifier of XMark data and document key in Couchbase, the \textit{doctype} with  value \textit{regions} represents it is and item and finally the \textit{regions} attributes is to represent the in which regions does this attributes belongs to.\todo{english}
-\begin{figure}[hbt]
+
+\newbox\cbXmarkDocument
+\begin{lrbox}{\cbXmarkDocument}
 \begin{lstlisting}[language=JSON,  basicstyle =\scriptsize]
     {
     	<@\textbf{"id": "item1000"}@>,
@@ -19,6 +21,43 @@ An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-it
     	"description":{}
     }
 \end{lstlisting} 
-\caption{Couchbase document of the XMark data for item with id \textit{item1000}}
-\label{code:couchbase-item0}
+\end{lrbox}
+
+
+\newbox\cbXmarkChart
+\begin{lrbox}{\cbXmarkChart}
+\begin{tikzpicture}[grow'=right,level distance=1.25in,sibling distance=.25in, font=\scriptsize]
+\tikzset{edge from parent/.style= 
+            {thick, draw, edge from parent fork right},
+         every tree node/.style=
+            {draw,minimum width=1in,text width=1in,align=center}}
+\Tree 
+    [. Bucket 
+        [.{item0 } ]
+        [.{... } ]
+        [.{item1000 } ]
+        [.{person0 } ]
+        [.{... } ]
+        [.{category0 } ]
+        [.{... } ]
+    ]
+    
+\end{tikzpicture}
+\end{lrbox}
+
+\begin{figure}[hbtp]
+\centering
+\subfloat[Bucket and documents Couchbase] {
+    \usebox\cbXmarkChart
+    \label{xmark-cb-tree}
+}
+\\
+\centering
+\subfloat[Couchbase document of the XMark data for item with id \textit{item1000} ] {
+        \usebox\cbXmarkDocument
+        \label{code:couchbase-item0}
+}
+
+\caption{XMark data in Couchbase}
+\label{xmark-cb-figure}
 \end{figure}

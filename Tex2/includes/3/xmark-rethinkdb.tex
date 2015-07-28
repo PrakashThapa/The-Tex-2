@@ -1,5 +1,11 @@
-\begin{figure}[hbtp]
-\centering
+RethinkDB stores the documents inside a table which is identical to the collection in MongoDB. 
+The documents are grouped according to their \textit{doctype} and store in a table.
+Each \textit{doctype} of \ref{xmark-nosql} is represented as an individual table. 
+The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as of \textit{doctype}. Hence the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added as an identifier during the time of insertion. Figure~\ref{code:rethindb-person0} shows a document with id \textit{person0} in \textit{people} table.
+
+
+\newbox\rethinkdbXmarkDocument
+\begin{lrbox}{\rethinkdbXmarkDocument}
 \begin{lstlisting}[language=JSON,basicstyle =\scriptsize]
 
 	{
@@ -20,10 +26,54 @@
 		}
 	}
 \end{lstlisting}
-\caption{RethinkDB document \textit{person0} in \textit{people} table}
-\label{code:rethindb-person0}
+\end{lrbox}
+
+
+\newbox\rethinkdbXmarkChart
+\begin{lrbox}{\rethinkdbXmarkChart}
+\begin{tikzpicture}[grow'=right,level distance=1.25in,sibling distance=.25in, font=\scriptsize]
+\tikzset{edge from parent/.style= 
+            {thick, draw, edge from parent fork right},
+         every tree node/.style=
+            {draw,minimum width=1in,text width=1in,align=center}}
+\Tree 
+    [. Database 
+        [.{regions}
+            [.{... } ]
+        ]
+        [.people
+            [.{person0 } ]
+        ] 
+        [.{open\_auctions}
+            [.{... } ]
+        ]
+        [.{closed\_auctions}
+            [.{... } ]
+        ]
+        [.{catgraph}
+            [.{... } ]
+        ]
+        [.{catgraph}
+            [.{... } ]
+        ]
+    ]
+    
+\end{tikzpicture}
+\end{lrbox}
+
+\begin{figure}[hhtp]
+\centering
+\subfloat[Database, tables and documents in RethinkDB] {
+    \usebox\rethinkdbXmarkChart
+    \label{xmark-rethinkdb-tree}
+}
+\\
+\centering
+\subfloat[RethinkDB document \textit{person0} in \textit{people} table ] {
+        \usebox\rethinkdbXmarkDocument
+        \label{code:rethindb-person0}
+}
+
+\caption{XMark data in RethinkDB}
+\label{xmark-rethinkdb-figure}
 \end{figure}
-RethinkDB stores the documents inside a table which is identical to the collection in MongoDB. 
-The documents are grouped according to their \textit{doctype} and store in a table.
-Each \textit{doctype} of \ref{xmark-nosql} is represented as an individual table. 
-The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as of \textit{doctype}. Hence the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added as an identifier during the time of insertion. Figure~\ref{code:rethindb-person0} shows a document with id \textit{person0} in \textit{people} table.

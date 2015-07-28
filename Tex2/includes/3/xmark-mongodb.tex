@@ -2,7 +2,8 @@ In MongoDB, collections consist of group of documents with similar structure. Th
 For \textit{item} entity,  field \textit{regions} does not change. The \textit{\_id} is the primary index of a document in MongoDB, the identifier attribute of the XMark data \textit{id} is renamed to \textit{\_id} for default indexing.  \textit{closed\_auctions} and \textit{catgraph} do not have an identifier attribute \textit{id}, therefore, system will automatically generate the \textit{\_id} in these collections.
 A typical example of MongoDB document for person with identifier \textit{person0} is given in Figure~\ref{code:mongodb-person0}.	
 
-\begin{figure}[hbt]
+\newbox\mongodbXmarkDocument
+\begin{lrbox}{\mongodbXmarkDocument}
 \begin{lstlisting}[language=JSON, basicstyle =\scriptsize]
     {
     	<@\textbf{"\_id": "person0",}@>
@@ -22,6 +23,54 @@ A typical example of MongoDB document for person with identifier \textit{person0
     	}
     }
 \end{lstlisting}
-\caption{MongoDB document of XMark data in \textit{people} collection}
-\label{code:mongodb-person0}
+\end{lrbox}
+
+
+\newbox\mongodbXmarkChart
+\begin{lrbox}{\mongodbXmarkChart}
+\begin{tikzpicture}[grow'=right,level distance=1.25in,sibling distance=.25in, font=\scriptsize]
+\tikzset{edge from parent/.style= 
+            {thick, draw, edge from parent fork right},
+         every tree node/.style=
+            {draw,minimum width=1in,text width=1in,align=center}}
+\Tree 
+    [. Database 
+        [.{regions}
+            [.{... } ]
+        ]
+        [.people
+            [.{person0 } ]
+        ] 
+        [.{open\_auctions}
+            [.{... } ]
+        ]
+        [.{closed\_auctions}
+            [.{... } ]
+        ]
+        [.{catgraph}
+            [.{... } ]
+        ]
+        [.{catgraph}
+            [.{... } ]
+        ]
+    ]
+    
+\end{tikzpicture}
+\end{lrbox}
+
+\begin{figure}[hbtp]
+\centering
+\subfloat[Database and collections in MongoDB] {
+    \usebox\mongodbXmarkChart
+    \label{xmark-mongodb-tree}
+}
+\\
+\centering
+\subfloat[{MongoDB document of XMark data in \textit{people} collection} ] {
+        \usebox\mongodbXmarkDocument
+        \label{code:mongodb-person0}
+}
+
+\caption{XMark data in MongoDB}
+\label{xmark-mongodb-figure}
 \end{figure}
