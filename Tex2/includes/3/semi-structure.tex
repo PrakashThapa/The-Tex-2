@@ -35,16 +35,16 @@ Each XML document has one root node. JSON supports anonymous values also referre
 	\textbf{JSON} & \textbf{XML}\\
 	\hline
 \begin{minipage}{.35\textwidth}
-\begin{fakeJSON}[basicstyle=\scriptsize]
+\begin{fakeJSON}[basicstyle=\ttfamily\footnotesize]
 	["Hello World"]
 \end{fakeJSON}	
 \end{minipage} &
 \begin{minipage}{.45\textwidth}
-\begin{fakeXML}[label=xml-anonymous]
+\begin{fakeXML}[label=xml-anonymous,basicstyle=\ttfamily\footnotesize]
 	<root>Hello World</root>
 \end{fakeXML}
 or
-\begin{fakeXML}
+\begin{fakeXML}[basicstyle=\ttfamily\footnotesize]
 	<root value="Hello World">
 \end{fakeXML}
 \end{minipage}\\
@@ -187,7 +187,7 @@ We have defined the several stages to convert XML to JSON documents:
         	\end{algorithmic}
         	\caption{ convert data type of XML to JSON data type(Step 2)}\label{algorithm-JSONXML-type}
         \end{algorithm}
-
+\newpage
 \begin{longtable}{c|c}
 	\caption{XML to JSON friendly XML(step 1)}
 	\label{tbl:xmljson}\\
@@ -341,11 +341,6 @@ We have defined the several stages to convert XML to JSON documents:
 	
 \section{XMark}\label{xmark}
 			\input{includes/3/xmark}
-		\subsection{XMark data into NoSQL database}\label{xmark-nosql}
+		\subsection{XMark data into NoSQL database} \label{xmark-nosql}
 			\input{includes/3/xmark-nosql}
-			\subsubsection{XMARK dataset in MongoDB}\label{xmark-mongodb}
-				\input{includes/3/xmark-mongodb}
-			\subsubsection{XMARK dataset in Couchbase}\label{xmark-couchbase}
-				\input{includes/3/xmark-couchbase}
-			\subsubsection{XMARK dataset in Rethinkdb}\label{xmark-rethinkdb}
-				\input{includes/3/xmark-rethinkdb}
+			

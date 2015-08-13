@@ -4,25 +4,46 @@
 % %custom style
 \RequirePackage{style/mystyle}
 \setcounter{secnumdepth}{4}
-\setcounter{tocdepth}{3}
-
-%\begin{titlepage}
-%\begin{center}
-\title{XML and NoSQL DBMS: Migration and Benchmarking}
-\subtitle{
-% TODO->add text from author%
-}
-%\subtitle{Submitted to the Department of Computer and Information Science at the
-%University of Konstanz
-%}
-%{ \huge \bfseries XML and NOSQL DBMS: Migrationet-klein}~\\[1cm]
-\input{includes/first-page/author}
-%\end{center}
-%\end{titlepage}
+\setcounter{tocdepth}{2}
 \begin{document}
+
+ \begin{huge}
+  \begin{center} XML and NoSQL DBMS: Migration and Benchmarking \end{center} 
+  \end{huge}
+ \hfill \break
+ \begin{large}
+    \begin{center}\textbf{ \large {Prakash Thapa \\}}\end{center}
+ \end{large}
+
+ \begin{small}
+\begin{center}Master Thesis in fulfilment of the requirements for the  degree of \\
+Master of Science (M.Sc.) \end{center}
+ \end{small}
+ \begin{small}
+\begin{center}
+ Submitted to the Department of Computer and Information Science at the \\ University of Konstanz \end{center}
+ \end{small}
+ \hfill \break
+
+\begin{center}                    
+    \begin{figure}[h]
+    \centering
+    \includegraphics[width=90mm]{img/logo.png} 
+    \end{figure}
+\end{center}
+\begin{center}
+ 1\textsuperscript{st} Referee: Prof. Dr. Marc H. Scholl \\
+ 2\textsuperscript{nd} Referee: Prof. Dr. Daniel A. Keim \\ 
+  \hfill \break
+   \hfill \break
+ Supervisor: Dr. Christian Gr{\"u}n
+\end{center}
+
+
+
 	%\input{includes/custom/commands}
 	\renewcommand{\lstlistingname}{Code}
-	\maketitle
+	%\maketitle
 	\thispagestyle{empty}
 	\newpage
 	\section*{Abstract}
@@ -34,8 +55,11 @@ This master thesis focuses on both of these new databases. Data will be migrated
 	
 	%\newpage
 	\section*{Zusammenfassung(German Abstract)}
-	\input{includes/1/abstract-de}
-	%\newpage
+	Das rapide Wachstum von Big Data zwang Anbieter herk\"{o}mmlicher Datenbanksysteme wie beispielsweise RDBMS nach Alternativen zu suchen. Die vordefinierte, unver\"{a}nderbare Struktur, sowie Probleme, ACID-Eigenschaften innerhalb von verteilten Systemen zu garantieren, erh\"{o}hen die Komplexit\"{a}t von RDBMS. XML und NoSQL Datenbanken sind zwei neue aufstrebende Typen von nicht-relationalen
+Datenbankmanagementsystemen, welche genutzt werden k\"{o}nnen, um un- und semistrukturierte Daten zu verarbeiten und zu speichern. 
+
+Diese Masterarbeit konzentriert sich auf diese beide Arten, sowie der Migration von XML zu NoSQL Datenbanken. Die Leistungsf\"{a}higkeit beider Systeme wird, basierend auf dem Standard-Benchmark XMark und dessen 20 Standard-Abfragen, untersucht.
+	\newpage
 	\section*{Acknowledgments}
 	\input{includes/1/acknowledge}
 	\thispagestyle{empty}
@@ -50,9 +74,9 @@ This master thesis focuses on both of these new databases. Data will be migrated
 		\label{motivation}
 		    As the digital world progresses very fast, the massive amounts of unstructured and semi-structured data collected from various fields are becoming more complex for storage and querying. Traditional data management tools such as relational database management systems (RDBMS) are mainly designed for structured data with rows and columns. On the other hand, semi-structured data contains different data types which does not separate data and schema, thus making it unsuitable for RDBMS.
 \par		
-A relational database works best with well-organized tables. The structure of the data is pre-defined by the layout of the table and the types of columns. This rigid schema structure of RDBMS adds to the complexity of processing heterogeneous data. It is possible to scale relational databases, but to do so beyond a point requires data to be distributed across multiple servers. Joining tables across distributed systems is a challenging task. The process is slow and inefficient when dealing with complex data structures that do not fit into a table. RDBMS also offers a big set of features that are not often necessary for all users.\todo{However, they still utilize the resource}
+A relational database works best with well-organized tables. The structure of the data is pre-defined by the layout of the table and the types of columns. This rigid schema structure of RDBMS adds to the complexity of processing heterogeneous data. It is possible to scale relational databases, but to do so beyond a point requires data to be distributed across multiple servers. Joining tables across distributed systems is a challenging task. The process is slow and inefficient when dealing with complex data structures that do not fit into a table. RDBMS also offers a big set of features that are not often necessary for all users.
 \par
-NNoSQL and XML databases are designed to overcome the limitations of RDBMS by storing and processing unstructured and semi-structured data. These databases support horizontal scalability, hence the data is distributed in different nodes. To increase performance and scalability, NoSQL databases often limit themselves to eventual consistency instead of providing all ACID guarantees. Beside that, these database are often faster due to their simple data model and selective features.
+NoSQL and XML databases are designed to overcome the limitations of RDBMS by storing and processing unstructured and semi-structured data. These databases support horizontal scalability, hence the data is distributed in different nodes. To increase performance and scalability, NoSQL databases often limit themselves to eventual consistency instead of providing all ACID guarantees. Beside that, these database are often faster due to their simple data model and selective features.
 \par		
 Obviously, a lot of research and analysis has been done on NoSQL and RDBMS. In~\cite{nance2013nosql}, the advantages and disadvantages of both NoSQL and RDBMS are examined; the similarities between scalable SQL and NoSQL databases has been evaluated in~\cite{cattell2011scalable}. The performance of MongoDB as NoSQL and MySQL cluster as RDBMS has been compared in~\cite{hadjigeorgiou2013rdbms}. Studies have been conducted in the field of RDBMS with XML or XML database in~\cite{jiang2002xparent} and~\cite{shanmugasundaram1999relational}. Studies involving both NoSQL and XML databases, however, are rare.
 \par
@@ -74,7 +98,7 @@ In this thesis, we are going to analyze the migration of data and benchmarking o
  \par 
  XQuery 1.0 and XQuery 3.0 are standard query languages recommended by W3C for NXDs. XQuery includes XPath as a sub-language for addressing specific parts of an XML document. XPath is not really used as a querying language because it falls short in several ways such as grouping, sorting, support for data types and cross document joins. XSLT can be used to fill in these gaps, and also to transfer XML to other documents like HTML, plain text and XSL formatting Objects, but XQuery is more like a database-oriented language.  The performance of queries in native XML databases can be improved using different types of indexes. Figure~\ref{fig:xml-indexes} shows the general indexing structure for an XML document. 
 	\subsection{BaseX}
-	BaseX is a native XML database management system and XQuery/XPath Processor that focuses more specifically on storing, querying and visualizing large XML documents. It uses tabular representation of XML data tree to store XML documents~\citep{www/basex}. BaseX is a free software that facilitates the complete implementation of XQuery 3.0. To speed up the query evaluation process, it uses indexing mechanism\todo{What is indexing mechanism??}. Due to the complex tree structure of XML, there is a wide range of indexing structures. Here are the most used types of indexes:
+	BaseX is a native XML database management system and XQuery/XPath Processor that focuses more specifically on storing, querying and visualizing large XML documents. It uses tabular representation of XML data tree to store XML documents~\citep{www/basex}. BaseX is a free software that facilitates the complete implementation of XQuery 3.0. To speed up the query evaluation process, different indexing is implemented. Here are the most used types of indexes:
 	\begin{description}
 	\item[Name Index] \hfill \\
 	It contains all element and attribute names of a database, and the ids are stored in the main table. The index provides statistical information such as minimal or maximum values of its elements and attributes. 
@@ -94,14 +118,12 @@ In this thesis, we are going to analyze the migration of data and benchmarking o
 	 To keep the index up-to-date \texttt{UPDINDEX} option can be used. \texttt{index:attributes} can be used to access the index contents
 \end{comment}
 	  	 \item[Full-text Index] \hfill \\
-	  	 In this indexing, there are two different types of indexes. One is the default index structure that sorts all keys alphabetically with respect to their character length. The second has a trie structure and takes more memory.\todo{WHat does it do?} 
+	  	 The full text index accelerate  the text search queries. This indexing can be done in two ways:  One is the default index structure that sorts all keys alphabetically with respect to their character length. The second has a trie structure and used for wildcard search.
 
 \begin{comment} 
 	  	 \texttt{contains-text} can be used to speed up full text indexing queries.
 \end{comment}
-
 \end{description}
-
 
 \begin{figure}[h]
     \includegraphics[width=1\textwidth]{img/Indexing}
@@ -121,11 +143,11 @@ In this thesis, we are going to analyze the migration of data and benchmarking o
 NoSQL databases can be categorized into four categories based on the data model and design:
 	\begin{description}
 		\item[Key/Value store] \hfill \\ 
-		The data representation of key/value store is based on attribute pair, the data model expressed as collection of $<$$key$, $value$$>$ tuples. The key is unique and value can vary. Since the values are uninterrupted arrays, keys are used to retrieve the stored data. They have very simple data structure and are schema-free. Key/value stores are mostly used for simple operations, which are dependent on key attributes. The query operation on data can be uniquely performed by a key. The data cannot be accessed or modified without a key. Some examples of key/value stores are DynamoDB,\footnote{} Riak\footnote{http://basho.com/products/riak-kv/},and Redis\footnote{http://redis.io/}.
+		The data representation of key/value store is based on attribute pair, the data model expressed as collection of $<$$key$, $value$$>$ tuples. The key is unique and value can vary. Since the values are uninterrupted arrays, keys are used to retrieve the stored data. They have very simple data structure and are schema-free. Key/value stores are mostly used for simple operations, which are dependent on key attributes. The query operation on data can be uniquely performed by a key. The data cannot be accessed or modified without a key. Some examples of key/value stores are DynamoDB,\footnote{http://aws.amazon.com/documentation/dynamodb/} Riak\footnote{http://basho.com/products/riak-kv/},and Redis\footnote{http://redis.io/}.
 		\item[Document-oriented databases] \hfill \\ 
 	These databases	are built on a semi-structured data model and unique key stores a value that has a tree like structure called \textit{document}. Attributes are key/value pairs in JSON or in JSON like data format where data can be accessed by using key or specific value~\citep{hecht2011nosql}. Every document contains a special identifier key. Unlike in key/value stores, the values are not opaque and  they can be used to query the document. Document stores are schema-free, so new attribute values can be added to the existing documents at any time. These documents are very convenient in schema migration tasks and data integration.  MongoDB, Couchbase, RethinkDB, and CouchDB\footnote{http://couchdb.apache.org/} are some example of these databases.
 		\item [Column family databases] \hfill \\
-		They are also known as wide-column databases that store data table as a section of a column, and each column can have  its own index structure. A graphical representation of a column-family is given in  Figure~\ref{fig:column-family-2}. Column databases are suitable for massive write  and optimized for writing data to a smaller subset of records. It offer less flexibility than key stores, as column families have to be predefined. Because of the tabular format, the graphical representation is similar to relational databases. Column family stores are more suitable for applications dealing with large amounts of data stored in the cluster, as it can be efficiently partitioned.  Cassandra\footnote{http://cassandra.apache.org/}, BigTable\footnote{} and HBase\footnote{http://hbase.apache.org/} are categorized as wide column database.
+		They are also known as wide-column databases that store data table as a section of a column, and each column can have  its own index structure. A graphical representation of a column-family is given in  Figure~\ref{fig:column-family-2}. Column databases are suitable for massive write  and optimized for writing data to a smaller subset of records. It offer less flexibility than key stores, as column families have to be predefined. Because of the tabular format, the graphical representation is similar to relational databases. Column family stores are more suitable for applications dealing with large amounts of data stored in the cluster, as it can be efficiently partitioned.  Cassandra\footnote{http://cassandra.apache.org/} and HBase\footnote{http://hbase.apache.org/} are two wide column database.
 		\item[Graph databases] \hfill \\
 		Graph databases store data as a  graph in the form of nodes and edges similar to a social network. These databases are efficient in handling heavily linked data. Data with many relationships are more suited for graph database as  operations like recursive joins can be replaced by efficient traversals. Neo4J\footnote{http://neo4j.com/} and OrientDB\footnote{http://orientdb.com/orientdb/} are two examples of such database.
 
@@ -133,23 +155,10 @@ NoSQL databases can be categorized into four categories based on the data model 
 	
 \begin{figure}[h]
 	\centering
-	\subfloat[column based database~\cite{wuoverview}]{
-		\includegraphics[width=.5\textwidth]{img/column-family}
-		\label{fig:column-family-2}
-	}
-	\centering
-	\subfloat[A document in document based database(JSON)]{
-		\includegraphics[width=.46\textwidth]{img/document-based-db}
-		\label{fig:document-based-db}
-	}
-	\\
-	\centering
-	\subfloat[Graph database]{
-		\includegraphics[width=.8\textwidth]{img/graph-database}
-		\label{fig:graph-db}
-	}
+	\includegraphics[width=.8\textwidth]{img/column-family}
 	\caption{column based database~\cite{wuoverview}}
-	\label{fig:nosql-db-two}
+	\label{fig:column-family-2}
+	
 	
 \end{figure}
 
@@ -197,18 +206,17 @@ NoSQL databases can be categorized into four categories based on the data model 
 	\listoffigures
 	\listoftables
 	\lstlistoflistings
+	\Abkuerzung
 	%%%%%%%%%%%%%%%%%%%%%abbreviate
 	\abbrev{XML}{Extensible Markup Language}
 	\abbrev{JSON}{JavaScript Object Notation}
 	\abbrev{IPC}{Inter-process Communication}
 	\abbrev{SDK}{Software Development Kit}
-	\abbrev{GUI}{Graphical User Interface}
 	\abbrev{XML}{Extensible Markup Language}
 	\abbrev{HTML}{Hypertext Markup Language}
 	\abbrev{DOM}{Document Object Model}
 	\abbrev{IR}{Information Retrieval}
 	\abbrev{CB}{Couchbase Server}	
-	\abbrev{SDK}{Software Development Kit}
 	\abbrev{CAS}{Check-and-Set}
 	\abbrev{W3C}{ World Wide Web consortium}
 	\abbrev{ACID}{(Atomicity, Consistency, Isolation, Durability}

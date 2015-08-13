@@ -4,31 +4,30 @@ To model XMark dataset into NoSQL, we have broken down the tree structure of XMa
 
 All sub-trees \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} are the basic units for the document fragmentation. Each of these sub-trees stores entities like \textit{item}, \textit{person}, \textit{open\_auction}, \textit{closed\_auction} and \textit{category}, respectively, as mentioned in Section~\ref{xmark-dataset}. These entities represent the documents in NoSQL databases. In each document, one special field \textit{doctype} is added to represent the name of the parent sub-tree. For example, in case of the \textit{people} sub-tree, the value of \textit{doctype} is \textit{people}. This key/value set will be the part of a document as  given in Table~\ref{tbl:xmark-xml-json}(b). The \textit{doctype} has altogether six distinct values : \textit{categories}, \textit{catgraph}, \textit{people}, \textit{open\_auctions} and \textit{closed\_auctions}. There is an exceptional case for \textit{item} entities. It has \textit{regions} as grandparent and the names of different regions like \textit{asia}, \textit{europe}, \textit{australia}, \textit{namerica}, \textit{samerica} etc. as the parent.  The \textit{doctype} for \textit{item} documents will be \textit{regions} as other. To represent the name of regions like \textit{asia}, \textit{europe}, etc.,  one field with key and value \textit{regions} is added in each document. 
 Table~\ref{tbl:xmark-item-type} illustrates the extra attribute added in each of document.
-
 \begin{longtable}{c|c}
 	\caption{ Extra attribute of a document in NoSQL}
 	\label{tbl:xmark-item-type}\\
-    {for \textit{person} and all other entities except \textit{item} } & {for \textit{item} which has the region name \textit{asia}}\\
+    {\textit{item}  with \textit{asia} region} & {\textit{person0} }\\
 	\hline
 \begin{minipage}{.4\textwidth}
-\begin{lstlisting}[language=JSON]
-{
-	"doctype":"people"
-}
-\end{lstlisting}
-\end{minipage} &
-\begin{minipage}{.4\textwidth}
-\begin{lstlisting}[language=JSON]
+\begin{lstlisting}[language=JSON,basicstyle=\ttfamily\footnotesize]
 {
 	"doctype":"regions",
 	"regions":"asia"
 }
 \end{lstlisting}
 \end{minipage}
+& 
+\begin{minipage}{.4\textwidth}
+\begin{lstlisting}[language=JSON,basicstyle=\ttfamily\footnotesize]
+{
+	"doctype":"people"
+}
+\end{lstlisting}
+\end{minipage} 
 \end{longtable}
-
+\newpage
 A sample document of NoSQL database along with respective XMark document is illustrated in  Table~\ref{tbl:xmark-xml-json}. The conversion from XML to JSON is carried out using algorithms of Section~\ref{xml-to-json-migration} with one extra attribute "doctype" to represent the parent of a document. If an element in XML has siblings with the same name, they are represented as an array in NoSQL document which is already mentioned in algorithm~\ref{algorithm-JSONXML}. As it can be seen, the \textit{person} element of XMark is itself a document in NoSQL, so it is not necessary to represent this attribute.  
-
 \begin{longtable}{c|c}
 	\caption{Example: XMARK data with id \textit{person0} \\in XML and JSON format }
 	\label{tbl:xmark-xml-json}\\
@@ -59,7 +58,7 @@ A sample document of NoSQL database along with respective XMark document is illu
 </people>
 \end{lstlisting}	
 	\end{minipage} &
-	\begin{minipage}{.55\textwidth}
+	\begin{minipage}{.49\textwidth}
 		\centering
 		\begin{lstlisting}[language=JSON, basicstyle =\tiny, label=code:json-nosql-person0, numberstyle=\tiny]
 {
@@ -86,24 +85,238 @@ A sample document of NoSQL database along with respective XMark document is illu
 	\end{minipage}\\
 \end{longtable}
 
-\begin{comment}
-\iffalse\fi
-\begin{minipage}{.5\textwidth}
-	\begin{tikzpicture}[%
-	grow via three points={one child at (0.5,-0.7) and
-		two children at (0.5,-0.7) and (0.5,-1.4)},
-	edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
-	\node {\{asfdasfd\}}
-	child { node [defi] {\textit{Schema\_ID}}}
-	child { node [json] {xs:attribute}
-		child { node [defi] {\textit{Attribute\_ID}}}
-		child { node [attribute] {@name}}
-		child { node [attribute] {@type}}
-		child { node [attribute] {@fixed}}
-		child { node [attribute] {@default}}
-	};
-	\end{tikzpicture}
-\end{minipage}
 
-\end{comment}
+\newbox\mongodbXmarkChart
+\begin{lrbox}{\mongodbXmarkChart}
+\begin{tikzpicture}[grow'=right,level distance=1.25in,sibling distance=.25in, font=\normalsize]
+\tikzset{edge from parent/.style= 
+            {thick, draw, edge from parent fork right},
+         every tree node/.style=
+            {draw,minimum width=1in,text width=1in,align=center}}
+\Tree 
+    [. Database 
+        [.{regions}
+            [.{... } ]
+        ]
+        [.people
+            [.{person0 } ]
+        ] 
+        [.{open\_auctions}
+            [.{... } ]
+        ]
+        [.{closed\_auctions}
+            [.{... } ]
+        ]
+        [.{catgraph}
+            [.{... } ]
+        ]
+        [.{catgraph}
+            [.{... } ]
+        ]
+    ]
+\end{tikzpicture}
+\end{lrbox}
+\newbox\mongodbXmarkDocument
+\begin{lrbox}{\mongodbXmarkDocument}
+\begin{lstlisting}[language=JSON, basicstyle=\ttfamily\footnotesize]
+    {
+    	<@\textit{"\_id": "person0",}@>
+    	"name": "Kasidit Treweek",
+    	"emailaddress": "mailto:Treweek@cohera.com",
+    	"phone": "+0 (645) 43954155",
+    	"homepage": "http://www.cohera.com/~Treweek",
+    	"creditcard": "9941 9701 2489 4716",
+    	"profile": {
+    		"income": 20186.59,
+    		"interest": [
+    			{"category": "category251"},
+    			{"category": "category341"}
+    			],
+    		"education": "Graduate School",
+    		"business": "No"
+    	}
+    }
+\end{lstlisting}
+\end{lrbox}
 
+
+
+
+\subsubsection{XMARK dataset in MongoDB} \label{xmark-mongodb}
+%\input{includes/3/xmark-mongodb}
+
+In MongoDB, collections consist of a group of documents with similar structure. Therefore, the data modeling concept of Section~\ref{xmark-nosql} has to be modified marginally. The documents are grouped with their \textit{doctype} from Section~\ref{xmark-nosql}. Each \textit{doctype} represents a collection, there are 6 collections. The field \textit{doctype} is already represented as a collection, it is removed from all documents.  
+For \textit{item} entity,  field \textit{regions} does not change. The \textit{\_id} is the primary index of a document in MongoDB, the identifier attribute of the XMark data \textit{id} is renamed to \textit{\_id} for default indexing.  \textit{closed\_auctions} and \textit{catgraph} do not have an identifier attribute \textit{id}, therefore, the system will automatically generate the \textit{\_id} in these collections. The XMark dataset in MongoDB is represented in Figure~\ref{xmark-mongodb-tree}.
+A typical example of MongoDB document for a person with identifier \textit{person0} is given in Figure~\ref{code:mongodb-person0}.	
+
+
+
+\begin{figure}[hbtp]
+\centering
+\subfloat[Database, collections and documents in MongoDB] {
+    \usebox\mongodbXmarkChart
+    \label{xmark-mongodb-tree}
+}
+\\
+\centering
+\subfloat[{MongoDB document of XMark data in \textit{people} collection} ] {
+        \usebox\mongodbXmarkDocument
+        \label{code:mongodb-person0}
+}
+
+\caption{XMark data in MongoDB}
+\label{xmark-mongodb-figure}
+\end{figure}
+				
+\subsubsection{XMARK dataset in Couchbase} \label{xmark-couchbase}
+
+
+%\input{includes/3/xmark-couchbase}
+
+Couchbase does not have the concept of grouping documents as \textit{collections} in MongoDB  or \textit{tables} in RethinkDB. 
+Therefore, the data model of Section ~\ref{xmark-nosql} is applied without modification.
+ All the documents of an XMark instance  are stored in a single bucket with identifier attribute \textit{id} as a document key. An \textit{id} will be manually generated for the documents without identifier.
+An example of Couchbase document is illustrated in Figure~\ref{code:couchbase-item0}. The grahical representation of overall dataset in MongoDB is shown in ~\ref{xmark-cb-figure}. The identifier attribute \textit{id}  of XMark data is the document key in Couchbase. The \textit{doctype} with  value \textit{regions} represents it as an \textit{item} and finally the \textit{regions} attribute serves to represent which regions this \textit{item} associates with.
+
+\newbox\cbXmarkChart
+\begin{lrbox}{\cbXmarkChart}
+\begin{tikzpicture}[grow'=right,level distance=1.25in,sibling distance=.25in, font=\normalsize]
+\tikzset{edge from parent/.style= 
+            {thick, draw, edge from parent fork right},
+         every tree node/.style=
+            {draw,minimum width=1in,text width=1in,align=center}}
+\Tree 
+    [. Bucket 
+        [.{item0 } ]
+        [.{... } ]
+        [.{item1000 } ]
+        [.{person0 } ]
+        [.{... } ]
+        [.{category0 } ]
+        [.{... } ]
+    ]
+    
+\end{tikzpicture}
+\end{lrbox}
+\newbox\cbXmarkDocument
+\begin{lrbox}{\cbXmarkDocument}
+\begin{lstlisting}[language=JSON,  basicstyle=\ttfamily\footnotesize]
+                {
+                	<@\textbf{"id": "item1000"}@>,
+                	<@\textcolor{red}{"doctype":  "regions"}@>,
+                	<@\textit{"regions":  "africa"}@>,
+                	"name":  "duteous nine eighteen" ,
+                	"payment":  "Creditcard" ,
+                	"quantity": 1 ,
+                	"shipping":  "Will ship internationally, See description for charges" ,
+                	"incategory": [{
+                		"category":  "category0"
+                		}] ,
+                	"mailbox":[],
+                	"description":{}
+                }
+\end{lstlisting} 
+\end{lrbox}
+
+
+\begin{figure}[h]
+\centering
+\subfloat[Bucket and documents in Couchbase] {
+    \usebox\cbXmarkChart
+    \label{xmark-cb-tree}
+}
+\\
+\centering
+\subfloat[Couchbase document of the XMark data for item with id \textit{item1000} ] {
+        \usebox\cbXmarkDocument
+        \label{code:couchbase-item0}
+}
+
+\caption{XMark data in Couchbase}
+\label{xmark-cb-figure}
+\end{figure}
+
+
+
+\subsubsection{XMARK dataset in Rethinkdb} \label{xmark-rethinkdb}
+%\input{includes/3/xmark-rethinkdb}
+
+RethinkDB stores the documents inside a table which is identical to the collection in MongoDB. 
+The documents are grouped according to their \textit{doctype} and store in a table.
+Each \textit{doctype} of \ref{xmark-nosql} is represented as an individual table. 
+The tables \textit{regions}, \textit{people}, \textit{open\_auctions}, \textit{closed\_auctions}, \textit{catgraph} and \textit{categories} contains the respective documents as \textit{doctype}. Therefore, the attribute \textit{doctype} is removed from all documents.  \textit{id} is the primary key and any document without \textit{id} field is automatically added as an identifier during the time of insertion. Figure~\ref{code:rethindb-person0} shows a document with id \textit{person0} in \textit{people} table.
+
+
+\newbox\rethinkdbXmarkChart
+\begin{lrbox}{\rethinkdbXmarkChart}
+\begin{tikzpicture}[grow'=right,level distance=1.25in,sibling distance=.25in, font=\scriptsize]
+\tikzset{edge from parent/.style= 
+            {thick, draw, edge from parent fork right},
+         every tree node/.style=
+            {draw,minimum width=1in,text width=1in,align=center}}
+\Tree 
+    [. Database 
+        [.{regions}
+            [.{... } ]
+        ]
+        [.people
+            [.{person0 } ]
+        ] 
+        [.{open\_auctions}
+            [.{... } ]
+        ]
+        [.{closed\_auctions}
+            [.{... } ]
+        ]
+        [.{catgraph}
+            [.{... } ]
+        ]
+        [.{categories}
+            [.{... } ]
+        ]
+    ]
+    
+\end{tikzpicture}
+\end{lrbox}
+
+
+
+\newbox\rethinkdbXmarkDocument
+\begin{lrbox}{\rethinkdbXmarkDocument}
+\begin{lstlisting}[language=JSON,basicstyle=\ttfamily\footnotesize]
+        	{
+        		 <@\it{"id": "person0"}@>,
+        		"name": "Kasidit Treweek",
+        		"emailaddress": "mailto:Treweek@cohera.com",
+        		"phone": "+0 (645) 43954155",
+        		"homepage": "http://www.cohera.com/~Treweek",
+        		"creditcard": "9941 9701 2489 4716",
+        		"profile": {
+        			"income": 20186.59,
+        			"interest": [
+        			    { "category": "category251" },
+        				{"category": "category341"}
+        			],
+        			"education": "Graduate School",
+        			"business": "No"
+        		}
+        	}
+\end{lstlisting}
+\end{lrbox}
+
+\begin{figure}[H]
+\centering
+\subfloat[Database, tables and documents in RethinkDB] {
+    \usebox\rethinkdbXmarkChart
+    \label{xmark-rethinkdb-tree}
+}
+\\
+\centering
+\subfloat[RethinkDB document \textit{person0} in \textit{people} table ] {
+        \usebox\rethinkdbXmarkDocument
+        \label{code:rethindb-person0}
+}
+
+\caption{XMark data in RethinkDB}
+\label{xmark-rethinkdb-figure}
+\end{figure}

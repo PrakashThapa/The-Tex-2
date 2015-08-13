@@ -61,11 +61,11 @@ The results of all six different databases in BaseX is shown in Figure~\ref{fig:
 \item 
 Among the join queries, the database instances larger than 11MB were not completed in Q11 and Q12. They were also the most inefficient queries in BaseX.  For reference join queries Q8 and Q9, the attribute index is utilized. The time taken by these two queries is comparable to that of MongoDB. Q10 was not completed in given time frame for two largest instances but among the completed instances, the results were similar to those of all database systems 
 \item The query Q13 was completed in all databse instances in less than a second. The performance is competitive in all systems but RethinkDB produces best the results. 
-\item  The \textit{contains()} function in query Q14 is executed in numerous atomized text nodes. This query is in the NoSQL databases substring search of the stringified text of an object. NoSQL datbases were sligly faster than BaseX. 
+\item  The \textit{contains()} function in query Q14 is executed in numerous atomized text nodes. In the NoSQL databases, this query is  substring search of the stringified object. Therefore, these datbases were sligly faster than BaseX. 
 
 \item In Q15-Q17, the results were competitive in all databases. The Q19 consumes most resources for sorting the data. This query is faster in MongoDB compared to BaseX.
 
-\item Finally, BaseX  had produced linear result in all database instances for the aggregation query Q20. It is relatively faster than MongoDB, but Couchbase generated competitive results. 
+\item Finally, BaseX  had produced linear result in all database instances for the aggregation query Q20. It is relatively faster than MongoDB, but Couchbase had generated the most competitive results. 
 \end{itemize}
 \begin{figure}[hbt]
 	\centering
@@ -81,10 +81,10 @@ All the time evaluation of XMark queries in RethinkDB is given in Fig.~\ref{fig:
  \item  
   ReQL has way better features  to handle arrays and objects of JSON than other NoSQL databases. The chainable query was used as a pipeline, but unlike MongoDB's pipeline, RethinkDB runs a query on a server at once without intermediate result. The queries Q2 and Q3 far better than MongoDB and are competitive to other databases. 
  \item
- Queries Q5 and Q6 were comparatively slow in  RethinkDB. The \textit{count()} operation in RethinkDB is always slow due to its streaming property. It executes everything in the server, most of the stream operations including \textit{filter} run lazily. The \textit{run} function returns the results as soon as the first block of data is available. It does not load whole table data  at once but only after client iterate over the cursor. In case of \textit{count()}, the query has to wait until all the data is loaded.
+ Queries Q5 and Q6 were comparatively slow in  RethinkDB. The \textit{count()} operation in RethinkDB is always lapse the time due to its streaming property. The query are executes in server, most of the stream operations including \textit{filter} run lazily. The \textit{run} function returns the results as soon as the first block of data is available. It does not load whole table data  at once but only after client iterate over the cursor. In case of \textit{count()}, the query has to wait until all the data is loaded.
  
  
- \item Since we have previously mentioned the support of join query in ~\ref{xmark-rethinkdb}, RethinkDB was not able to take advantages of native joins in Q8 and Q9. This is once again due to the \textit{count} function used in these queries. RethinkDB produces the best result inQ11 and Q12  among all systems. The join operation with secondary indexes accelerated the performances.
+ \item Since we have previously mentioned the support of join query in ~\ref{xmark-rethinkdb}, RethinkDB was not able to take advantages of native joins in Q8 and Q9. This is once again due to the \textit{count} function used in these queries. RethinkDB produces the best result in Q11 and Q12  among all systems. The join operation with secondary indexes accelerated the performances.
  
 \item In query Q13,  a secondary index is utilized on \textit{regions} field of the table \textit{regions} that produces comparable result to MongoDB but better than BaseX.  
 
@@ -99,14 +99,18 @@ All the time evaluation of XMark queries in RethinkDB is given in Fig.~\ref{fig:
 \end{figure}
 
 \subsection{Couchbase}
-Each Couchbase bucket is assigned RAM quota for caching data, therefore, the performance of a query depends on the amount of RAM allocated at the time of bucket creation. Couchbase was tested on five XMark instances and Figure~\ref{fig:xmark-result-cb-all} explains the query performance of individual queries\todo{put all database images}. The queries with pre-defined reduce functions like \textit{\_count} or \textit{\_sum} had produce very competitive results with other database systems.
+Each Couchbase bucket is a assigned a RAM quota,  therefore, the performance of a query depends on the amount of RAM allocated at the time of bucket creation. Couchbase was tested on five XMark instances, the biggest XMark data failed to produce result. The reason was the in-memory nature and it caches maximum amout of data.  Figure~\ref{fig:xmark-result-cb-all} explains the query performance of individual queries. The queries with pre-defined reduce functions like \textit{\_count} or \textit{\_sum} had produce very competitive results with other database systems.
+\begin{itemize}
+\item 
 
-The first query Q1 is bit slower than others in Couchbase as a result of SDK interface for query. Two queries Q2 and Q3 has similar result as that of RethinkDB  but Q5 and Q6 had produced comparatively better result due to its pre-defined reduce function \textit{\_count} in mapreduce. among the join queries, the 1.1 GB instance could not completed in Q9 and Q10 in defined time limit. For query Q9 the Node.js had to performed manuel join in three different views that lead longer time. 
-The string search query in Q14 was the best queries in Couchbase. The reason was the easy object to string conversion and the index on the view. Another best result in Couchbase is aggregation query Q20, which is able to use pre-defined \textit{\_sum} in reduce part of Mapreduce. 
+The first query Q1 is bit slower than others in Couchbase as a result of SDK interface for query. Two queries Q2 and Q3 has similar result as that of RethinkDB  but Q5 and Q6 had produced comparatively better result due to its pre-defined reduce function \textit{\_count} in Mapreduce. Couchbase produce one of the best result if the query is not joined and can uses pre-defined reduce function. 
+\item Among the join queries, the 1.1 GB instance could not completed any of queeries excluding Q8 in defined time limit. 
+The string search query in Q14 was the best queries in Couchbase. The reason was the easy object to string conversion and the index on the view accelerate the query. Another best result in Couchbase is aggregation query Q20, which is able to use pre-defined \textit{\_sum} in reduce part of Mapreduce. 
+\end{itemize} 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.95\textwidth]{img/result/cb/cb-all}
+	\includegraphics[width=0.95\textwidth]{img/result/cb/cb-all-final}
 	\caption{XMark queries in Couchbase}
 	\label{fig:xmark-result-cb-all}
 \end{figure}
@@ -116,22 +120,35 @@ Even though our aim is not to compare query performance in different systems dir
 
 It can be observed that the NoSQL queries that were able to benefit from secondary indexes performed better than BaseX with some exceptions. Even though some NoSQL databases do not support join queries, the results they produced were competitive in nature. The reason for this is that the data was normalized for NoSQL databases, whereas BaseX was operating on the original data and queries. BaseX would clearly have performed better if the queries or XML data had been normalized as well.
 % NoSQL database has efficient read operation 
-\begin{table}[H]
+
+\newbox\mongodbXmarkDocument
+\begin{lrbox}{\mongodbXmarkDocument}
 \tiny
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c| c|c|c|c|c|c|c|c|c|c|c|  } 
    db &  1 & 2 & 3 & 5 & 6  & 8 & 9 & 10  & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 \\
  \hline
-M\hbox{\pdfliteral{1 1 0 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} & .00 & .75 & .78 & .01 & .00 & 1.17 & 1.65 & 87.25 & 23.13 & 7.21 & .05 & .55 & .20 & .17 & .11 & .22 & .11 & .21 \\
-B\hbox{\pdfliteral{0 0 1 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} & .04 & .19 & .17 & .10 & .19 & 2.31 & 2.43 & 89.36 & udf & udf & .36 & 1.23 & .08 & .08 & .15 & .36 & .52 & .19 \\
-C\hbox{\pdfliteral{1 0 0 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} & .04 & .14 & .08 & .03 & .04 & 13.2 & 98.1 & 94.1 & 24.1 & 26.1 & .13 & .05 & .04 & .02 & .17 & .09 & .27 & .05 \\
-R\hbox{\pdfliteral{0 1 0 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} & .01 & .14 & .14 & .94 & .68 & 26.76 & 4.53 & .00 & 4.80 & 2.10 & .02 & .18 & udf & .13 & .13 & .13 & .14 & 2.04 \\
+
+M\hbox{\pdfliteral{1 1 0 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} & .001 & .99 & .45 & .01 & .01 & 1.17 & 1.64 & 87.25 & 23.13 & 7.21 & .06 & .03 & .20 & .17 & .11 & .25 & .11 & .51 \\
+
+B\hbox{\pdfliteral{0 0 1 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} & .01 & .07 & .13 & .04 & .19 & .71 & 1.12 & 79.36 & IDF & IDF & .19 & 1.23 & .04 & .06 & .11 & .36 & .43 & .17 \\
+
+C\hbox{\pdfliteral{1 0 0 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} & .04 & .14 & .08 & .03 & .04 & 13.27 & 98.16 & 94.16 & 24.14 & 26.13 & .14 & .05 & .04 & .04 & .17 & .09 & .27 & .05 \\
+R\hbox{\pdfliteral{0 1 0 rg}\vrule height2mm width2mm depth0mm\pdfliteral{0 g}} &  .01 & .14 & .14 & .94 & .48 & 26.76 & 4.53 & IDF & 4.80 & 2.10 & .062 & .13 & .42 & .13 & .13 & .13 & .14 & 2.04 \\
+
 \end{tabular}
-\end{table}
-\begin{figure}[H]
+\end{lrbox}
+
+\begin{figure}[h]
 	\centering
-	\subfloat[XMark queries of 111MB data in all DBMS]{
+	\captionsetup{justification=centering}
+	\subfloat[]{
 		\includegraphics[width=0.85\textwidth]{img/result/1/1-all-new}		\label{fig:xmark-result-1-all-new}
 	}
-	\caption{XMark queries of 111MB data in all DBMS}
+	\\
+	\subfloat[s]{
+	 \usebox\mongodbXmarkDocument
+	}
+	\caption{XMark queries of 111MB data instances in all DBMS\\
+	IDF: could not completed in 15 minutes}
 	\label{fig-xmark-result-1-all-queries}
 \end{figure}

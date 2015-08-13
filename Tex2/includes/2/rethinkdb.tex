@@ -27,7 +27,7 @@ There are two ways to model relationships between the documents:
 
 \subsubsection{Query Model}
 RethinkDB's query language ReQL is embedded as programming language and JavaScript expressions can be used anywhere as a part of the query. The anonymous function, also known as lamda function, is a part of the query language that gives more flexibility for retrieving data. All the ReQL queries are chainable therefore, the dot \{.\} operator at any point of query can be extended to multiple levels as shown in Code~\ref{reql-chainable}.
-	\begin{lstlisting}[language=JSON,caption=Chainable Query in ReQL, label=reql-chainable, xleftmargin=-40pt][h]
+	\begin{lstlisting}[language=JSON,caption=Chainable Query in ReQL, label=reql-chainable, xleftmargin=-40pt, 	basicstyle=\ttfamily\footnotesize][h]
 		r.table("users").run(conn)
 		r.table("users").pluck("last_name").run(conn)
 		r.table("users").pluck("last_name").distinct().run(conn)

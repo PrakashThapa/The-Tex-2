@@ -1,4 +1,4 @@
-\begin{enumerate}[label=Q\arabic*.]
+\begin{enumerate}[label=Q\arabic*]
 	\item \label{rethink-q-1}%1
 	
 	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
@@ -44,12 +44,7 @@
 	
 	
     \item \label{rethink-q-8}%8
-	\begin{lstlisting}[language=JSON, basicstyle=\scriptsize]
-	  r.table("people").map(function(d){
-	                var x = r.table("closed_auctions").getAll(d("id"),{index:"buyer_person"}).count();
-	                return {person:d("name"),value:x}
-	              }).orderBy(r.desc("value")).map({item:r.row})
-	\end{lstlisting}
+	\par
 	
 	
     \item \label{rethink-q-9}%9
@@ -186,5 +181,33 @@
 	            na:r.branch(r.row("income").le(0),'na',0)
 	          }).group('preferred','standard','challenge','na').count()
 	\end{lstlisting}
+
+\end{enumerate}
+
+
+\subsection{Indexes}
+\begin{enumerate}[label=I\arabic*]
+\item \label{rethinkdb-i-1}
+\begin{fakeJSON}
+  r.table("closed_auctions")
+    .indexCreate("buyer_person",r.row("buyer")("person")).
+\end{fakeJSON}
+
+\item \label{rethinkdb-i-2}
+\begin{fakeJSON}
+  r.table("regions").indexCreate("regions")
+\end{fakeJSON}
+
+\item \label{rethinkdb-i-3}
+\begin{fakeJSON}
+  r.table("closed_auctions")
+    .indexCreate("price",function(d){return d("price")})
+\end{fakeJSON}
+
+\item \label{rethinkdb-i-4}
+\begin{fakeJSON}
+  r.table("regions").indexCreate("regions")
+\end{fakeJSON}
+
 
 \end{enumerate}
